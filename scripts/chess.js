@@ -19,12 +19,13 @@ function getLightOrDarkSquareClass(row, col) {
 
 function generateSquare(row, col) {
     return `<button class="chessboard-square ${getLightOrDarkSquareClass(row, col)}"
-                id="${String(row) + String(col)}">${String(row) + String(col)}
-            </button>`;
+                id="${String(row) + String(col)}"></button>`;
 }
 
 function generatePieceImage(piece) {
-    return `<img src="images/pieces/${piece}.png" class="chess-piece-image">`;
+    return `<img src="images/pieces/${piece}.png" 
+                draggable="true"
+                class="chess-piece-image">`;
 }
 
 function generateSquares() {
@@ -45,18 +46,59 @@ function visualizePiece(row, col, buttonElem) {
 
     if (piece) {
         buttonElem.innerHTML = generatePieceImage(piece);
+
+        let imageElem = buttonElem.querySelector('img');
+        imageElem.addEventListener('dragstart', handleDragStart);
+        imageElem.addEventListener('dragend', handleDragEnd);
     }
 }
 
-function updateBoard() {
+function initializeBoard() {
     document.querySelectorAll('.chessboard-square')
         .forEach((buttonElem) => {
             let row = Number(buttonElem.id.charAt(0));
             let col = Number(buttonElem.id.charAt(1));
 
             visualizePiece(row, col, buttonElem);
+
+            buttonElem.addEventListener('dragover', handleDragOver);
+            buttonElem.addEventListener('drop', handleDrop);
         });
 }
 
+function handleDragStart(event) {
+    draggedPiece = event.target;
+    originalSquare = draggedPiece.parentNode;
+    setTimeout(() => {
+        draggedPiece.style.display = 'none';
+    }, 0);
+}
+
+function handleDragEnd(event) {
+    draggedPiece.style.display = 'block';
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    const targetSquare = event.currentTarget;
+
+    const targetRow = Number(targetSquare.id.charAt(0));
+    const targetCol = Number(targetSquare.id.charAt(1));
+
+    const originalRow = Number(originalSquare.id.charAt(0));
+    const originalCol = Number(originalSquare.id.charAt(1));
+
+    const piece = chessBoard[originalRow][originalCol];
+    chessBoard[originalRow][originalCol] = null;
+    chessBoard[targetRow][targetCol] = piece;
+
+    targetSquare.innerHTML = '';
+    targetSquare.appendChild(draggedPiece);
+}
+
 generateSquares();
-updateBoard();
+initializeBoard();
