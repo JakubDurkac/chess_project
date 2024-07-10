@@ -13,6 +13,7 @@
 .chessboard-square {
     width: 100%;
     height: 100%;
+    aspect-ratio: 1;
 }
 
 .light-square {
@@ -21,4 +22,8 @@
 
 .dark-square {
     background-color: #7e95fa;
+}
+
+.chess-piece-image {
+    width: 100%;
 }

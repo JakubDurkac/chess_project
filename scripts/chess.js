@@ -9,12 +9,22 @@ let chessBoard = [
     ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr']
 ];
 
-function getLightOrDarkSquare(row, col) {
+function getLightOrDarkSquareClass(row, col) {
     if ((row + col) % 2 == 0) {
         return 'light-square';
     }
 
     return 'dark-square';
+}
+
+function generateSquare(row, col) {
+    return `<button class="chessboard-square ${getLightOrDarkSquareClass(row, col)}"
+                id="${String(row) + String(col)}">${String(row) + String(col)}
+            </button>`;
+}
+
+function generatePieceImage(piece) {
+    return `<img src="images/pieces/${piece}.png" class="chess-piece-image">`;
 }
 
 function generateSquares() {
@@ -23,13 +33,30 @@ function generateSquares() {
 
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
-            boardHTML += `<button class="chessboard-square ${getLightOrDarkSquare(row, col)}"
-            data-coords="${String(row) + String(col)}">${String(row) + String(col)}</button>`;
+            boardHTML += generateSquare(row, col);
         }
     }
 
     chessBoardDivElem.innerHTML = boardHTML;
 }
 
-generateSquares();
+function visualizePiece(row, col, buttonElem) {
+    let piece = chessBoard[row][col];
 
+    if (piece) {
+        buttonElem.innerHTML = generatePieceImage(piece);
+    }
+}
+
+function updateBoard() {
+    document.querySelectorAll('.chessboard-square')
+        .forEach((buttonElem) => {
+            let row = Number(buttonElem.id.charAt(0));
+            let col = Number(buttonElem.id.charAt(1));
+
+            visualizePiece(row, col, buttonElem);
+        });
+}
+
+generateSquares();
+updateBoard();
