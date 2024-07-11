@@ -1,4 +1,5 @@
 import { getColorCode, getPieceTypeCode, boardSize, isEmptySquare, isInRange } from "./board.js";
+import { gameStats } from "./stats.js";
 
 export function isLegalMove(originalCoords, targetCoords) {
     console.log(getAllReachableCoords(originalCoords));
@@ -134,8 +135,23 @@ function reachableByPawn(x, y, colorCode) {
         }
     }
 
+    if ((isWhite && x === boardSize - 5) || (!isWhite && x === 4)) {
+        reachable.push(getEnPassant(x, y, isWhite));
+    }
+    
     return reachable;
 };
+
+function getEnPassant(row, col, isWhite) {
+    const {fromCoords, toCoords, piece} = gameStats.lastMove;
+    if (piece === isWhite ? 'bp' : 'wp' 
+        && Math.abs(fromCoords[0] - toCoords[0]) === 2 
+        && (toCoords[1] === col + 1 || toCoords[1] === col - 1)) {
+            return [row + (isWhite ? -1 : 1), toCoords[1]];
+    }
+
+    return [];
+}
 
 function isPawnOnStartSquare(row, isWhite) {
     if (isWhite) {

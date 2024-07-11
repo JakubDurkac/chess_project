@@ -1,4 +1,5 @@
 import { isLegalMove } from "./logic.js";
+import { gameStats } from "./stats.js";
 
 export const boardSize = 8;
 let chessBoard = [
@@ -99,19 +100,69 @@ function handleDrop(event) {
     const targetCol = Number(targetSquare.id.charAt(1));
 
     if (isLegalMove([originalRow, originalCol], [targetRow, targetCol])) {
-        const piece = chessBoard[originalRow][originalCol];
-        chessBoard[originalRow][originalCol] = null;
-        chessBoard[targetRow][targetCol] = piece;
+        makeMove([originalRow, originalCol], [targetRow, targetCol]);
+        removeExtraPiece(); // in case of en passant
 
         targetSquare.innerHTML = '';
         targetSquare.appendChild(draggedPiece);
     } else {
         originalSquare.appendChild(draggedPiece);
     }
+
+    console.log(chessBoard);
+    console.log(gameStats.lastMove);
+}
+
+function makeMove(fromCoords, toCoords) {
+    const [fromRow, fromCol] = fromCoords;
+    const [toRow, toCol] = toCoords;
+
+    const piece = chessBoard[fromRow][fromCol];
+    chessBoard[fromRow][fromCol] = null;
+
+    updateLastMove(fromCoords, toCoords, piece);
+
+    chessBoard[toRow][toCol] = piece;
+}
+
+function updateLastMove(fromCoords, toCoords, piece) {
+    const isWhite = isWhitePiece(piece);
+    gameStats.lastMove = {
+        fromCoords, toCoords, piece, isWhite
+    };
+    
+    if (wasEnpassant(fromCoords, toCoords, piece)) {
+        gameStats.lastMove.toRemoveCoords = [toCoords[0] + (isWhite ? 1 : -1), toCoords[1]];
+    } else {
+        gameStats.lastMove.toRemoveCoords = null;
+    }
+}
+
+function wasEnpassant(fromCoords, toCoords, piece) {
+    // if pawn diagonally takes an empty square
+    return (piece === 'bp' || piece === 'wp')
+            && fromCoords[1] !== toCoords[1] 
+            && !getPieceTypeCode(toCoords[0], toCoords[1]);
+}
+
+function removeExtraPiece() {
+    const coords = gameStats.lastMove.toRemoveCoords;
+    if (coords) {
+        chessBoard[coords[0]][coords[1]] = null;
+        getButtonElemByCoords(coords[0], coords[1]).innerHTML = '';
+    }
+}
+
+function getButtonElemByCoords(row, col) {
+    return document.getElementById(`${String(row)}${String(col)}`);
 }
 
 export function getColorCode(row, col) {
     return isEmptySquare(row, col) ? null : chessBoard[row][col].charAt(0);
+}
+
+function isWhitePiece(piece) {
+    return piece.charAt(0) === 'w';
 }
 
 export function getPieceTypeCode(row, col) {
