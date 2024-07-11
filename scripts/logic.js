@@ -47,15 +47,17 @@ function getAllReachableCoords(originalCoords) {
 }
 
 const motionPatterns = {
-    rook: [[1, 0], [-1, 0], [0, 1], [0, -1]],
-    bishop: [[1, 1], [1, -1], [-1, 1], [-1, -1]],
-    knight: [[1, 2], [1, -2], [-1, 2], [-1, -2], 
+    rook: [[1, 0], [-1, 0], [0, 1], [0, -1]], // orthogonal long range
+    bishop: [[1, 1], [1, -1], [-1, 1], [-1, -1]], // diagonal long range
+    knight: [[1, 2], [1, -2], [-1, 2], [-1, -2], // L-shape short range
              [2, 1], [2, -1], [-2, 1], [-2, -1]],
-    queen: [[1, 0], [-1, 0], [0, 1], [0, -1],
+    queen: [[1, 0], [-1, 0], [0, 1], [0, -1], // orthogonal + diagonal long range
+            [1, 1], [1, -1], [-1, 1], [-1, -1]],
+    king: [[1, 0], [-1, 0], [0, 1], [0, -1], // orthogonal + diagonal short range
             [1, 1], [1, -1], [-1, 1], [-1, -1]]
 };
 
-function reachableWithMotionPattern(x, y, colorCode, pattern) {
+function reachableWithLongRange(x, y, colorCode, pattern) {
     const reachable = [];
     pattern.forEach((coordsOffset) => {
         const [xDiff, yDiff] = coordsOffset;
@@ -78,22 +80,9 @@ function reachableWithMotionPattern(x, y, colorCode, pattern) {
     return reachable;
 }
 
-function reachableByRook(x, y, colorCode) {
-    return reachableWithMotionPattern(x, y, colorCode, motionPatterns.rook);
-}
-
-function reachableByBishop(x, y, colorCode) {
-    return reachableWithMotionPattern(x, y, colorCode, motionPatterns.bishop);
-};
-
-function reachableByQueen(x, y, colorCode) {
-    return reachableWithMotionPattern(x, y, colorCode, motionPatterns.queen);
-};
-
-function reachableByKnight(x, y, colorCode) {
+function reachableWithShortRange(x, y, colorCode, pattern) {
     const reachable = [];
-
-    motionPatterns.knight.forEach((coordsOffset) => {
+    pattern.forEach((coordsOffset) => {
         let row = x + coordsOffset[0];
         let col = y + coordsOffset[1];
         if (isInRange(row, col) 
@@ -105,8 +94,24 @@ function reachableByKnight(x, y, colorCode) {
     return reachable;
 };
 
+function reachableByRook(x, y, colorCode) {
+    return reachableWithLongRange(x, y, colorCode, motionPatterns.rook);
+}
+
+function reachableByBishop(x, y, colorCode) {
+    return reachableWithLongRange(x, y, colorCode, motionPatterns.bishop);
+};
+
+function reachableByQueen(x, y, colorCode) {
+    return reachableWithLongRange(x, y, colorCode, motionPatterns.queen);
+};
+
+function reachableByKnight(x, y, colorCode) {
+    return reachableWithShortRange(x, y, colorCode, motionPatterns.knight);
+};
+
 function reachableByKing(x, y, colorCode) {
-    return [[3, 3], [4, 3], [5, 3], [6, 3]];
+    return reachableWithShortRange(x, y, colorCode, motionPatterns.king);
 };
 
 function reachableByPawn(x, y, colorCode) {
