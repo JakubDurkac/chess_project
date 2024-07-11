@@ -54,7 +54,7 @@ const motionPatterns = {
     queen: [[1, 0], [-1, 0], [0, 1], [0, -1], // orthogonal + diagonal long range
             [1, 1], [1, -1], [-1, 1], [-1, -1]],
     king: [[1, 0], [-1, 0], [0, 1], [0, -1], // orthogonal + diagonal short range
-            [1, 1], [1, -1], [-1, 1], [-1, -1]]
+            [1, 1], [1, -1], [-1, 1], [-1, -1]],
 };
 
 function reachableWithLongRange(x, y, colorCode, pattern) {
@@ -115,5 +115,32 @@ function reachableByKing(x, y, colorCode) {
 };
 
 function reachableByPawn(x, y, colorCode) {
-    return [[3, 3], [4, 3], [5, 3], [6, 3]];
+    const reachable = [];
+    const isWhite = colorCode === 'w'; 
+    let row = x + (isWhite ? -1 : 1);
+    let col = y;
+    if (isEmptySquare(row, col)) {
+        reachable.push([row, col]);
+        row += (isWhite ? -1 : 1);
+        if (isEmptySquare(row, col) && isPawnOnStartSquare(x, isWhite)) {
+            reachable.push([row, col]);
+        }
+    }
+
+    row = x + (isWhite ? -1 : 1);
+    for (col = y - 1; col <= y + 1; col += 2) {
+        if (!isEmptySquare(row, col) && getColorCode(row, col) !== colorCode) {
+            reachable.push([row, col]);
+        }
+    }
+
+    return reachable;
 };
+
+function isPawnOnStartSquare(row, isWhite) {
+    if (isWhite) {
+        return row == boardSize - 2;
+    }
+
+    return row == 1;
+}
