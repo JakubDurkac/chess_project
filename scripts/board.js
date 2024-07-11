@@ -105,6 +105,8 @@ function handleDrop(event) {
 
         targetSquare.innerHTML = '';
         targetSquare.appendChild(draggedPiece);
+
+        promotePieceIfAny();
     } else {
         originalSquare.appendChild(draggedPiece);
     }
@@ -150,6 +152,16 @@ function removeExtraPiece() {
     if (coords) {
         chessBoard[coords[0]][coords[1]] = null;
         getButtonElemByCoords(coords[0], coords[1]).innerHTML = '';
+    }
+}
+
+function promotePieceIfAny() {
+    const {piece, toCoords} = gameStats.lastMove;
+    if ((piece === 'wp' || piece === 'bp')  
+        && (toCoords[0] === 0 || toCoords[0] === boardSize - 1)) {
+            const pieceAfterPromotion = isWhitePiece(piece) ? 'wq' : 'bq';
+            chessBoard[toCoords[0]][toCoords[1]] = pieceAfterPromotion;
+            visualizePiece(toCoords[0], toCoords[1], getButtonElemByCoords(toCoords[0], toCoords[1]));
     }
 }
 
