@@ -172,8 +172,7 @@ function wasEnpassant(fromCoords, toCoords, piece) {
 function removeExtraPiece() {
     const coords = gameStats.lastMove.toRemoveCoords;
     if (coords) {
-        chessBoard[coords[0]][coords[1]] = null;
-        getButtonElemByCoords(coords[0], coords[1]).innerHTML = '';
+        removePieceFromBoard(coords[0], coords[1]);
     }
 }
 
@@ -182,8 +181,7 @@ function promotePieceIfAny() {
     if ((piece === 'wp' || piece === 'bp')  
         && (toCoords[0] === 0 || toCoords[0] === boardSize - 1)) {
             const pieceAfterPromotion = isWhitePiece(piece) ? 'wq' : 'bq';
-            chessBoard[toCoords[0]][toCoords[1]] = pieceAfterPromotion;
-            visualizePiece(toCoords[0], toCoords[1], getButtonElemByCoords(toCoords[0], toCoords[1]));
+            addPieceToBoard(toCoords[0], toCoords[1], pieceAfterPromotion);
     }
 }
 
@@ -191,18 +189,25 @@ function castleRooksIfAny() {
     const {fromCoords, toCoords, piece} = gameStats.lastMove;
     if (piece === 'wk' || piece === 'bk'
         && Math.abs(fromCoords[1] - toCoords[1]) === 2) {
-
             const row = isWhitePiece(piece) ? boardSize - 1 : 0;
             const col = toCoords[1] > fromCoords[1] ? boardSize - 1 : 0;
 
             const rook = chessBoard[row][col];
-            chessBoard[row][col] = null;
-            getButtonElemByCoords(row, col).innerHTML = '';
+            removePieceFromBoard(row, col);
             
             const newCol = col === 0 ? toCoords[1] + 1 : toCoords[1] - 1;
-            chessBoard[row][newCol] = rook;
-            visualizePiece(row, newCol, getButtonElemByCoords(row, newCol));
+            addPieceToBoard(row, newCol, rook);
     }
+}
+
+function addPieceToBoard(row, col, piece) {
+    chessBoard[row][col] = piece;
+    visualizePiece(row, col, getButtonElemByCoords(row, col));
+}
+
+function removePieceFromBoard(row, col) {
+    chessBoard[row][col] = null;
+    getButtonElemByCoords(row, col).innerHTML = '';    
 }
 
 function getButtonElemByCoords(row, col) {
