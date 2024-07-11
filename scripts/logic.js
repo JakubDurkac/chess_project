@@ -46,9 +46,8 @@ function getAllReachableCoords(originalCoords) {
     }
 }
 
-function reachableByRook(x, y, color) {
+function reachableByRook(x, y, colorCode) {
     const reachable = [];
-
     const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
     directions.forEach((direction) => {
         const [xDiff, yDiff] = direction;
@@ -59,7 +58,7 @@ function reachableByRook(x, y, color) {
                 reachable.push([row, col]);
             } else {
                 const targetPieceColor = getColorCode(row, col);
-                if (targetPieceColor !== color) {
+                if (targetPieceColor !== colorCode) {
                     reachable.push([row, col]);
                 }
     
@@ -72,7 +71,20 @@ function reachableByRook(x, y, color) {
 }
 
 function reachableByKnight(x, y, colorCode) {
-    return [[3, 3], [4, 3], [5, 3], [6, 3]];
+    const reachable = [];
+    const directions = [[1, 2], [1, -2], [-1, 2], [-1, -2], 
+                        [2, 1], [2, -1], [-2, 1], [-2, -1]];
+
+    directions.forEach((direction) => {
+        let row = x + direction[0];
+        let col = y + direction[1];
+        if (isInRange(row, col) 
+            && (isEmptySquare(row, col) || getColorCode(row, col) !== colorCode)) {
+            reachable.push([row, col]);
+        }
+    });
+
+    return reachable;
 };
 
 function reachableByBishop(x, y, colorCode) {

@@ -119,7 +119,7 @@ export function getPieceTypeCode(row, col) {
 }
 
 export function isEmptySquare(row, col) {
-    return chessBoard[row][col] === null;
+    return !isInRange(row, col) || chessBoard[row][col] === null;
 }
 
 export function isInRange(row, col) {
