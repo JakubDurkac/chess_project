@@ -1,5 +1,6 @@
 import { isLegalMove } from "./logic.js";
 
+export const boardSize = 8;
 let chessBoard = [
     ['br', 'bn', 'bb', 'bq', 'bk', 'bb', 'bn', 'br'],
     ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
@@ -51,8 +52,8 @@ function generateSquares() {
     let boardHTML = '';
     const chessBoardDivElem = document.querySelector('.js-chessboard');
 
-    for (let row = 0; row < 8; row++) {
-        for (let col = 0; col < 8; col++) {
+    for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
             boardHTML += generateSquare(row, col);
         }
     }
@@ -97,7 +98,7 @@ function handleDrop(event) {
     const targetRow = Number(targetSquare.id.charAt(0));
     const targetCol = Number(targetSquare.id.charAt(1));
 
-    if (isLegalMove(originalRow, originalCol, targetRow, targetCol)) {
+    if (isLegalMove([originalRow, originalCol], [targetRow, targetCol])) {
         const piece = chessBoard[originalRow][originalCol];
         chessBoard[originalRow][originalCol] = null;
         chessBoard[targetRow][targetCol] = piece;
@@ -107,4 +108,20 @@ function handleDrop(event) {
     } else {
         originalSquare.appendChild(draggedPiece);
     }
+}
+
+export function getColorCode(row, col) {
+    return isEmptySquare(row, col) ? null : chessBoard[row][col].charAt(0);
+}
+
+export function getPieceTypeCode(row, col) {
+    return isEmptySquare(row, col) ? null : chessBoard[row][col].charAt(1);
+}
+
+export function isEmptySquare(row, col) {
+    return chessBoard[row][col] === null;
+}
+
+export function isInRange(row, col) {
+    return row >= 0 && col >= 0 && row < boardSize && col < boardSize;
 }
