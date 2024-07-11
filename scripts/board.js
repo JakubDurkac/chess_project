@@ -129,12 +129,14 @@ function makeMove(fromCoords, toCoords) {
 
 function updateLastMove(fromCoords, toCoords, piece) {
     const isWhite = isWhitePiece(piece);
+    const pieceTaken = chessBoard[toCoords[0]][toCoords[1]];
     gameStats.lastMove = {
-        fromCoords, toCoords, piece, isWhite
+        fromCoords, toCoords, piece, isWhite, pieceTaken
     };
     
     if (wasEnpassant(fromCoords, toCoords, piece)) {
         gameStats.lastMove.toRemoveCoords = [toCoords[0] + (isWhite ? 1 : -1), toCoords[1]];
+        gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';
     } else {
         gameStats.lastMove.toRemoveCoords = null;
     }

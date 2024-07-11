@@ -4,6 +4,7 @@ export const gameStats = {
         toCoords: [null, null],
         piece: null,
         isWhite: null,
-        toRemoveCoords: null // piece taken with en passant 
+        pieceTaken: null,
+        toRemoveCoords: null, // piece taken with en passant 
     },
 };

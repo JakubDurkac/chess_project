@@ -29,4 +29,5 @@
 
 .chess-piece-image {
     width: 100%;
+    cursor: pointer;
 }
