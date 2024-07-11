@@ -112,8 +112,34 @@ function reachableByKnight(x, y, colorCode) {
 };
 
 function reachableByKing(x, y, colorCode) {
-    return reachableWithShortRange(x, y, colorCode, motionPatterns.king);
+    return reachableWithShortRange(x, y, colorCode, motionPatterns.king)
+        .concat(getCastlingMoves(x, y, colorCode));
 };
+
+function getCastlingMoves(x, y, colorCode) {
+    const color = colorCode === 'w' ? 'white' : 'black';
+    const reachable = [];
+
+    // checks for empty squares between king and rook
+    // for each side
+    const sides = ['canCastleKingside', 'canCastleQueenside'];
+    sides.forEach((side, i) => {
+        if (gameStats.castlingRights[color][side]) {
+            reachable.push([x, y - 4 * i + 2]);
+            let col = y - 2 * i + 1;
+            while (i === 0 ? col < boardSize - 1 : col > 0) {
+                if (!isEmptySquare(x, col)) {
+                    reachable.pop();
+                    break;
+                }
+
+                col += -2 * i + 1;   
+            }
+        }
+    });
+
+    return reachable;
+}
 
 function reachableByPawn(x, y, colorCode) {
     const reachable = [];

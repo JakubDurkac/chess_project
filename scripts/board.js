@@ -107,12 +107,14 @@ function handleDrop(event) {
         targetSquare.appendChild(draggedPiece);
 
         promotePieceIfAny();
+        castleRooksIfAny();
     } else {
         originalSquare.appendChild(draggedPiece);
     }
 
     console.log(chessBoard);
     console.log(gameStats.lastMove);
+    console.log(gameStats.castlingRights);
 }
 
 function makeMove(fromCoords, toCoords) {
@@ -123,6 +125,7 @@ function makeMove(fromCoords, toCoords) {
     chessBoard[fromRow][fromCol] = null;
 
     updateLastMove(fromCoords, toCoords, piece);
+    updateCastlingRights();
 
     chessBoard[toRow][toCol] = piece;
 }
@@ -139,6 +142,23 @@ function updateLastMove(fromCoords, toCoords, piece) {
         gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';
     } else {
         gameStats.lastMove.toRemoveCoords = null;
+    }
+}
+
+function updateCastlingRights() {
+    const {castlingRights} = gameStats;
+    const {piece} = gameStats.lastMove;
+    const color = isWhitePiece(piece) ? 'white' : 'black'; 
+
+    if (piece === `${color[0]}k`) {
+        castlingRights[color].canCastleKingside = false;
+        castlingRights[color].canCastleQueenside = false;
+    } else if (piece === `${color[0]}r`) {
+        if (gameStats.lastMove.fromCoords[1] === 0) {
+            castlingRights[color].canCastleQueenside = false;
+        } else {
+            castlingRights[color].canCastleKingside = false;
+        }
     }
 }
 
@@ -164,6 +184,24 @@ function promotePieceIfAny() {
             const pieceAfterPromotion = isWhitePiece(piece) ? 'wq' : 'bq';
             chessBoard[toCoords[0]][toCoords[1]] = pieceAfterPromotion;
             visualizePiece(toCoords[0], toCoords[1], getButtonElemByCoords(toCoords[0], toCoords[1]));
+    }
+}
+
+function castleRooksIfAny() {
+    const {fromCoords, toCoords, piece} = gameStats.lastMove;
+    if (piece === 'wk' || piece === 'bk'
+        && Math.abs(fromCoords[1] - toCoords[1]) === 2) {
+
+            const row = isWhitePiece(piece) ? boardSize - 1 : 0;
+            const col = toCoords[1] > fromCoords[1] ? boardSize - 1 : 0;
+
+            const rook = chessBoard[row][col];
+            chessBoard[row][col] = null;
+            getButtonElemByCoords(row, col).innerHTML = '';
+            
+            const newCol = col === 0 ? toCoords[1] + 1 : toCoords[1] - 1;
+            chessBoard[row][newCol] = rook;
+            visualizePiece(row, newCol, getButtonElemByCoords(row, newCol));
     }
 }
 

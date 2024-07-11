@@ -7,4 +7,14 @@ export const gameStats = {
         pieceTaken: null,
         toRemoveCoords: null, // piece taken with en passant 
     },
+    castlingRights: {
+        white: {
+            canCastleKingside: true,
+            canCastleQueenside: true
+        },
+        black: {
+            canCastleKingside: true,
+            canCastleQueenside: true
+        },
+    }
 };
