@@ -94,22 +94,17 @@ function handleDrop(event) {
     event.preventDefault();
     const targetSquare = event.currentTarget;
 
-    const originalRow = Number(originalSquare.id.charAt(0));
-    const originalCol = Number(originalSquare.id.charAt(1));
-    const targetRow = Number(targetSquare.id.charAt(0));
-    const targetCol = Number(targetSquare.id.charAt(1));
+    const fromCoords = getCoordsFromButton(originalSquare);
+    const toCoords = getCoordsFromButton(targetSquare);
 
-    if (isLegalMove([originalRow, originalCol], [targetRow, targetCol])) {
-        makeMove([originalRow, originalCol], [targetRow, targetCol]);
+    if (isLegalMove(fromCoords, toCoords)) {
+        makeMove(fromCoords, toCoords);
         removeExtraPiece(); // in case of en passant
-
-        targetSquare.innerHTML = '';
-        targetSquare.appendChild(draggedPiece);
-
         promotePieceIfAny();
         castleRooksIfAny();
     } else {
-        originalSquare.appendChild(draggedPiece);
+        const [row, col] = fromCoords;
+        addPieceToBoard(row, col, chessBoard[row][col]);
     }
 
     console.log(chessBoard);
@@ -122,12 +117,10 @@ function makeMove(fromCoords, toCoords) {
     const [toRow, toCol] = toCoords;
 
     const piece = chessBoard[fromRow][fromCol];
-    chessBoard[fromRow][fromCol] = null;
-
+    removePieceFromBoard(fromRow, fromCol);
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
-
-    chessBoard[toRow][toCol] = piece;
+    addPieceToBoard(toRow, toCol, piece);
 }
 
 function updateLastMove(fromCoords, toCoords, piece) {
@@ -214,12 +207,16 @@ function getButtonElemByCoords(row, col) {
     return document.getElementById(`${String(row)}${String(col)}`);
 }
 
-export function getColorCode(row, col) {
-    return isEmptySquare(row, col) ? null : chessBoard[row][col].charAt(0);
-}
-
 function isWhitePiece(piece) {
     return piece.charAt(0) === 'w';
+}
+
+function getCoordsFromButton(buttonElem) {
+    return [Number(buttonElem.id.charAt(0)), Number(buttonElem.id.charAt(1))];
+}
+
+export function getColorCode(row, col) {
+    return isEmptySquare(row, col) ? null : chessBoard[row][col].charAt(0);
 }
 
 export function getPieceTypeCode(row, col) {
