@@ -1,5 +1,5 @@
 import { isLegalMove } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
 
 export const boardSize = 8;
 export let chessBoard = [
@@ -116,7 +116,9 @@ function makeMove(fromCoords, toCoords) {
     removePieceFromBoard(fromRow, fromCol);
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
+    updateMaterialCount();
     gameStats.isWhiteTurn = !gameStats.isWhiteTurn;
+    gameStats.moveCount++;
 
     addPieceToBoard(toRow, toCol, piece);
 
@@ -181,6 +183,11 @@ export function wasEnpassant(fromCoords, toCoords, piece) {
 export function wasCastling(fromCoords, toCoords, piece) {
     return (piece === 'bk' || piece === 'wk') 
             && Math.abs(fromCoords[1] - toCoords[1]) === 2
+}
+
+export function wasPromotion(toRow, piece) {
+    return (piece === 'bp' || piece === 'wp')
+            && (toRow === 0 || toRow === boardSize - 1);
 }
 
 export function isWhitePiece(piece) {

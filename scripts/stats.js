@@ -1,4 +1,4 @@
-import { chessBoard, wasEnpassant, isWhitePiece } from "./board.js";
+import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece } from "./board.js";
 
 export const gameStats = {
     lastMove: {
@@ -23,8 +23,23 @@ export const gameStats = {
         white: [7, 4],
         black: [0, 4]
     },
-    isWhiteTurn: true
+    isWhiteTurn: true,
+    moveCount: 0,
+    materialCount: {
+        white: 39,
+        black: 39
+    }
 };
+
+const pieceValue = {
+    'r': 5,
+    'n': 3,
+    'b': 3,
+    'q': 9,
+    'p': 1
+};
+
+let autoPromotionPieceCode = 'q';
 
 export function updateLastMove(fromCoords, toCoords, piece) {
     const isWhite = isWhitePiece(piece);
@@ -60,5 +75,19 @@ export function updateCastlingRights() {
         } else {
             castlingRights[color].canCastleKingside = false;
         }
+    }
+}
+
+export function updateMaterialCount() {
+    const {toCoords, piece, isWhite, pieceTaken} = gameStats.lastMove;
+    const color = isWhite ? 'white' : 'black';
+    const opponentColor = isWhite ? 'black' : 'white';
+
+    if (pieceTaken) {
+        gameStats.materialCount[opponentColor] -= pieceValue[pieceTaken.charAt(1)];        
+    }
+
+    if (wasPromotion(toCoords[0], piece)) {
+        gameStats.materialCount[color] += pieceValue[autoPromotionPieceCode] - 1;
     }
 }
