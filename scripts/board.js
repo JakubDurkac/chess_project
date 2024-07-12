@@ -1,8 +1,8 @@
 import { isLegalMove } from "./logic.js";
-import { gameStats } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights } from "./stats.js";
 
 export const boardSize = 8;
-let chessBoard = [
+export let chessBoard = [
     ['br', 'bn', 'bb', 'bq', 'bk', 'bb', 'bn', 'br'],
     ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
     [null, null, null, null, null, null, null, null],
@@ -123,43 +123,43 @@ function makeMove(fromCoords, toCoords) {
     addPieceToBoard(toRow, toCol, piece);
 }
 
-function updateLastMove(fromCoords, toCoords, piece) {
-    const isWhite = isWhitePiece(piece);
-    const pieceTaken = chessBoard[toCoords[0]][toCoords[1]];
-    gameStats.lastMove = {
-        fromCoords, toCoords, piece, isWhite, pieceTaken
-    };
+// function updateLastMove(fromCoords, toCoords, piece) {
+//     const isWhite = isWhitePiece(piece);
+//     const pieceTaken = chessBoard[toCoords[0]][toCoords[1]];
+//     gameStats.lastMove = {
+//         fromCoords, toCoords, piece, isWhite, pieceTaken
+//     };
     
-    if (wasEnpassant(fromCoords, toCoords, piece)) {
-        gameStats.lastMove.toRemoveCoords = [toCoords[0] + (isWhite ? 1 : -1), toCoords[1]];
-        gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';
-    } else {
-        gameStats.lastMove.toRemoveCoords = null;
-    }
-}
+//     if (wasEnpassant(fromCoords, toCoords, piece)) {
+//         gameStats.lastMove.toRemoveCoords = [toCoords[0] + (isWhite ? 1 : -1), toCoords[1]];
+//         gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';
+//     } else {
+//         gameStats.lastMove.toRemoveCoords = null;
+//     }
+// }
 
-function updateCastlingRights() {
-    const {castlingRights} = gameStats;
-    const {piece} = gameStats.lastMove;
-    const color = isWhitePiece(piece) ? 'white' : 'black'; 
+// function updateCastlingRights() {
+//     const {castlingRights} = gameStats;
+//     const {piece} = gameStats.lastMove;
+//     const color = isWhitePiece(piece) ? 'white' : 'black'; 
 
-    if (piece === `${color[0]}k`) {
-        castlingRights[color].canCastleKingside = false;
-        castlingRights[color].canCastleQueenside = false;
-    } else if (piece === `${color[0]}r`) {
-        if (gameStats.lastMove.fromCoords[1] === 0) {
-            castlingRights[color].canCastleQueenside = false;
-        } else {
-            castlingRights[color].canCastleKingside = false;
-        }
-    }
-}
+//     if (piece === `${color[0]}k`) {
+//         castlingRights[color].canCastleKingside = false;
+//         castlingRights[color].canCastleQueenside = false;
+//     } else if (piece === `${color[0]}r`) {
+//         if (gameStats.lastMove.fromCoords[1] === 0) {
+//             castlingRights[color].canCastleQueenside = false;
+//         } else {
+//             castlingRights[color].canCastleKingside = false;
+//         }
+//     }
+// }
 
-function wasEnpassant(fromCoords, toCoords, piece) {
+export function wasEnpassant(fromCoords, toCoords, piece) {
     // if pawn diagonally takes an empty square
     return (piece === 'bp' || piece === 'wp')
             && fromCoords[1] !== toCoords[1] 
-            && !getPieceTypeCode(toCoords[0], toCoords[1]);
+            && isEmptySquare(toCoords[0], toCoords[1]);
 }
 
 function removeExtraPiece() {
@@ -207,7 +207,7 @@ function getButtonElemByCoords(row, col) {
     return document.getElementById(`${String(row)}${String(col)}`);
 }
 
-function isWhitePiece(piece) {
+export function isWhitePiece(piece) {
     return piece.charAt(0) === 'w';
 }
 
