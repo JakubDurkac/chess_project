@@ -18,6 +18,10 @@ export const gameStats = {
             canCastleKingside: true,
             canCastleQueenside: true
         },
+    },
+    kingCoords: {
+        white: [7, 4],
+        black: [0, 4]
     }
 };
 
@@ -28,6 +32,11 @@ export function updateLastMove(fromCoords, toCoords, piece) {
         fromCoords, toCoords, piece, isWhite, pieceTaken
     };
     
+    if (piece === 'wk' || piece === 'bk') {
+        const color = isWhite ? 'white' : 'black';
+        gameStats.kingCoords[color] = toCoords;
+    }
+
     if (wasEnpassant(fromCoords, toCoords, piece)) {
         gameStats.lastMove.toRemoveCoords = [toCoords[0] + (isWhite ? 1 : -1), toCoords[1]];
         gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';

@@ -1,22 +1,31 @@
-import { getColorCode, getPieceTypeCode, boardSize, isEmptySquare, isInRange } from "./board.js";
+import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling } from "./board.js";
 import { gameStats } from "./stats.js";
 
-export function isLegalMove(originalCoords, targetCoords) {
-    console.log(getAllReachableCoords(originalCoords));
-    if (!containsCoords(getAllReachableCoords(originalCoords), targetCoords)) {
+export function isLegalMove(fromCoords, toCoords) {
+    if (!containsCoords(getAllReachableCoords(fromCoords), toCoords)) {
         return false;
     }
+
+    let boardBackup = boardDeepCopy(chessBoard);
     
-    return true;
+    const hasMovedKing = simulateMove(fromCoords, toCoords);
+    const isWhite = isWhitePiece(chessBoard[toCoords[0]][toCoords[1]]);
+    const color = isWhite ? 'white' : 'black'; 
+    const kingCoords = hasMovedKing ? toCoords : gameStats.kingCoords[color];
+    const isKingUnderAttack = isAttackedSquare(kingCoords[0], kingCoords[1], color.charAt(0));
+
+    setBoard(boardBackup);
+    
+    return !isKingUnderAttack;
 }
 
-function areEqualCoords(coords1, coords2) {
-    return coords1[0] === coords2[0] && coords1[1] === coords2[1];
-}
-
-function containsCoords(allCords, targetCoords) {
-    for (let i = 0; i < allCords.length; i++) {
-        if (areEqualCoords(allCords[i], targetCoords)) {
+function isAttackedSquare(x, y, colorCode) {
+    const pieceCodes = 'rnbqkp';
+    for (let i = 0; i < pieceCodes.length; i++) {
+        if (reachableFunctions[pieceCodes[i]](x, y, colorCode).find((coords) => {
+            return getPieceTypeCode(coords[0], coords[1]) === pieceCodes[i];
+            })) {
+            
             return true;
         }
     }
@@ -24,26 +33,66 @@ function containsCoords(allCords, targetCoords) {
     return false;
 }
 
-function getAllReachableCoords(originalCoords) {
-    let [x, y] = originalCoords;
+function boardDeepCopy(chessBoard) {
+    let boardCopy = [];
+    chessBoard.forEach((row) => {
+        let rowCopy = [];
+        row.forEach((piece) => {
+            rowCopy.push(piece);
+        })
+
+        boardCopy.push(rowCopy);
+    });
+
+    return boardCopy;
+}
+
+const reachableFunctions = {
+    'r': reachableByRook,
+    'n': reachableByKnight,
+    'b': reachableByBishop,
+    'q': reachableByQueen,
+    'k': reachableByKing,
+    'p': reachableByPawn
+};
+
+function getAllReachableCoords(fromCoords) {
+    let [x, y] = fromCoords;
     const colorCode = getColorCode(x, y); // 'b' or 'w'
     const pieceTypeCode = getPieceTypeCode(x, y);
 
-    switch (pieceTypeCode) {
-        case 'r':
-            return reachableByRook(x, y, colorCode);
-        case 'n':
-            return reachableByKnight(x, y, colorCode);
-        case 'b':
-            return reachableByBishop(x, y, colorCode);
-        case 'q':
-            return reachableByQueen(x, y, colorCode);
-        case 'k':
-            return reachableByKing(x, y, colorCode);
-        case 'p':
-            return reachableByPawn(x, y, colorCode);
-        default:
-            return [];
+    return reachableFunctions[pieceTypeCode](x, y, colorCode);
+}
+
+function simulateMove(fromCoords, toCoords) {
+    const [fromRow, fromCol] = fromCoords;
+    const [toRow, toCol] = toCoords;
+
+    const movedPiece = chessBoard[fromRow][fromCol];
+
+    chessBoard[fromRow][fromCol] = null;
+    chessBoard[toRow][toCol] = movedPiece;
+
+    simulateCastlingIfAny(fromCoords, toCoords, movedPiece);
+    simulateEnPassantIfAny(fromCoords, toCoords, movedPiece);
+
+    return movedPiece === 'wk' || movedPiece === 'bk';
+}
+
+function simulateCastlingIfAny(fromCoords, toCoords, movedPiece) {
+    const [fromRow, fromCol] = fromCoords;
+    const [toRow, toCol] = toCoords;
+    if (wasCastling(fromCoords, toCoords, movedPiece)) {
+            const rookCol = toCol > fromCol ? boardSize - 1 : 0;
+            const rook = chessBoard[toRow][rookCol];
+            chessBoard[toRow][rookCol] = null;
+            chessBoard[toRow][toCol + (rookCol === 0 ? 1 : -1)] = rook;
+    }
+}
+
+function simulateEnPassantIfAny(fromCoords, toCoords, movedPiece) {
+    if (wasEnpassant(fromCoords, toCoords, movedPiece)) {
+        chessBoard[toCoords[0] + (isWhitePiece(movedPiece) ? 1 : -1)][toCoords[1]] = null;
     }
 }
 
@@ -176,7 +225,7 @@ function getEnPassant(row, col, isWhite) {
             return [row + (isWhite ? -1 : 1), toCoords[1]];
     }
 
-    return [];
+    return [-1, -1];
 }
 
 function isPawnOnStartSquare(row, isWhite) {
@@ -185,4 +234,18 @@ function isPawnOnStartSquare(row, isWhite) {
     }
 
     return row == 1;
+}
+
+function areEqualCoords(coords1, coords2) {
+    return coords1[0] === coords2[0] && coords1[1] === coords2[1];
+}
+
+function containsCoords(allCords, toCoords) {
+    for (let i = 0; i < allCords.length; i++) {
+        if (areEqualCoords(allCords[i], toCoords)) {
+            return true;
+        }
+    }
+
+    return false;
 }

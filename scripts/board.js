@@ -106,10 +106,6 @@ function handleDrop(event) {
         const [row, col] = fromCoords;
         addPieceToBoard(row, col, chessBoard[row][col]);
     }
-
-    console.log(chessBoard);
-    console.log(gameStats.lastMove);
-    console.log(gameStats.castlingRights);
 }
 
 function makeMove(fromCoords, toCoords) {
@@ -121,45 +117,8 @@ function makeMove(fromCoords, toCoords) {
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
     addPieceToBoard(toRow, toCol, piece);
-}
 
-// function updateLastMove(fromCoords, toCoords, piece) {
-//     const isWhite = isWhitePiece(piece);
-//     const pieceTaken = chessBoard[toCoords[0]][toCoords[1]];
-//     gameStats.lastMove = {
-//         fromCoords, toCoords, piece, isWhite, pieceTaken
-//     };
-    
-//     if (wasEnpassant(fromCoords, toCoords, piece)) {
-//         gameStats.lastMove.toRemoveCoords = [toCoords[0] + (isWhite ? 1 : -1), toCoords[1]];
-//         gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';
-//     } else {
-//         gameStats.lastMove.toRemoveCoords = null;
-//     }
-// }
-
-// function updateCastlingRights() {
-//     const {castlingRights} = gameStats;
-//     const {piece} = gameStats.lastMove;
-//     const color = isWhitePiece(piece) ? 'white' : 'black'; 
-
-//     if (piece === `${color[0]}k`) {
-//         castlingRights[color].canCastleKingside = false;
-//         castlingRights[color].canCastleQueenside = false;
-//     } else if (piece === `${color[0]}r`) {
-//         if (gameStats.lastMove.fromCoords[1] === 0) {
-//             castlingRights[color].canCastleQueenside = false;
-//         } else {
-//             castlingRights[color].canCastleKingside = false;
-//         }
-//     }
-// }
-
-export function wasEnpassant(fromCoords, toCoords, piece) {
-    // if pawn diagonally takes an empty square
-    return (piece === 'bp' || piece === 'wp')
-            && fromCoords[1] !== toCoords[1] 
-            && isEmptySquare(toCoords[0], toCoords[1]);
+    console.log(gameStats);
 }
 
 function removeExtraPiece() {
@@ -180,8 +139,7 @@ function promotePieceIfAny() {
 
 function castleRooksIfAny() {
     const {fromCoords, toCoords, piece} = gameStats.lastMove;
-    if (piece === 'wk' || piece === 'bk'
-        && Math.abs(fromCoords[1] - toCoords[1]) === 2) {
+    if (wasCastling(fromCoords, toCoords, piece)) {
             const row = isWhitePiece(piece) ? boardSize - 1 : 0;
             const col = toCoords[1] > fromCoords[1] ? boardSize - 1 : 0;
 
@@ -207,12 +165,24 @@ function getButtonElemByCoords(row, col) {
     return document.getElementById(`${String(row)}${String(col)}`);
 }
 
-export function isWhitePiece(piece) {
-    return piece.charAt(0) === 'w';
-}
-
 function getCoordsFromButton(buttonElem) {
     return [Number(buttonElem.id.charAt(0)), Number(buttonElem.id.charAt(1))];
+}
+
+export function wasEnpassant(fromCoords, toCoords, piece) {
+    // if pawn diagonally takes an empty square
+    return (piece === 'bp' || piece === 'wp')
+            && fromCoords[1] !== toCoords[1] 
+            && isEmptySquare(toCoords[0], toCoords[1]);
+}
+
+export function wasCastling(fromCoords, toCoords, piece) {
+    return (piece === 'bk' || piece === 'wk') 
+            && Math.abs(fromCoords[1] - toCoords[1]) === 2
+}
+
+export function isWhitePiece(piece) {
+    return piece.charAt(0) === 'w';
 }
 
 export function getColorCode(row, col) {
@@ -229,4 +199,8 @@ export function isEmptySquare(row, col) {
 
 export function isInRange(row, col) {
     return row >= 0 && col >= 0 && row < boardSize && col < boardSize;
+}
+
+export function setBoard(board) {
+    chessBoard = board;
 }
