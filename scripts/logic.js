@@ -20,7 +20,9 @@ export function isLegalMove(fromCoords, toCoords) {
 }
 
 function isAttackedSquare(x, y, colorCode) {
-    const pieceCodes = 'rnbqkp';
+    // true if piece of any type can capture a piece with <colorCode>
+    // on square with coords [<x>, <y>], else false
+    const pieceCodes = 'rnbq';
     for (let i = 0; i < pieceCodes.length; i++) {
         if (reachableFunctions[pieceCodes[i]](x, y, colorCode).find((coords) => {
             return getPieceTypeCode(coords[0], coords[1]) === pieceCodes[i];
@@ -30,7 +32,31 @@ function isAttackedSquare(x, y, colorCode) {
         }
     }
 
+    return isAttackedByKing(x, y, colorCode) || isAttackedByPawn(x, y, colorCode);
+}
+
+function isAttackedByKing(x, y, colorCode) {
+    const pattern = motionPatterns.king;
+    const isWhite = colorCode === 'w';
+    for (let i = 0; i < pattern.length; i++) {
+        const [xDiff, yDiff] = pattern[i];
+        if (isInRange(x + xDiff, y + yDiff)) {
+            const otherPiece = chessBoard[x + xDiff][y + yDiff];
+            if (otherPiece === (isWhite ? 'bk' : 'wk')) {
+                return true;
+            }
+        }
+    } 
+
     return false;
+}
+
+function isAttackedByPawn(x, y, colorCode) {
+    const isWhite = colorCode === 'w';
+    const attacker = isWhite ? 'bp' : 'wp';
+    const xDiff = isWhite ? -1 : 1;
+    
+    return chessBoard[x + xDiff][y + 1] === attacker || chessBoard[x + xDiff][y - 1] === attacker;
 }
 
 function boardDeepCopy(chessBoard) {
@@ -177,7 +203,8 @@ function getCastlingMoves(x, y, colorCode) {
             reachable.push([x, y - 4 * i + 2]);
             let col = y - 2 * i + 1;
             while (i === 0 ? col < boardSize - 1 : col > 0) {
-                if (!isEmptySquare(x, col)) {
+                if (!isEmptySquare(x, col) || 
+                    (col > 1 && isAttackedSquare(x, col, colorCode))) {
                     reachable.pop();
                     break;
                 }
