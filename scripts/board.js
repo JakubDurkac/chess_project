@@ -116,6 +116,8 @@ function makeMove(fromCoords, toCoords) {
     removePieceFromBoard(fromRow, fromCol);
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
+    gameStats.isWhiteTurn = !gameStats.isWhiteTurn;
+
     addPieceToBoard(toRow, toCol, piece);
 
     console.log(gameStats);

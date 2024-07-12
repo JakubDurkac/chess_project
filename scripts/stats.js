@@ -22,7 +22,8 @@ export const gameStats = {
     kingCoords: {
         white: [7, 4],
         black: [0, 4]
-    }
+    },
+    isWhiteTurn: true
 };
 
 export function updateLastMove(fromCoords, toCoords, piece) {

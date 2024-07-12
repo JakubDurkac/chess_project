@@ -2,14 +2,15 @@ import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, i
 import { gameStats } from "./stats.js";
 
 export function isLegalMove(fromCoords, toCoords) {
-    if (!containsCoords(getAllReachableCoords(fromCoords), toCoords)) {
+    const isWhite = isWhitePiece(chessBoard[fromCoords[0]][fromCoords[1]]);
+    if (isWhite !== gameStats.isWhiteTurn || 
+        !containsCoords(getAllReachableCoords(fromCoords), toCoords)) {
         return false;
     }
 
     let boardBackup = boardDeepCopy(chessBoard);
     
     const hasMovedKing = simulateMove(fromCoords, toCoords);
-    const isWhite = isWhitePiece(chessBoard[toCoords[0]][toCoords[1]]);
     const color = isWhite ? 'white' : 'black'; 
     const kingCoords = hasMovedKing ? toCoords : gameStats.kingCoords[color];
     const isKingUnderAttack = isAttackedSquare(kingCoords[0], kingCoords[1], color.charAt(0));
