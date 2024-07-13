@@ -115,7 +115,21 @@ function handleDrop(event) {
     } else {
         const [row, col] = fromCoords;
         addPieceToBoard(row, col, chessBoard[row][col]);
+        highlightSquare(originalSquare);
     }
+}
+
+function highlightSquare(buttonElem) {
+    buttonElem.classList.add('highlight-square');
+    setTimeout(() => {
+        buttonElem.classList.remove('highlight-square');
+    }, 75);
+    setTimeout(() => {
+        buttonElem.classList.add('highlight-square');
+    }, 150);
+    setTimeout(() => {
+        buttonElem.classList.remove('highlight-square');
+    }, 200);
 }
 
 function makeMove(fromCoords, toCoords) {

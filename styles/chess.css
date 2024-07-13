@@ -38,6 +38,11 @@ body {
     background-image: linear-gradient(to bottom right, #6538d7, #4a6991, #8f4242);
 }
 
+.highlight-square {
+    background-image: none;
+    background-color: #9b0000;
+}
+
 .chess-piece-image {
     width: 95%;
     cursor: pointer;
