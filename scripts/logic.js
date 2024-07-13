@@ -61,7 +61,8 @@ function isAttackedByPawn(x, y, colorCode) {
     const attacker = isWhite ? 'bp' : 'wp';
     const xDiff = isWhite ? -1 : 1;
     
-    return chessBoard[x + xDiff][y + 1] === attacker || chessBoard[x + xDiff][y - 1] === attacker;
+    return (isInRange(x + xDiff, y + 1) && chessBoard[x + xDiff][y + 1] === attacker)
+        || (isInRange(x + xDiff, y - 1) && chessBoard[x + xDiff][y - 1] === attacker);
 }
 
 function boardDeepCopy(chessBoard) {

@@ -65,7 +65,7 @@ function generateSquares() {
 
 function visualizePiece(row, col, buttonElem) {
     let piece = chessBoard[row][col];
-
+    buttonElem.innerHTML = '';
     if (piece) {
         buttonElem.innerHTML = generatePieceImage(piece);
 
