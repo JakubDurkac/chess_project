@@ -15,6 +15,7 @@ export let chessBoard = [
 
 let draggedPiece = null;
 let originalSquare = null;
+let dragoverSquare = null;
 
 export function initializeBoard() {
     generateSquares();
@@ -44,7 +45,7 @@ function generateSquare(row, col) {
 }
 
 function generatePieceImage(piece) {
-    return `<img src="images/pieces/${piece}.png" 
+    return `<img src="images/pieces/space/${piece}.png" 
                 draggable="true"
                 class="chess-piece-image">`;
 }
@@ -88,10 +89,19 @@ function handleDragEnd(event) {
 
 function handleDragOver(event) {
     event.preventDefault();
+    
+    if (dragoverSquare) {
+        dragoverSquare.classList.remove('dragover-square');
+    }
+
+    originalSquare.classList.remove('dragover-square');
+    dragoverSquare = event.target;
+    dragoverSquare.classList.add('dragover-square');
 }
 
 function handleDrop(event) {
     event.preventDefault();
+    dragoverSquare.classList.remove('dragover-square')
     const targetSquare = event.currentTarget;
 
     const fromCoords = getCoordsFromButton(originalSquare);
