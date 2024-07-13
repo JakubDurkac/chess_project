@@ -8,6 +8,10 @@ export function isLegalMove(fromCoords, toCoords) {
         return false;
     }
 
+    return canPlayCuzKingSafe(fromCoords, toCoords, isWhite);
+}
+
+export function canPlayCuzKingSafe(fromCoords, toCoords, isWhite) {
     let boardBackup = boardDeepCopy(chessBoard);
     
     const hasMovedKing = simulateMove(fromCoords, toCoords);
@@ -17,10 +21,10 @@ export function isLegalMove(fromCoords, toCoords) {
 
     setBoard(boardBackup);
     
-    return !isKingUnderAttack;
+    return !isKingUnderAttack;    
 }
 
-function isAttackedSquare(x, y, colorCode) {
+export function isAttackedSquare(x, y, colorCode) {
     // true if piece of any type can capture a piece with <colorCode>
     // on square with coords [<x>, <y>], else false
     const pieceCodes = 'rnbq';
@@ -83,7 +87,7 @@ const reachableFunctions = {
     'p': reachableByPawn
 };
 
-function getAllReachableCoords(fromCoords) {
+export function getAllReachableCoords(fromCoords) {
     let [x, y] = fromCoords;
     const colorCode = getColorCode(x, y); // 'b' or 'w'
     const pieceTypeCode = getPieceTypeCode(x, y);
@@ -239,7 +243,10 @@ function reachableByPawn(x, y, colorCode) {
     }
 
     if ((isWhite && x === boardSize - 5) || (!isWhite && x === 4)) {
-        reachable.push(getEnPassant(x, y, isWhite));
+        const enPassantMove = getEnPassant(x, y, isWhite);
+        if (enPassantMove) {
+            reachable.push(getEnPassant(x, y, isWhite));
+        }
     }
     
     return reachable;
@@ -253,7 +260,7 @@ function getEnPassant(row, col, isWhite) {
             return [row + (isWhite ? -1 : 1), toCoords[1]];
     }
 
-    return [-1, -1];
+    return null;
 }
 
 function isPawnOnStartSquare(row, isWhite) {

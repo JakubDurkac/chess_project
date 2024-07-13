@@ -1,4 +1,4 @@
-import { isLegalMove } from "./logic.js";
+import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
 
 export const boardSize = 8;
@@ -114,6 +114,7 @@ function makeMove(fromCoords, toCoords) {
 
     const piece = chessBoard[fromRow][fromCol];
     removePieceFromBoard(fromRow, fromCol);
+
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
     updateMaterialCount();
@@ -122,7 +123,38 @@ function makeMove(fromCoords, toCoords) {
 
     addPieceToBoard(toRow, toCol, piece);
 
+    if (!canOpponentMove()) {
+        const color = gameStats.isWhiteTurn ? 'white' : 'black';
+        const [kingRow, kingCol] = gameStats.kingCoords[color];
+        if (isAttackedSquare(kingRow, kingCol, color.charAt(0))) {
+            console.log('checkmate');
+        } else {
+            console.log('stalemate');
+        }
+    }
+
     console.log(gameStats);
+}
+
+function canOpponentMove() {
+    const colorCode = gameStats.isWhiteTurn ? 'w' : 'b';
+	for (let row = 0; row < boardSize; row++) {
+		for (let col = 0; col < boardSize; col++) {
+			if (getColorCode(row, col) === colorCode) {
+                const reachable = getAllReachableCoords([row, col]);
+                if (reachable.length > 0) { 
+                    if (reachable.find((toCoords) => {
+                        return canPlayCuzKingSafe([row, col], toCoords, colorCode === 'w');
+                    })) {
+                        
+                        return true; 
+                    }
+                }
+            }
+		}
+	}
+
+    return false;
 }
 
 function removeExtraPiece() {
