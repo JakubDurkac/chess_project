@@ -2,7 +2,8 @@ import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSaf
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
 
 export const boardSize = 8;
-export let chessBoard = [
+
+export const chessBoardInitial = [
     ['br', 'bn', 'bb', 'bq', 'bk', 'bb', 'bn', 'br'],
     ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
     [null, null, null, null, null, null, null, null],
@@ -12,6 +13,8 @@ export let chessBoard = [
     ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
     ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr']
 ];
+
+export let chessBoard = boardDeepCopy(chessBoardInitial);
 
 let draggedPiece = null;
 let originalSquare = null;
@@ -24,11 +27,19 @@ export function initializeBoard() {
             let row = Number(buttonElem.id.charAt(0));
             let col = Number(buttonElem.id.charAt(1));
 
-            visualizePiece(row, col, buttonElem);
-
             buttonElem.addEventListener('dragover', handleDragOver);
             buttonElem.addEventListener('drop', handleDrop);
         });
+}
+
+export function updateBoardPieces() {
+    document.querySelectorAll('.chessboard-square')
+    .forEach((buttonElem) => {
+        let row = Number(buttonElem.id.charAt(0));
+        let col = Number(buttonElem.id.charAt(1));
+
+        visualizePiece(row, col, buttonElem);
+    })
 }
 
 function getLightOrDarkSquareClass(row, col) {
@@ -268,4 +279,18 @@ export function isInRange(row, col) {
 
 export function setBoard(board) {
     chessBoard = board;
+}
+
+export function boardDeepCopy(board) {
+    let boardCopy = [];
+    board.forEach((row) => {
+        let rowCopy = [];
+        row.forEach((piece) => {
+            rowCopy.push(piece);
+        })
+
+        boardCopy.push(rowCopy);
+    });
+
+    return boardCopy;
 }

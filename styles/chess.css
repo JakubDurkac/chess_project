@@ -11,6 +11,8 @@ html, body {
 }
 
 .menu {
+    display: flex;
+    flex-direction: column;
     width: 400px;
     outline-style: solid;
     outline-color: aliceblue;
@@ -67,6 +69,10 @@ html, body {
 .menu-button:hover {
     cursor: pointer;
     background-image: linear-gradient(to bottom right, #3887d7, #4a6991, #8f4242);
+}
+
+.menu-button:active {
+    background-image: linear-gradient(to bottom right, #061ea8, #4a6991, #6f0b0b);
 }
 
 .light-square {

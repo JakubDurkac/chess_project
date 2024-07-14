@@ -1,6 +1,6 @@
 import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece } from "./board.js";
 
-export const gameStats = {
+const gameStatsInitial = {
     lastMove: {
         fromCoords: [null, null],
         toCoords: [null, null],
@@ -30,6 +30,12 @@ export const gameStats = {
         black: 39
     }
 };
+
+export let gameStats = JSON.parse(JSON.stringify(gameStatsInitial));
+
+export function resetGameStats() {
+    gameStats = JSON.parse(JSON.stringify(gameStatsInitial));
+}
 
 const pieceValue = {
     'r': 5,

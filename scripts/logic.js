@@ -1,4 +1,4 @@
-import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling } from "./board.js";
+import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy } from "./board.js";
 import { gameStats } from "./stats.js";
 
 export function isLegalMove(fromCoords, toCoords) {
@@ -63,20 +63,6 @@ function isAttackedByPawn(x, y, colorCode) {
     
     return (isInRange(x + xDiff, y + 1) && chessBoard[x + xDiff][y + 1] === attacker)
         || (isInRange(x + xDiff, y - 1) && chessBoard[x + xDiff][y - 1] === attacker);
-}
-
-function boardDeepCopy(chessBoard) {
-    let boardCopy = [];
-    chessBoard.forEach((row) => {
-        let rowCopy = [];
-        row.forEach((piece) => {
-            rowCopy.push(piece);
-        })
-
-        boardCopy.push(rowCopy);
-    });
-
-    return boardCopy;
 }
 
 const reachableFunctions = {
