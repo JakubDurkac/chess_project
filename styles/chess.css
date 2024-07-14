@@ -84,8 +84,19 @@ html, body {
 }
 
 .highlight-square {
-    background-image: none;
-    background-color: #9b0000;
+    background-image: linear-gradient(to bottom right, #e10000, #a60000, #5d0000);
+}
+
+.winner-square {
+    background-image: linear-gradient(to bottom right, #55ff06, #18a000, #055f00);
+}
+
+.loser-square {
+    background-image: linear-gradient(to bottom right, #e10000, #a60000, #5d0000);
+}
+
+.draw-square {
+    background-image: linear-gradient(to bottom right, #a9a9a9, #777777, #3c3c3c);
 }
 
 .chess-piece-image {

@@ -35,11 +35,19 @@ export function initializeBoard() {
 export function updateBoardPieces() {
     document.querySelectorAll('.chessboard-square')
     .forEach((buttonElem) => {
+        removeAllHighlighting(buttonElem);
+
         let row = Number(buttonElem.id.charAt(0));
         let col = Number(buttonElem.id.charAt(1));
 
         visualizePiece(row, col, buttonElem);
     })
+}
+
+function removeAllHighlighting(buttonElem) {
+    buttonElem.classList.remove('winner-square');
+    buttonElem.classList.remove('loser-square');
+    buttonElem.classList.remove('draw-square');
 }
 
 function getLightOrDarkSquareClass(row, col) {
@@ -159,12 +167,13 @@ function makeMove(fromCoords, toCoords) {
     addPieceToBoard(toRow, toCol, piece);
 
     if (!canOpponentMove()) {
-        const color = gameStats.isWhiteTurn ? 'white' : 'black';
-        const [kingRow, kingCol] = gameStats.kingCoords[color];
-        if (isAttackedSquare(kingRow, kingCol, color.charAt(0))) {
-            console.log('checkmate');
+        const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
+        const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';
+        const [kingRow, kingCol] = gameStats.kingCoords[cannotMoveColor];
+        if (isAttackedSquare(kingRow, kingCol, cannotMoveColor.charAt(0))) {
+            announceCheckmate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
         } else {
-            console.log('stalemate');
+            announceStalemate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
         }
     }
 
@@ -220,6 +229,20 @@ function castleRooksIfAny() {
             const newCol = col === 0 ? toCoords[1] + 1 : toCoords[1] - 1;
             addPieceToBoard(row, newCol, rook);
     }
+}
+
+function announceCheckmate(winnerKingCoords, loserKingCoords) {
+    getButtonElemByCoords(winnerKingCoords[0], winnerKingCoords[1])
+        .classList.add('winner-square');
+    getButtonElemByCoords(loserKingCoords[0], loserKingCoords[1])
+        .classList.add('loser-square');
+}
+
+function announceStalemate(kingCoordsFirst, kingCoordsSecond) {
+    getButtonElemByCoords(kingCoordsFirst[0], kingCoordsFirst[1])
+        .classList.add('draw-square');
+    getButtonElemByCoords(kingCoordsSecond[0], kingCoordsSecond[1])
+        .classList.add('draw-square');
 }
 
 function addPieceToBoard(row, col, piece) {
