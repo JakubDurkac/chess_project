@@ -48,6 +48,7 @@ function removeAllHighlighting(buttonElem) {
     buttonElem.classList.remove('winner-square');
     buttonElem.classList.remove('loser-square');
     buttonElem.classList.remove('draw-square');
+    buttonElem.classList.remove('last-move-highlight');
 }
 
 function getLightOrDarkSquareClass(row, col) {
@@ -151,6 +152,21 @@ function highlightSquare(buttonElem) {
     }, 200);
 }
 
+function highlightLastMove(newFromCoords, newToCoords) {
+    if (gameStats.moveCount > 0) {
+        const {fromCoords, toCoords} = gameStats.lastMove;
+        getButtonElemByCoords(fromCoords[0], fromCoords[1])
+            .classList.remove('last-move-highlight');
+        getButtonElemByCoords(toCoords[0], toCoords[1])
+            .classList.remove('last-move-highlight');
+    }
+
+    getButtonElemByCoords(newFromCoords[0], newFromCoords[1])
+        .classList.add('last-move-highlight');
+    getButtonElemByCoords(newToCoords[0], newToCoords[1])
+        .classList.add('last-move-highlight');
+}
+
 function makeMove(fromCoords, toCoords) {
     const [fromRow, fromCol] = fromCoords;
     const [toRow, toCol] = toCoords;
@@ -158,6 +174,7 @@ function makeMove(fromCoords, toCoords) {
     const piece = chessBoard[fromRow][fromCol];
     removePieceFromBoard(fromRow, fromCol);
 
+    highlightLastMove(fromCoords, toCoords);
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
     updateMaterialCount();
@@ -165,7 +182,6 @@ function makeMove(fromCoords, toCoords) {
     gameStats.moveCount++;
 
     addPieceToBoard(toRow, toCol, piece);
-
     if (!canOpponentMove()) {
         const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
         const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';

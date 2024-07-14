@@ -99,6 +99,11 @@ html, body {
     background-image: linear-gradient(to bottom right, #a9a9a9, #777777, #3c3c3c);
 }
 
+.last-move-highlight {
+    background-image: linear-gradient(to bottom right, #4be4ff, #21b7f7, #0377a9);
+    
+}
+
 .chess-piece-image {
     width: 95%;
     cursor: pointer;
