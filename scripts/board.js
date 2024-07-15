@@ -1,5 +1,6 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
+import { generateLastMoveNotation } from "./notation.js";
 
 export const boardSize = 8;
 
@@ -16,6 +17,7 @@ export const chessBoardInitial = [
 
 export let chessBoard = boardDeepCopy(chessBoardInitial);
 
+export const notationElem = document.querySelector('.js-chess-notation-container');
 let draggedPiece = null;
 let originalSquare = null;
 let dragoverSquare = null;
@@ -81,6 +83,18 @@ function generateSquares() {
     }
 
     chessBoardDivElem.innerHTML = boardHTML;
+}
+
+function updateNotation() {
+    const cssTextClass = `class="chess-notation-text"`;
+    const cssIndexClass = `class="chess-notation-index"`;
+    const {moveCount} = gameStats;
+    const lineBreak = moveCount % 2 === 0 ? '<br>' : '';
+    if (moveCount % 2 === 1) {
+        notationElem.innerHTML += `<p ${cssIndexClass}>${String((moveCount + 1) / 2)}.</p>`;
+    }
+
+    notationElem.innerHTML += `<p ${cssTextClass}>${generateLastMoveNotation()}</p>${lineBreak}`;
 }
 
 function visualizePiece(row, col, buttonElem) {
@@ -178,10 +192,11 @@ function makeMove(fromCoords, toCoords) {
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
     updateMaterialCount();
+    addPieceToBoard(toRow, toCol, piece);
     gameStats.isWhiteTurn = !gameStats.isWhiteTurn;
     gameStats.moveCount++;
+    updateNotation();
 
-    addPieceToBoard(toRow, toCol, piece);
     if (!canOpponentMove()) {
         const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
         const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';
@@ -192,8 +207,6 @@ function makeMove(fromCoords, toCoords) {
             announceStalemate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
         }
     }
-
-    console.log(gameStats);
 }
 
 function canOpponentMove() {
@@ -306,6 +319,10 @@ export function getColorCode(row, col) {
 
 export function getPieceTypeCode(row, col) {
     return isEmptySquare(row, col) ? null : chessBoard[row][col].charAt(1);
+}
+
+export function typeCodePiece(piece) {
+    return piece.charAt(1);
 }
 
 export function isEmptySquare(row, col) {

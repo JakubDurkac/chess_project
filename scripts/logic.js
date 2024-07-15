@@ -65,7 +65,7 @@ function isAttackedByPawn(x, y, colorCode) {
         || (isInRange(x + xDiff, y - 1) && chessBoard[x + xDiff][y - 1] === attacker);
 }
 
-const reachableFunctions = {
+export const reachableFunctions = {
     'r': reachableByRook,
     'n': reachableByKnight,
     'b': reachableByBishop,

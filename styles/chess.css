@@ -30,9 +30,17 @@ html, body {
     font-weight: 550;
     border-style: solid;
     border-color: aliceblue;
-    margin: 10px 10px 10px 10px;
+    margin: 15px 15px 0px 15px;
     background-image: linear-gradient(to bottom right, #0686ff, #1d4b86, #303a7a);
     border-radius: 10px;
+}
+
+.chess-notation-container {
+    padding: 15px 15px 15px 15px;
+    height: 400px;
+    background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
+    overflow-y: auto;
+    scrollbar-color: #61b0fb #131c57;
 }
 
 .chessboard-container {
@@ -84,7 +92,7 @@ html, body {
 }
 
 .highlight-square {
-    background-image: linear-gradient(to bottom right, #e10000, #a60000, #5d0000);
+    background-image: linear-gradient(to bottom right, #5d0000 , #a60000, #e10000) !important;
 }
 
 .winner-square {
@@ -107,4 +115,33 @@ html, body {
 .chess-piece-image {
     width: 95%;
     cursor: pointer;
+}
+
+.chess-notation-text, .chess-notation-index {
+    color: aliceblue;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+
+    margin: 0px 5px 10px 5px;
+    display: inline-block;
+
+    background-color: #131c57;
+    background-image: linear-gradient(to bottom right, #17299c, #0d125a);
+    padding: 4px 4px 4px 4px;
+    border-radius: 5px;
+}
+
+.chess-notation-index {
+    background-image: linear-gradient(to bottom right, #01168f, #600202);
+    border-radius: 20px;
+    padding: 4px 7px 4px 7px;
+}
+
+.notation-container-border {
+    margin: 15px 15px 15px 15px;
+    overflow: hidden;
+    border: aliceblue;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
 }

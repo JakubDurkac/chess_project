@@ -1,4 +1,4 @@
-import { initializeBoard, updateBoardPieces, chessBoardInitial, boardDeepCopy, setBoard } from "./board.js";
+import { initializeBoard, updateBoardPieces, chessBoardInitial, boardDeepCopy, setBoard, notationElem } from "./board.js";
 import { resetGameStats } from "./stats.js";
 
 initializeBoard();
@@ -9,6 +9,7 @@ playButtonElem.addEventListener('click', handlePlayButtonClick);
 function handlePlayButtonClick() {
     setBoard(boardDeepCopy(chessBoardInitial));
     resetGameStats();
+    notationElem.innerHTML = '';
 
     updateBoardPieces();
     
