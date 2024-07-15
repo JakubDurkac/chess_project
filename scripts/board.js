@@ -94,7 +94,8 @@ function updateNotation() {
         notationElem.innerHTML += `<p ${cssIndexClass}>${String((moveCount + 1) / 2)}.</p>`;
     }
 
-    notationElem.innerHTML += `<p ${cssTextClass}>${generateLastMoveNotation()}</p>${lineBreak}`;
+    notationElem.innerHTML += `<p id="move-${String(moveCount)}" 
+        ${cssTextClass}>${generateLastMoveNotation()}</p>${lineBreak}`;
 }
 
 function visualizePiece(row, col, buttonElem) {

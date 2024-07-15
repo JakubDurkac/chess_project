@@ -39,10 +39,16 @@ html, body {
 
 .chess-notation-container {
     padding: 15px 15px 15px 15px;
-    height: 400px;
+    height: 250px;
     background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
     overflow-y: auto;
     scrollbar-color: #61b0fb #131c57;
+}
+
+@media (max-height: 500px) {
+    .chess-notation-container {
+        height: 100px;
+    }
 }
 
 .chessboard-container {
