@@ -2,17 +2,19 @@ html, body {
     background-image: linear-gradient(to bottom right, #3887d7, #4a6991, #8f4242);
     margin: 0;
     height: 100%;
-    padding: 10px 10px 10px 10px;
+    padding: 7px 10px 10px 7px;
 }
 
 .app-container {
     display: flex;
     width: 100%;
+    height: 100%;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
+    height: calc(90vmin + 24px);
     width: 400px;
     outline-style: solid;
     outline-color: aliceblue;
@@ -45,19 +47,24 @@ html, body {
 
 .chessboard-container {
     margin: 10px 10px 10px 10px;
-    padding: 7px 7px 7px 7px;
+    padding: 12px 12px 12px 12px;
     outline-style: solid;
     outline-color: aliceblue;
     outline-width: 2px;
     background-image: linear-gradient(to bottom right, #212427, #1d4b86, #131c57);
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    width: 90vmin;
+    height: 90vmin;
+    aspect-ratio: 1;
 }
 
 .chessboard {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    width: 90vmin;
-    height: 90vmin;
+    width: 100%;
+    height: 100%;
 }
 
 .chessboard-square {
