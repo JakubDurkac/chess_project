@@ -1,17 +1,24 @@
-import { initializeBoard, updateBoardPieces, chessBoardInitial, boardDeepCopy, setBoard, notationElem } from "./board.js";
+import { initializeBoard, updateBoardPieces, notationElem, resetBoard } from "./board.js";
+import { findMatch } from "./client.js";
 import { resetGameStats } from "./stats.js";
 
 initializeBoard();
 
 const playButtonElem = document.querySelector('.js-play-button');
+const findMatchButtonElem = document.querySelector('.js-find-match-button');
 playButtonElem.addEventListener('click', handlePlayButtonClick);
+findMatchButtonElem.addEventListener('click', findMatch);
 
 function handlePlayButtonClick() {
-    setBoard(boardDeepCopy(chessBoardInitial));
+    resetGameCompletely();
+    
+    playButtonElem.innerText = 'Restart Game';
+}
+
+export function resetGameCompletely() {
+    resetBoard();
     resetGameStats();
     notationElem.innerHTML = '';
 
     updateBoardPieces();
-    
-    playButtonElem.innerText = 'Restart Game';
 }

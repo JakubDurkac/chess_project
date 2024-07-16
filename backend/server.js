@@ -12,53 +12,55 @@ let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 
 wss.on('connection', (ws) => {
     console.log(`A new client connected`);
+    const socket = ws;
+    ws.on('message', (message) => {     
+        const strMessage = message.toString();
+        const objMessage = JSON.parse(strMessage);
+        console.log(strMessage);
+    
+        if (objMessage.name !== undefined) {
+            const name = objMessage.name;
+            if (playersSockets[name] !== undefined) {
+                ws.send(JSON.stringify({notification: 'duplicate'}));
+                return;
+            }
+    
+            for (const opponentName in playersSockets) {
+                if (matches[opponentName] === undefined) {
+                    matches[opponentName] = name;
+                    matches[name] = opponentName;
+    
+                    
+                    const randomNumber = Math.random();
+                    const color = randomNumber < 1 / 2 ? 'white' : 'black';
+                    ws.send(JSON.stringify({matchAttributes: {
+                        'opponentName': opponentName,
+                        'yourColor': color
+                    }}));
+                    playersSockets[opponentName].send(JSON.stringify({matchAttributes: {
+                        'opponentName': name,
+                        'yourColor': color === 'white' ? 'black' : 'white'
+                    }}));
+                    
+                    break;
+                }
+            }
+    
+            playersSockets[name] = ws;
+    
+        } else if (objMessage.move !== undefined) {
+            console.log(objMessage.move.by);
+            console.log(matches[objMessage.move.by]);
+            console.log(playersSockets[matches[objMessage.move.by]]);
+            playersSockets[matches[objMessage.move.by]].send(strMessage);
+        } });
 
-    ws.on('message', (message, ws) => { handleMessageFromClient(message, ws) });
     ws.on('close', (clientName) => { handleClientDisconnect(clientName) });
 });
 
-function handleMessageFromClient(message, clientSocket) {
-    const strMessage = message.toString();
-    const objMessage = JSON.parse(strMessage);
-
-    if (objMessage.name !== undefined) {
-        const name = objMessage.name;
-        if (playersSockets[name] !== undefined) {
-            clientSocket.send(JSON.stringify({notification: 'duplicate'}));
-            return;
-        }
-
-        for (const opponentName in playersSockets) {
-            if (matches[opponentName] === undefined) {
-                matches[opponentName] = name;
-                matches[name] = opponentName;
-
-                
-                const randomNumber = Math.random();
-                const color = randomNumber < 1 / 2 ? 'white' : 'black';
-                clientSocket.send({matchAttributes: {
-                    'opponentName': opponentName,
-                    'yourColor': color
-                }});
-                playersSockets[opponentName].send({matchAttributes: {
-                    'opponentName': name,
-                    'yourColor': color === 'white' ? 'black' : 'white'
-                }});
-                
-                break;
-            }
-        }
-
-        playersSockets[name] = clientSocket;
-
-    } else { // Messages that contain {move: {fromCoords: [x, y], toCoords: [x, y]}}
-        
-    }
-}
-
 function handleClientDisconnect() {
     console.log(`Client ${clientName} disconnected.`);
-    removePlayer(clientName);
+    //removePlayer(clientName);
     // We need to notify his match opponent and terminate that game.
 }
 

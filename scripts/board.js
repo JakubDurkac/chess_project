@@ -1,6 +1,7 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
+import { sendMove } from "./client.js";
 
 export const boardSize = 8;
 
@@ -21,6 +22,21 @@ export const notationElem = document.querySelector('.js-chess-notation-container
 let draggedPiece = null;
 let originalSquare = null;
 let dragoverSquare = null;
+
+// online attributes
+let opponentName = null;
+let yourColor = null;
+let yourName = null;
+export function setOnlineAttributes(onlineOpponentName, onlineYourColor, onlineYourName) {
+    opponentName = onlineOpponentName;
+    yourColor = onlineYourColor;
+    yourName = onlineYourName;
+}
+
+export function resetOnlineAttributes() {
+    opponentName = null;
+    yourColor = null;
+}
 
 export function initializeBoard() {
     generateSquares();
@@ -44,6 +60,10 @@ export function updateBoardPieces() {
 
         visualizePiece(row, col, buttonElem);
     })
+}
+
+export function resetBoard() {
+    setBoard(boardDeepCopy(chessBoardInitial));
 }
 
 function removeAllHighlighting(buttonElem) {
@@ -144,16 +164,20 @@ function handleDrop(event) {
     const fromCoords = getCoordsFromButton(originalSquare);
     const toCoords = getCoordsFromButton(targetSquare);
 
-    if (isLegalMove(fromCoords, toCoords)) {
-        makeMove(fromCoords, toCoords);
-        removeExtraPiece(); // in case of en passant
-        promotePieceIfAny();
-        castleRooksIfAny();
+    if (isLegalMove(fromCoords, toCoords, yourColor)) {
+        makeMoveWithExtra(fromCoords, toCoords);
     } else {
         const [row, col] = fromCoords;
         addPieceToBoard(row, col, chessBoard[row][col]);
         highlightSquare(originalSquare);
     }
+}
+
+export function makeMoveWithExtra(fromCoords, toCoords) {
+    makeMove(fromCoords, toCoords);
+    removeExtraPiece(); // in case of en passant
+    promotePieceIfAny();
+    castleRooksIfAny();
 }
 
 function highlightSquare(buttonElem) {
@@ -188,9 +212,13 @@ function makeMove(fromCoords, toCoords) {
     const [fromRow, fromCol] = fromCoords;
     const [toRow, toCol] = toCoords;
 
+    if (yourColor !== null && 
+        (yourColor === 'white') === gameStats.isWhiteTurn) {
+        sendMove(fromCoords, toCoords, yourName);
+    }
+
     const piece = chessBoard[fromRow][fromCol];
     removePieceFromBoard(fromRow, fromCol);
-
     highlightLastMove(fromCoords, toCoords);
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights();
