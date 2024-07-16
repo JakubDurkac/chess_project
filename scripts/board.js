@@ -96,6 +96,8 @@ function updateNotation() {
 
     notationElem.innerHTML += `<p id="move-${String(moveCount)}" 
         ${cssTextClass}>${generateLastMoveNotation()}</p>${lineBreak}`;
+    
+    notationElem.scrollTop = notationElem.scrollHeight;
 }
 
 function visualizePiece(row, col, buttonElem) {
