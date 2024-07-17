@@ -14,11 +14,12 @@ html, body {
 .menu {
     display: flex;
     flex-direction: column;
-    height: calc(90vmin + 24px);
+    height: 90vmin;
     width: 300px;
     outline-style: solid;
     outline-color: aliceblue;
     outline-width: 2px;
+    padding: 12px 12px 12px 12px;
     margin: 10px 10px 10px 10px;
     background-image: linear-gradient(to bottom right, #212427, #1d4b86, #131c57);
     border-radius: 10px;
@@ -32,17 +33,26 @@ html, body {
     font-weight: 550;
     border-style: solid;
     border-color: aliceblue;
-    margin: 15px 15px 0px 15px;
+    margin: 7px 7px 7px 7px;
     background-image: linear-gradient(to bottom right, #0686ff, #1d4b86, #303a7a);
     border-radius: 10px;
 }
 
 .chess-notation-container {
-    padding: 15px 15px 15px 15px;
-    height: 250px;
-    background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
+    height: 100%;
     overflow-y: auto;
     scrollbar-color: #61b0fb #131c57;
+}
+
+.online-match-container {
+    padding: 15px 15px 15px 15px;
+    background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
+    margin: 7px 7px 7px 7px;
+    border: aliceblue;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    flex: 1;
 }
 
 @media (max-height: 500px) {
@@ -151,10 +161,13 @@ html, body {
 }
 
 .notation-container-border {
-    margin: 15px 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
+    margin: 7px 7px 7px 7px;
     overflow: hidden;
     border: aliceblue;
     border-width: 2px;
     border-style: solid;
     border-radius: 10px;
+    flex: 1;
+    background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
 }

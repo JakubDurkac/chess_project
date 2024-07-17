@@ -38,6 +38,7 @@ export function setOnlineAttributes(opponentName, yourColor, yourName) {
 
 export function goOffline() {
     isOnlineMatch = false;
+    document.querySelector('.js-play-button').innerText = 'Restart Game';
 }
 
 export function resetOnlineAttributes() {
