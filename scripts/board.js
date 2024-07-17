@@ -27,13 +27,17 @@ let dragoverSquare = null;
 let onlineOpponentName = null;
 export let onlineYourColor = null;
 let onlineYourName = null;
-let isOnlineMatch = false;
+export let isOnlineMatch = false;
 
 export function setOnlineAttributes(opponentName, yourColor, yourName) {
     onlineOpponentName = opponentName;
     onlineYourColor = yourColor;
     onlineYourName = yourName;
     isOnlineMatch = true;
+}
+
+export function goOffline() {
+    isOnlineMatch = false;
 }
 
 export function resetOnlineAttributes() {

@@ -1,9 +1,14 @@
-import { setOnlineAttributes, makeMoveWithExtra } from "./board.js";
-import { resetGameCompletely } from "./chess.js";
+import { setOnlineAttributes, makeMoveWithExtra, goOffline } from "./board.js";
+import { resetGameLocally } from "./chess.js";
 
 let socket = null;
 let yourName = null;
+let isConnected = false;
 export function findMatch() {
+    if (isConnected) {
+        return;
+    }
+
     const inputName = document.querySelector('.js-name-input').value;
     if (inputName === '') {
         console.log('empty name');
@@ -14,6 +19,28 @@ export function findMatch() {
     socket = new WebSocket('ws://localhost:3000');
     socket.addEventListener('open', sendInitialMessage);
     socket.addEventListener('message', handleIncomingMessage);
+
+    isConnected = true;
+}
+
+export function disconnectFromServer() {
+    if (socket !== null) {
+        goOffline();
+        socket.close();
+        socket = null;
+        isConnected = false;
+    }
+}
+
+export function resignOnlineGame() {
+    const objMessage = {
+        notification: {
+            message: 'resign',
+            by: yourName
+        }
+    };
+
+    socket.send(JSON.stringify(objMessage));
 }
 
 function sendInitialMessage() {
@@ -36,8 +63,9 @@ function handleIncomingMessage(event) {
     // wrong name
     if (objMessage.matchAttributes !== undefined) { // opponent found
         const {opponentName, yourColor} = objMessage.matchAttributes;
-        resetGameCompletely();
+        
         setOnlineAttributes(opponentName, yourColor, yourName);
+        resetGameLocally();
         // display attributes visually
     
     } else if (objMessage.move !== undefined) { // opponent's move played
@@ -48,11 +76,15 @@ function handleIncomingMessage(event) {
         const {notification} = objMessage;
         if (notification === 'opponent disconnected') {
             // show message to the user
-            socket.close();
+            disconnectFromServer();
 
         } else if (notification === 'duplicate') {
-            // show message to the user
-            socket.close();
+            // show message to the user 
+            disconnectFromServer();
+            
+
+        } else if (notification === 'resign') {
+            resetGameLocally();
         }
     }
 }
