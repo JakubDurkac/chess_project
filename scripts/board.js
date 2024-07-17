@@ -23,6 +23,8 @@ let draggedPiece = null;
 let originalSquare = null;
 let dragoverSquare = null;
 
+let isFlippedBoard = false;
+
 // online attributes
 let onlineOpponentName = null;
 export let onlineYourColor = null;
@@ -50,9 +52,6 @@ export function initializeBoard() {
     generateSquares();
     document.querySelectorAll('.chessboard-square')
         .forEach((buttonElem) => {
-            let row = Number(buttonElem.id.charAt(0));
-            let col = Number(buttonElem.id.charAt(1));
-
             buttonElem.addEventListener('dragover', handleDragOver);
             buttonElem.addEventListener('drop', handleDrop);
         });
@@ -90,8 +89,24 @@ function getLightOrDarkSquareClass(row, col) {
 }
 
 function generateSquare(row, col) {
+    if (isFlippedBoard) {
+        const [flippedRow, flippedCol] = getFlippedCoords(row, col);
+        row = flippedRow;
+        col = flippedCol;
+    }
+
     return `<button class="chessboard-square ${getLightOrDarkSquareClass(row, col)}"
                 id="${String(row) + String(col)}"></button>`;
+}
+
+function getFlippedCoords(row, col) {
+    return [boardSize - row - 1, boardSize - col - 1];
+}
+
+export function flipBoard() {
+    isFlippedBoard = !isFlippedBoard;
+    initializeBoard();
+    updateBoardPieces();
 }
 
 function generatePieceImage(piece) {
