@@ -1,8 +1,8 @@
-import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy } from "./board.js";
+import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy, onlineYourColor } from "./board.js";
 import { gameStats } from "./stats.js";
 
-export function isLegalMove(fromCoords, toCoords, onlineYourColor) {
-    if (onlineYourColor !== null 
+export function isLegalMove(fromCoords, toCoords, isOnlineMatch) {
+    if (isOnlineMatch 
         && onlineYourColor === 'white' !== gameStats.isWhiteTurn ) {
             return false;
     }

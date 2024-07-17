@@ -12,7 +12,6 @@ let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 
 wss.on('connection', (ws) => {
     console.log(`A new client connected`);
-    const socket = ws;
     ws.on('message', (message) => {     
         const strMessage = message.toString();
         const objMessage = JSON.parse(strMessage);
@@ -55,31 +54,28 @@ wss.on('connection', (ws) => {
             playersSockets[matches[objMessage.move.by]].send(strMessage);
         } });
 
-    ws.on('close', (clientName) => { handleClientDisconnect(clientName) });
-});
+    ws.on('close', () => {
+        let disconnectedName = '';
+        for (const name in playersSockets) {
+            if (playersSockets[name] === ws) {
+                disconnectedName = name;
+                delete playersSockets.name;
 
-function handleClientDisconnect() {
-    console.log(`Client ${clientName} disconnected.`);
-    //removePlayer(clientName);
-    // We need to notify his match opponent and terminate that game.
-}
+                const opponent = matches[name];
+                if (opponent !== undefined) {
+                    playersSockets[opponent].send(
+                        JSON.stringify({notification: 'opponent disconnected'}));
+                }
 
-function findPlayerIndex(playerName) {
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].name === playerName) {
-            return i;
+                delete matches[name];
+
+                break;
+            }
         }
-    }
 
-    return -1;
-}
-
-function removePlayer(playerName) {
-    const toRemoveIndex = findPlayerIndex(playerName);
-    if (toRemoveIndex !== -1) {
-        players.splice(toRemoveIndex, 1);
-    }
-}
+        console.log(`Client <${disconnectedName}> disconnected.`);
+    });
+});
 
 const PORT = process.env.PORT || PORT_NUMBER;
 server.listen(PORT, () => {

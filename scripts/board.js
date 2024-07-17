@@ -24,18 +24,21 @@ let originalSquare = null;
 let dragoverSquare = null;
 
 // online attributes
-let opponentName = null;
-let yourColor = null;
-let yourName = null;
-export function setOnlineAttributes(onlineOpponentName, onlineYourColor, onlineYourName) {
-    opponentName = onlineOpponentName;
-    yourColor = onlineYourColor;
-    yourName = onlineYourName;
+let onlineOpponentName = null;
+export let onlineYourColor = null;
+let onlineYourName = null;
+let isOnlineMatch = false;
+
+export function setOnlineAttributes(opponentName, yourColor, yourName) {
+    onlineOpponentName = opponentName;
+    onlineYourColor = yourColor;
+    onlineYourName = yourName;
+    isOnlineMatch = true;
 }
 
 export function resetOnlineAttributes() {
-    opponentName = null;
-    yourColor = null;
+    onlineOpponentName = null;
+    onlineYourColor = null;
 }
 
 export function initializeBoard() {
@@ -164,7 +167,7 @@ function handleDrop(event) {
     const fromCoords = getCoordsFromButton(originalSquare);
     const toCoords = getCoordsFromButton(targetSquare);
 
-    if (isLegalMove(fromCoords, toCoords, yourColor)) {
+    if (isLegalMove(fromCoords, toCoords, isOnlineMatch)) {
         makeMoveWithExtra(fromCoords, toCoords);
     } else {
         const [row, col] = fromCoords;
@@ -212,9 +215,9 @@ function makeMove(fromCoords, toCoords) {
     const [fromRow, fromCol] = fromCoords;
     const [toRow, toCol] = toCoords;
 
-    if (yourColor !== null && 
-        (yourColor === 'white') === gameStats.isWhiteTurn) {
-        sendMove(fromCoords, toCoords, yourName);
+    if (isOnlineMatch && 
+        (onlineYourColor === 'white') === gameStats.isWhiteTurn) {
+        sendMove(fromCoords, toCoords, onlineYourName);
     }
 
     const piece = chessBoard[fromRow][fromCol];

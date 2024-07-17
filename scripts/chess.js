@@ -6,14 +6,8 @@ initializeBoard();
 
 const playButtonElem = document.querySelector('.js-play-button');
 const findMatchButtonElem = document.querySelector('.js-find-match-button');
-playButtonElem.addEventListener('click', handlePlayButtonClick);
+playButtonElem.addEventListener('click', resetGameCompletely);
 findMatchButtonElem.addEventListener('click', findMatch);
-
-function handlePlayButtonClick() {
-    resetGameCompletely();
-    
-    playButtonElem.innerText = 'Restart Game';
-}
 
 export function resetGameCompletely() {
     resetBoard();
@@ -21,4 +15,5 @@ export function resetGameCompletely() {
     notationElem.innerHTML = '';
 
     updateBoardPieces();
+    playButtonElem.innerText = 'Restart Game';
 }

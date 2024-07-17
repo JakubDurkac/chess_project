@@ -38,11 +38,22 @@ function handleIncomingMessage(event) {
         const {opponentName, yourColor} = objMessage.matchAttributes;
         resetGameCompletely();
         setOnlineAttributes(opponentName, yourColor, yourName);
+        // display attributes visually
     
     } else if (objMessage.move !== undefined) { // opponent's move played
-        const move = objMessage.move;
+        const {move} = objMessage;
         makeMoveWithExtra(move.fromCoords, move.toCoords);
-        // make that move here
+
+    } else if (objMessage.notification !== undefined) {
+        const {notification} = objMessage;
+        if (notification === 'opponent disconnected') {
+            // show message to the user
+            socket.close();
+
+        } else if (notification === 'duplicate') {
+            // show message to the user
+            socket.close();
+        }
     }
 }
 
