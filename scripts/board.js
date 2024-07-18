@@ -141,6 +141,11 @@ export function flipBoard() {
 
     if (isPlaying) {
         updateBoardPieces();
+        const {lastMove} = gameStats;
+        if (lastMove.piece) {
+            highlightLastMove(lastMove.fromCoords, lastMove.toCoords)
+        }
+        
     }
 }
 
