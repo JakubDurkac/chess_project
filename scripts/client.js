@@ -1,4 +1,4 @@
-import { setOnlineAttributes, makeMoveWithExtra, goOffline } from "./board.js";
+import { setOnlineAttributes, makeMoveWithExtra, goOffline, createOnlineMatchHtml } from "./board.js";
 import { resetGameLocally } from "./chess.js";
 
 let socket = null;
@@ -57,8 +57,7 @@ function sendInitialMessage() {
 
     // should be set after player is joined matchmaking = server sent 'waiting' notification
     // this notification is yet to be implemented
-    const playerDivElem = document.querySelector('.online-player');
-    playerDivElem.innerHTML = `<p>CLOCK</p><p class="online-names">${yourName}</p>`;
+    createOnlineMatchHtml(yourName, 'white', 'Waiting for opponent...', 'black');
 }
 
 function handleIncomingMessage(event) {

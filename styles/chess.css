@@ -90,46 +90,70 @@ html, body {
 }
 
 .online-match-container {
-    min-height: 200px;
-    width: 246px;
-    padding: 0px 15px 0px 15px;
+    width: 276px;
+    min-height: 220px;
+    height: 220px;
+    padding: 0px 0px 0px 0px;
     background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
     margin: 7px 7px 7px 7px;
     border: aliceblue;
     border-width: 2px;
     border-style: solid;
     border-radius: 10px;
-    flex: 1;
     display: grid;
     grid-template-rows: 1fr 1fr;
+    overflow: hidden;
+}
+
+.online-match-container p {
+    margin: 0px 0px 0px 0px;
 }
 
 .online-opponent, .online-player {
     display: grid;
     grid-template-rows: 1fr 1fr;
     align-items: center;
-}
-
-.online-player {
-    border-top: aliceblue;
-    border-width: 2px;
-    border-style: solid none none none;
-}
-
-.online-names {
     font-family: Arial, Helvetica, sans-serif;
-    color: aliceblue;
-    font-size: 25px;
-    font-weight: 550;
-    margin: 5px 0px 5px 0px;
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
-.online-black-player {
-
+.online-black {
+    background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
+    color: #fbefe1;
 }
 
-.online-white-player {
+.online-white {
+    background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
+    color: rgb(44, 44, 44);
+}
 
+.name-score {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+}
+
+.online-score-white, .online-score-black {
+    display: inline-block;
+    text-align: center;
+    padding: 8px 4px 8px 4px;
+    border-radius: 5px;
+}
+
+.online-score-white {
+    background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
+    color: #fbefe1;
+}
+
+.online-score-black {
+    background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
+    color: rgb(44, 44, 44);
+}
+
+.online-name {
+    padding-top: 8px;
 }
 
 @media (max-height: 500px) {

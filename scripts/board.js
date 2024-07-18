@@ -32,8 +32,7 @@ export let onlineYourColor = null;
 let onlineYourName = null;
 export let isOnlineMatch = false;
 
-const opponentDivElem = document.querySelector('.online-opponent');
-const playerDivElem = document.querySelector('.online-player');
+const onlineMatchContainerElem = document.querySelector('.js-online-match-container');
 
 export function setOnlineAttributes(opponentName, yourColor, yourName) {
     onlineOpponentName = opponentName;
@@ -47,16 +46,22 @@ export function setOnlineAttributes(opponentName, yourColor, yourName) {
         flipBoard();
     }
 
-    opponentDivElem.innerHTML = `<p class="online-names">${opponentName}</p><p>CLOCK</p>`;
-    playerDivElem.innerHTML = `<p>CLOCK</p><p class="online-names">${yourName}</p>`;
+    const opponentColor = yourColor === 'white' ? 'black' : 'white';
+    createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor);
+}
+
+export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor) {
+    const opponentHtml = `<div class="online-opponent online-${opponentColor}"><div class="name-score"><p class="online-name">${opponentName}</p><p class="online-score-${opponentColor}">0</p></div><p>CLOCK</p></div>`;
+    const playerHtml = `<div class="online-player online-${yourColor}"><p>CLOCK</p><div class="name-score"><p class="online-name">${yourName}</p><p class="online-score-${yourColor}">0</p></div></div>`;
+
+    onlineMatchContainerElem.innerHTML = opponentHtml + playerHtml;
 }
 
 export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';
 
-    opponentDivElem.innerHTML = '';
-    playerDivElem.innerHTML = '';
+    onlineMatchContainerElem.innerHTML = '';
 }
 
 export function resetOnlineAttributes() {
