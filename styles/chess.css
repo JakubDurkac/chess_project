@@ -111,13 +111,12 @@ html, body {
 
 .online-opponent, .online-player {
     display: grid;
-    grid-template-rows: 1fr 1fr;
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 600;
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 2px;
 }
 
 .online-black {
@@ -154,6 +153,10 @@ html, body {
 
 .online-name {
     padding-top: 8px;
+}
+
+#white-clock, #black-clock {
+    font-size: 50px;
 }
 
 @media (max-height: 500px) {
