@@ -141,11 +141,24 @@ export function flipBoard() {
 
     if (isPlaying) {
         updateBoardPieces();
-        const {lastMove} = gameStats;
-        if (lastMove.piece) {
-            highlightLastMove(lastMove.fromCoords, lastMove.toCoords)
+        rehighlightSquares();
+    }
+}
+
+function rehighlightSquares() {
+    const {lastMove} = gameStats;
+    if (lastMove.piece) {
+        highlightLastMove(lastMove.fromCoords, lastMove.toCoords);
+        const {result} = gameStats;
+        if (result.keyword !== null) {
+            if (result.keyword === 'win') {
+                highlightCheckmate(result.firstKingCoords,
+                    result.secondKingCoords);
+            } else {
+                highlightStalemate(result.firstKingCoords,
+                    result.secondKingCoords);
+            }
         }
-        
     }
 }
 
@@ -355,17 +368,31 @@ function castleRooksIfAny() {
 }
 
 function announceCheckmate(winnerKingCoords, loserKingCoords) {
+    highlightCheckmate(winnerKingCoords, loserKingCoords);
+    setResult('win', winnerKingCoords, loserKingCoords);
+}
+
+function announceStalemate(firstKingCoords, secondKingCoords) {
+    highlightStalemate(firstKingCoords, secondKingCoords);
+    setResult('draw', firstKingCoords, secondKingCoords);
+}
+
+function highlightCheckmate(winnerKingCoords, loserKingCoords) {
     getButtonElemByCoords(winnerKingCoords[0], winnerKingCoords[1])
         .classList.add('winner-square');
     getButtonElemByCoords(loserKingCoords[0], loserKingCoords[1])
         .classList.add('loser-square');
 }
 
-function announceStalemate(kingCoordsFirst, kingCoordsSecond) {
-    getButtonElemByCoords(kingCoordsFirst[0], kingCoordsFirst[1])
+function highlightStalemate(firstKingCoords, secondKingCoords) {
+    getButtonElemByCoords(firstKingCoords[0], firstKingCoords[1])
         .classList.add('draw-square');
-    getButtonElemByCoords(kingCoordsSecond[0], kingCoordsSecond[1])
+    getButtonElemByCoords(secondKingCoords[0], secondKingCoords[1])
         .classList.add('draw-square');
+}
+
+function setResult(keyword, firstKingCoords, secondKingCoords) {
+    gameStats.result = {keyword, firstKingCoords, secondKingCoords};
 }
 
 function addPieceToBoard(row, col, piece) {

@@ -28,6 +28,12 @@ const gameStatsInitial = {
     materialCount: {
         white: 39,
         black: 39
+    },
+    result: {
+        // <firstKingCoords> won or drew against the <secondKingCoords>
+        keyword: null, // 'win' / 'draw'
+        firstKingCoords: null, // [row, col]
+        secondKingCoords: null
     }
 };
 

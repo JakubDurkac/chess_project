@@ -260,7 +260,7 @@ html, body {
 }
 
 .draw-square {
-    background-image: linear-gradient(to bottom right, #a9a9a9, #777777, #3c3c3c);
+    background-image: linear-gradient(to bottom right, #a9a9a9, #777777, #3c3c3c) !important;
 }
 
 .last-move-highlight {
