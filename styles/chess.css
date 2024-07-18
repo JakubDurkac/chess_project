@@ -24,9 +24,13 @@ html, body {
     background-image: linear-gradient(to bottom right, #212427, #1d4b86, #131c57);
     border-bottom-right-radius: 10px;
     z-index: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-color: #61b0fb #131c57;
 }
 
 .menu-button ,.name-input {
+    width: 280px;
     padding: 10px 10px 10px 10px;
     font-family: Arial, Helvetica, sans-serif;
     color: aliceblue;
@@ -37,6 +41,10 @@ html, body {
     margin: 7px 7px 7px 7px;
     background-image: linear-gradient(to bottom right, #0686ff, #1d4b86, #303a7a);
     border-radius: 10px;
+}
+
+.name-input {
+    width: 256px;
 }
 
 .options-button {
@@ -63,7 +71,7 @@ html, body {
 .options {
     display: flex;
     flex-direction: column;
-    height: 30vmin;
+    height: 200px;
     outline-style: solid;
     outline-color: aliceblue;
     outline-width: 2px;
@@ -75,13 +83,16 @@ html, body {
 }
 
 .chess-notation-container {
+    width: 246px;
     height: 100%;
     overflow-y: auto;
     scrollbar-color: #61b0fb #131c57;
 }
 
 .online-match-container {
-    padding: 15px 15px 15px 15px;
+    min-height: 200px;
+    width: 246px;
+    padding: 0px 15px 0px 15px;
     background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
     margin: 7px 7px 7px 7px;
     border: aliceblue;
@@ -89,6 +100,36 @@ html, body {
     border-style: solid;
     border-radius: 10px;
     flex: 1;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+.online-opponent, .online-player {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+}
+
+.online-player {
+    border-top: aliceblue;
+    border-width: 2px;
+    border-style: solid none none none;
+}
+
+.online-names {
+    font-family: Arial, Helvetica, sans-serif;
+    color: aliceblue;
+    font-size: 25px;
+    font-weight: 550;
+    margin: 5px 0px 5px 0px;
+}
+
+.online-black-player {
+
+}
+
+.online-white-player {
+
 }
 
 @media (max-height: 500px) {
@@ -294,6 +335,8 @@ html, body {
 }
 
 .notation-container-border {
+    min-height: 100px;
+    width: 246px;
     padding: 15px 15px 15px 15px;
     margin: 7px 7px 7px 7px;
     overflow: hidden;

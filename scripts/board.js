@@ -32,20 +32,31 @@ export let onlineYourColor = null;
 let onlineYourName = null;
 export let isOnlineMatch = false;
 
+const opponentDivElem = document.querySelector('.online-opponent');
+const playerDivElem = document.querySelector('.online-player');
+
 export function setOnlineAttributes(opponentName, yourColor, yourName) {
     onlineOpponentName = opponentName;
     onlineYourColor = yourColor;
     onlineYourName = yourName;
     isOnlineMatch = true;
 
-    if (yourColor === 'black' && !isFlippedBoard) {
+    if ((yourColor === 'black' && !isFlippedBoard)
+        || (yourColor === 'white' && isFlippedBoard)
+    ) {
         flipBoard();
     }
+
+    opponentDivElem.innerHTML = `<p class="online-names">${opponentName}</p><p>CLOCK</p>`;
+    playerDivElem.innerHTML = `<p>CLOCK</p><p class="online-names">${yourName}</p>`;
 }
 
 export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';
+
+    opponentDivElem.innerHTML = '';
+    playerDivElem.innerHTML = '';
 }
 
 export function resetOnlineAttributes() {

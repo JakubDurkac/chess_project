@@ -9,7 +9,10 @@ export function findMatch() {
         return;
     }
 
-    const inputName = document.querySelector('.js-name-input').value;
+    const inputNameElem = document.querySelector('.js-name-input');
+    const inputName = inputNameElem.value;
+    inputNameElem.value = '';
+
     if (inputName === '') {
         console.log('empty name');
         return;
@@ -51,6 +54,11 @@ function sendInitialMessage() {
     };
 
     socket.send(JSON.stringify(objMessage));
+
+    // should be set after player is joined matchmaking = server sent 'waiting' notification
+    // this notification is yet to be implemented
+    const playerDivElem = document.querySelector('.online-player');
+    playerDivElem.innerHTML = `<p>CLOCK</p><p class="online-names">${yourName}</p>`;
 }
 
 function handleIncomingMessage(event) {
@@ -59,8 +67,6 @@ function handleIncomingMessage(event) {
     console.log(strMessage);
     console.log(objMessage);
 
-    // opponent disconnected
-    // wrong name
     if (objMessage.matchAttributes !== undefined) { // opponent found
         const {opponentName, yourColor} = objMessage.matchAttributes;
         
