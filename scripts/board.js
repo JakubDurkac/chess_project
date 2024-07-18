@@ -37,6 +37,10 @@ export function setOnlineAttributes(opponentName, yourColor, yourName) {
     onlineYourColor = yourColor;
     onlineYourName = yourName;
     isOnlineMatch = true;
+
+    if (yourColor === 'black' && !isFlippedBoard) {
+        flipBoard();
+    }
 }
 
 export function goOffline() {
@@ -393,6 +397,7 @@ function highlightStalemate(firstKingCoords, secondKingCoords) {
 
 function setResult(keyword, firstKingCoords, secondKingCoords) {
     gameStats.result = {keyword, firstKingCoords, secondKingCoords};
+    document.querySelector('.js-play-button').innerText = 'Play Again';
 }
 
 function addPieceToBoard(row, col, piece) {
