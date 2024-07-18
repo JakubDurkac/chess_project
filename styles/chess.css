@@ -112,18 +112,20 @@ html, body {
     width: 90vmin;
     height: 90vmin;
     aspect-ratio: 1;
+    position: relative;
 }
 
 .chessboard {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    width: 98%;
-    height: 98%;
+    width: 95%;
+    height: 95%;
     outline-style: solid;
     outline-color: aliceblue;
     outline-width: 2px;
     border-radius: 10px;
     overflow: hidden;
+    z-index: 1;
 }
 
 .chessboard-square {
@@ -133,6 +135,94 @@ html, body {
     outline: none;
     aspect-ratio: 1;
     padding: 0px 0px 0px 0px;
+}
+
+.sign {
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 2vh;
+    color: aliceblue;
+}
+
+.first-file-sign {
+    top: 5px;
+}
+
+.second-file-sign {
+    bottom: 5px;
+}
+
+.first-rank-sign {
+    left: 10px;
+}
+
+.second-rank-sign {
+    right: 10px;
+}
+
+#first-rank-sign-7, #second-rank-sign-7 {
+    top: 8%;
+}
+
+#first-rank-sign-6, #second-rank-sign-6 {
+    top: 20%;
+}
+
+#first-rank-sign-5, #second-rank-sign-5 {
+    top: 31%;
+}
+
+#first-rank-sign-4, #second-rank-sign-4 {
+    top: 43%;
+}
+
+#first-rank-sign-3, #second-rank-sign-3 {
+    top: 55%;
+}
+
+#first-rank-sign-2, #second-rank-sign-2 {
+    top: 66%;
+}
+
+#first-rank-sign-1, #second-rank-sign-1 {
+    top: 77%;
+}
+
+#first-rank-sign-0, #second-rank-sign-0 {
+    top: 89%;
+}
+
+#first-file-sign-0, #second-file-sign-0 {
+    left: 9%;
+}
+
+#first-file-sign-1, #second-file-sign-1 {
+    left: 20.5%;
+}
+
+#first-file-sign-2, #second-file-sign-2 {
+    left: 32%;
+}
+
+#first-file-sign-3, #second-file-sign-3 {
+    left: 43.5%;
+}
+
+#first-file-sign-4, #second-file-sign-4 {
+    left: 55%;
+}
+
+#first-file-sign-5, #second-file-sign-5 {
+    left: 67%;
+}
+
+#first-file-sign-6, #second-file-sign-6 {
+    left: 78%;
+}
+
+#first-file-sign-7, #second-file-sign-7 {
+    left: 90%;
 }
 
 .chessboard-square:hover, .dragover-square {

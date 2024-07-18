@@ -2,6 +2,7 @@ import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSaf
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { sendMove } from "./client.js";
+import { isPlaying } from "./chess.js";
 
 export const boardSize = 8;
 
@@ -55,6 +56,37 @@ export function initializeBoard() {
             buttonElem.addEventListener('dragover', handleDragOver);
             buttonElem.addEventListener('drop', handleDrop);
         });
+
+    createRankAndFileSigns();
+}
+
+function createRankAndFileSigns() {
+    const containerElem = document.querySelector('.chessboard-container');
+    const sides = ['first', 'second'];
+    const types = ['rank', 'file'];
+    const signSet = {
+        'rank': isFlippedBoard ? '87654321' : '12345678',
+        'file': isFlippedBoard ? 'hgfedcba' : 'abcdefgh'
+    }
+
+    types.forEach((type) => {
+        sides.forEach((side) => {
+            for (let i = 0; i < signSet[type].length; i++) {
+                const char = signSet[type].charAt(i);
+                const oldSign = document.getElementById(`${side}-${type}-sign-${String(i)}`);
+                if (oldSign) {
+                    containerElem.removeChild(oldSign);
+                }
+
+                const newSign = document.createElement('span');
+                newSign.classList.add('sign');
+                newSign.classList.add(`${side}-${type}-sign`);
+                newSign.id = `${side}-${type}-sign-${String(i)}`;
+                newSign.innerText = char;
+                containerElem.appendChild(newSign);
+            }
+        });
+    });
 }
 
 export function updateBoardPieces() {
@@ -106,7 +138,10 @@ function getFlippedCoords(row, col) {
 export function flipBoard() {
     isFlippedBoard = !isFlippedBoard;
     initializeBoard();
-    updateBoardPieces();
+
+    if (isPlaying) {
+        updateBoardPieces();
+    }
 }
 
 function generatePieceImage(piece) {

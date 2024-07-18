@@ -3,6 +3,7 @@ import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
 import { resetGameStats } from "./stats.js";
 
 initializeBoard();
+export let isPlaying = false;
 
 const playButtonElem = document.querySelector('.js-play-button');
 const findMatchButtonElem = document.querySelector('.js-find-match-button');
@@ -25,6 +26,7 @@ export function resetGameLocally() {
     resetBoard();
     resetGameStats();
     notationElem.innerHTML = '';
+    isPlaying = true;
 
     updateBoardPieces();
     playButtonElem.innerText = isOnlineMatch ? 'Resign Game' : 'Restart Game';
