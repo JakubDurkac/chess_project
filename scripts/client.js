@@ -58,7 +58,7 @@ function sendInitialMessage() {
 
     // should be set after player is joined matchmaking = server sent 'waiting' notification
     // this notification is yet to be implemented
-    createOnlineMatchHtml(yourName, 'white', 'Finding a match...', 'black');
+    createOnlineMatchHtml(yourName, 'white', 'Finding a match...', 'black', 5 * 60 * 1000); // 5 min default
 }
 
 function handleIncomingMessage(event) {
@@ -70,7 +70,7 @@ function handleIncomingMessage(event) {
     if (objMessage.matchAttributes !== undefined) { // opponent found
         const {opponentName, yourColor} = objMessage.matchAttributes;
         
-        setOnlineAttributes(opponentName, yourColor, yourName);
+        setOnlineAttributes(opponentName, yourColor, yourName, 3 * 60 * 1000); // 3 min test
         resetGameLocally();
         // display attributes visually
     

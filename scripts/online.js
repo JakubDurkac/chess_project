@@ -5,9 +5,15 @@ export let onlineYourColor = null;
 let onlineOpponentName = null;
 export let onlineYourName = null;
 
+const INTERVAL_LENGTH = 1000; // ms
 const clockIntervalIds = {
     white: null,
     black: null
+}
+
+const currentClockMillis = {
+    white: 5 * 60 * 1000, // 5 min default
+    black: 5 * 60 * 1000
 }
 
 const onlineMatchContainerElem = document.querySelector('.js-online-match-container');
@@ -19,37 +25,33 @@ export function runClock(color) {
 
     const clockElem = document.getElementById(`${color}-clock`);
     clockIntervalIds[color] = setInterval(() => {
-        const newTime = decrementTime(clockElem.innerHTML);
+        currentClockMillis[color] = currentClockMillis[color] - INTERVAL_LENGTH;
 
-        if (newTime === 'stop') {
+        if (currentClockMillis[color] <= 0) {
             clearInterval(clockIntervalIds[color]);
-            // message the players
+            // message the players, player with <color> flagged
             return;
         }
 
-        clockElem.innerHTML = newTime;
-    }, 1000);
+        clockElem.innerHTML = formatTime(currentClockMillis[color]);
+    }, INTERVAL_LENGTH);
 }
 
-function decrementTime(time) {
-    // time format 'min:sec'
-    const values = time.split(':');
-    let i = values.length - 1;
-    while (i >= 0 && Number(values[i]) - 1 < 0) {
-        values[i] = 59;
-        i--;
-    }
+function formatTime(milliseconds) {
+    let minutes, seconds, total_hours, total_minutes, total_seconds;
+    total_seconds = parseInt(Math.floor(milliseconds / 1000));
+    total_minutes = parseInt(Math.floor(total_seconds / 60));
+    total_hours = parseInt(Math.floor(total_minutes / 60));
+  
+    seconds = parseInt(total_seconds % 60);
+    minutes = parseInt(total_minutes % 60);
 
-    if (i < 0) {
-        return 'stop';
-    }
+    const paddedSeconds = String(seconds).padStart(2, '0');
+    const paddedMinutes = String(minutes).padStart(2, '0')
 
-    const decrementedValue = String(Number(values[i]) - 1);
-    values[i] = i === values.length - 1 // seconds 
-        ? decrementedValue.padStart(2, '0')
-        : decrementedValue;
-
-    return values.join(':');
+    return total_hours > 0 
+        ? `${total_hours}:${paddedMinutes}:${paddedSeconds}`
+        : `${minutes}:${paddedSeconds}`;
 }
 
 function stopClocks() {
@@ -57,11 +59,16 @@ function stopClocks() {
     clearInterval(clockIntervalIds['black']);
 }
 
-export function setOnlineAttributes(opponentName, yourColor, yourName) {
+export function setOnlineAttributes(opponentName, yourColor, yourName, startClockMillis) {
     onlineOpponentName = opponentName;
     onlineYourColor = yourColor;
     onlineYourName = yourName;
     isOnlineMatch = true;
+
+    currentClockMillis.white = startClockMillis;
+    currentClockMillis.black = startClockMillis;
+    clockIntervalIds.white = null;
+    clockIntervalIds.black = null;
 
     if ((yourColor === 'black' && !isFlippedBoard)
         || (yourColor === 'white' && isFlippedBoard)
@@ -70,12 +77,26 @@ export function setOnlineAttributes(opponentName, yourColor, yourName) {
     }
 
     const opponentColor = yourColor === 'white' ? 'black' : 'white';
-    createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor);
+    createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis);
 }
 
-export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor) {
-    const opponentHtml = `<div class="online-opponent online-${opponentColor}"><div class="name-score"><p class="online-name">${opponentName}</p><p class="online-score-${opponentColor}">0</p></div><div id="${opponentColor}-clock">5:00</div></div>`;
-    const playerHtml = `<div class="online-player online-${yourColor}"><div id="${yourColor}-clock">5:00</div><div class="name-score"><p class="online-name">${yourName}</p><p class="online-score-${yourColor}">0</p></div></div>`;
+export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis) {
+    const opponentHtml = `
+    <div class="online-opponent online-${opponentColor}">
+        <div class="name-score">
+            <p class="online-name">${opponentName}</p>
+            <p class="online-score-${opponentColor}">0</p>
+        </div>
+        <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
+    </div>`;
+    const playerHtml = `
+    <div class="online-player online-${yourColor}">
+        <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
+        <div class="name-score">
+            <p class="online-name">${yourName}</p>
+            <p class="online-score-${yourColor}">0</p>
+        </div>
+    </div>`;
 
     onlineMatchContainerElem.innerHTML = opponentHtml + playerHtml;
 }
