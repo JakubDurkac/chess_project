@@ -1,6 +1,6 @@
 import { makeMoveWithExtra } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { createOnlineMatchHtml, goOffline, setOnlineAttributes } from "./online.js";
+import { createOnlineMatchHtml, goOffline, onlineYourColor, setOnlineAttributes, runClock } from "./online.js";
 
 let socket = null;
 let yourName = null;
@@ -77,6 +77,16 @@ function handleIncomingMessage(event) {
     } else if (objMessage.move !== undefined) { // opponent's move played
         const {move} = objMessage;
         makeMoveWithExtra(move.fromCoords, move.toCoords);
+        runClock(onlineYourColor, 0);
+        sendTimestamp(new Date().getTime());
+
+    } else if (objMessage.clockStartTimestamp !== undefined) { // opponent's move played
+        const {clockStartTimestamp} = objMessage;
+        const delay = new Date().getTime() - clockStartTimestamp;
+
+        const opponentColor = onlineYourColor === 'white' ? 'black' : 'white';
+        console.log(delay);
+        runClock(opponentColor, delay);
 
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
@@ -95,14 +105,23 @@ function handleIncomingMessage(event) {
     }
 }
 
-export function sendMove(fromCoords, toCoords, name) {
+export function sendMove(fromCoords, toCoords) {
     console.log(fromCoords, toCoords, name);
     const objMessage = {
         move: {
             'fromCoords': fromCoords,
             'toCoords': toCoords,
-            'by': name
+            'by': yourName
         }
+    };
+
+    socket.send(JSON.stringify(objMessage));
+}
+
+function sendTimestamp(timestamp) {
+    const objMessage = {
+        clockStartTimestamp: timestamp,
+        'by': yourName
     };
 
     socket.send(JSON.stringify(objMessage));

@@ -54,7 +54,19 @@ wss.on('connection', (ws) => {
             console.log(matches);
     
         } else if (objMessage.move !== undefined) {
-            playersSockets[matches[objMessage.move.by]].send(strMessage);
+            // test mock delay
+
+            setTimeout(() => {
+                playersSockets[matches[objMessage.move.by]].send(strMessage);
+            }, 1000);
+            
+            // test ends here
+
+            // playersSockets[matches[objMessage.move.by]].send(strMessage);
+        
+        } else if (objMessage.clockStartTimestamp !== undefined) {
+            playersSockets[matches[objMessage.by]]
+                .send(strMessage);
 
         } else if (objMessage.notification !== undefined) {
             const {message, by} = objMessage.notification;

@@ -5,8 +5,8 @@ export let onlineYourColor = null;
 let onlineOpponentName = null;
 export let onlineYourName = null;
 
-const INTERVAL_LENGTH = 1000; // ms
-const clockIntervalIds = {
+const INTERVAL_LENGTH = 50; // ms
+const clockInterval = {
     white: null,
     black: null
 }
@@ -18,23 +18,55 @@ const currentClockMillis = {
 
 const onlineMatchContainerElem = document.querySelector('.js-online-match-container');
 
-export function runClock(color) {
+export function runClock(color, delay) {
     // stop other colored clock, run this clock
-    const oppositeColor = color === 'white' ? 'black' : 'white';
-    clearInterval(clockIntervalIds[oppositeColor]);
+    const opponentColor = color === 'white' ? 'black' : 'white';
+    if (clockInterval[opponentColor] !== null) { // moveCount > 1
+        currentClockMillis[opponentColor] += delay;    
+    }
+
+    clearClockInterval(opponentColor);
+    currentClockMillis[color] -= delay;
 
     const clockElem = document.getElementById(`${color}-clock`);
-    clockIntervalIds[color] = setInterval(() => {
-        currentClockMillis[color] = currentClockMillis[color] - INTERVAL_LENGTH;
+    clockInterval[color] = setClockInterval(() => {
+        currentClockMillis[color] -= INTERVAL_LENGTH;
 
         if (currentClockMillis[color] <= 0) {
-            clearInterval(clockIntervalIds[color]);
+            clearClockInterval(color);
             // message the players, player with <color> flagged
             return;
         }
 
         clockElem.innerHTML = formatTime(currentClockMillis[color]);
     }, INTERVAL_LENGTH);
+}
+
+function setClockInterval(callback, interval) {
+    // regular setInterval goes to sleep when window is inactive
+    var worker = new Worker('./scripts/worker.js');
+    var lastTime = new Date().getTime();
+
+    worker.onmessage = function() {
+        var currentTime = new Date().getTime();
+        if (currentTime - lastTime >= interval) {
+            callback();
+            lastTime = currentTime;
+        }
+    };
+
+    return {
+        clear: function() {
+            worker.terminate();
+        }
+    };
+}
+
+function clearClockInterval(color) {
+    if (clockInterval[color] !== null) {
+        clockInterval[color].clear();
+        clockInterval[color] = null;
+    }
 }
 
 function formatTime(milliseconds) {
@@ -55,8 +87,8 @@ function formatTime(milliseconds) {
 }
 
 function stopClocks() {
-    clearInterval(clockIntervalIds['white']);
-    clearInterval(clockIntervalIds['black']);
+    clearInterval(clockInterval['white']);
+    clearInterval(clockInterval['black']);
 }
 
 export function setOnlineAttributes(opponentName, yourColor, yourName, startClockMillis) {
@@ -67,8 +99,8 @@ export function setOnlineAttributes(opponentName, yourColor, yourName, startCloc
 
     currentClockMillis.white = startClockMillis;
     currentClockMillis.black = startClockMillis;
-    clockIntervalIds.white = null;
-    clockIntervalIds.black = null;
+    clockInterval.white = null;
+    clockInterval.black = null;
 
     if ((yourColor === 'black' && !isFlippedBoard)
         || (yourColor === 'white' && isFlippedBoard)

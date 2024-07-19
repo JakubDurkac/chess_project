@@ -3,7 +3,7 @@ import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } 
 import { generateLastMoveNotation } from "./notation.js";
 import { sendMove } from "./client.js";
 import { isPlaying } from "./chess.js";
-import { runClock, isOnlineMatch, onlineYourName, onlineYourColor } from "./online.js";
+import { isOnlineMatch, onlineYourColor } from "./online.js";
 
 export const boardSize = 8;
 
@@ -268,7 +268,7 @@ function makeMove(fromCoords, toCoords) {
 
     if (isOnlineMatch && 
         (onlineYourColor === 'white') === gameStats.isWhiteTurn) {
-        sendMove(fromCoords, toCoords, onlineYourName);
+        sendMove(fromCoords, toCoords);
     }
 
     const piece = chessBoard[fromRow][fromCol];
@@ -293,7 +293,7 @@ function makeMove(fromCoords, toCoords) {
         }
     }
 
-    runClock(gameStats.isWhiteTurn ? 'white' : 'black');
+    // runClock(gameStats.isWhiteTurn ? 'white' : 'black');
 }
 
 function canOpponentMove() {
