@@ -57,7 +57,7 @@ function sendInitialMessage() {
 
     // should be set after player is joined matchmaking = server sent 'waiting' notification
     // this notification is yet to be implemented
-    createOnlineMatchHtml(yourName, 'white', 'Waiting for opponent...', 'black');
+    createOnlineMatchHtml(yourName, 'white', 'Finding a match...', 'black');
 }
 
 function handleIncomingMessage(event) {

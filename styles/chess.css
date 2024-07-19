@@ -177,7 +177,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90vmin;
+    min-width: 90vmin;
     height: 90vmin;
     aspect-ratio: 1;
     position: relative;
