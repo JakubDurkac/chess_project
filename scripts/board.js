@@ -3,7 +3,7 @@ import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } 
 import { generateLastMoveNotation } from "./notation.js";
 import { sendMove } from "./client.js";
 import { isPlaying } from "./chess.js";
-import { isOnlineMatch, onlineYourColor } from "./online.js";
+import { isOnlineMatch, onlineYourColor, stopClock } from "./online.js";
 
 export const boardSize = 8;
 

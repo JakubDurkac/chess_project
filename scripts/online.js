@@ -4,9 +4,10 @@ export let isOnlineMatch = false;
 export let onlineYourColor = null;
 let onlineOpponentName = null;
 export let onlineYourName = null;
+let onlineStartClockMillis = null;
 
 const INTERVAL_LENGTH = 50; // ms
-const clockInterval = {
+const clockIntervalIds = {
     white: null,
     black: null
 }
@@ -20,53 +21,34 @@ const onlineMatchContainerElem = document.querySelector('.js-online-match-contai
 
 export function runClock(color, delay) {
     // stop other colored clock, run this clock
+    const startTimestamp = new Date().getTime();
+
     const opponentColor = color === 'white' ? 'black' : 'white';
-    if (clockInterval[opponentColor] !== null) { // moveCount > 1
+    if (clockIntervalIds[opponentColor] !== null) { // moveCount > 1
         currentClockMillis[opponentColor] += delay;    
     }
 
-    clearClockInterval(opponentColor);
+    clearInterval(clockIntervalIds[opponentColor]);
     currentClockMillis[color] -= delay;
 
     const clockElem = document.getElementById(`${color}-clock`);
-    clockInterval[color] = setClockInterval(() => {
-        currentClockMillis[color] -= INTERVAL_LENGTH;
+    let lastDisplayedTime = clockElem.innerHTML;
+    clockIntervalIds[color] = setInterval(() => {
+        const currentTimestamp = new Date().getTime();
+        currentClockMillis[color] = onlineStartClockMillis - (currentTimestamp - startTimestamp);
 
         if (currentClockMillis[color] <= 0) {
-            clearClockInterval(color);
+            clearInterval(clockIntervalIds[color]);
             // message the players, player with <color> flagged
             return;
         }
 
-        clockElem.innerHTML = formatTime(currentClockMillis[color]);
+        const newTime = formatTime(currentClockMillis[color]);
+        if (newTime !== lastDisplayedTime) {
+            clockElem.innerHTML = newTime;
+            lastDisplayedTime = newTime;
+        }
     }, INTERVAL_LENGTH);
-}
-
-function setClockInterval(callback, interval) {
-    // regular setInterval goes to sleep when window is inactive
-    var worker = new Worker('./scripts/worker.js');
-    var lastTime = new Date().getTime();
-
-    worker.onmessage = function() {
-        var currentTime = new Date().getTime();
-        if (currentTime - lastTime >= interval) {
-            callback();
-            lastTime = currentTime;
-        }
-    };
-
-    return {
-        clear: function() {
-            worker.terminate();
-        }
-    };
-}
-
-function clearClockInterval(color) {
-    if (clockInterval[color] !== null) {
-        clockInterval[color].clear();
-        clockInterval[color] = null;
-    }
 }
 
 function formatTime(milliseconds) {
@@ -87,8 +69,12 @@ function formatTime(milliseconds) {
 }
 
 function stopClocks() {
-    clearInterval(clockInterval['white']);
-    clearInterval(clockInterval['black']);
+    clearInterval(clockIntervalIds['white']);
+    clearInterval(clockIntervalIds['black']);
+}
+
+export function stopClock(color) {
+    clearInterval(clockIntervalIds[color]);
 }
 
 export function setOnlineAttributes(opponentName, yourColor, yourName, startClockMillis) {
@@ -97,10 +83,11 @@ export function setOnlineAttributes(opponentName, yourColor, yourName, startCloc
     onlineYourName = yourName;
     isOnlineMatch = true;
 
+    onlineStartClockMillis = startClockMillis;
     currentClockMillis.white = startClockMillis;
     currentClockMillis.black = startClockMillis;
-    clockInterval.white = null;
-    clockInterval.black = null;
+    clockIntervalIds.white = null;
+    clockIntervalIds.black = null;
 
     if ((yourColor === 'black' && !isFlippedBoard)
         || (yourColor === 'white' && isFlippedBoard)

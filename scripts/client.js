@@ -106,7 +106,7 @@ function handleIncomingMessage(event) {
 }
 
 export function sendMove(fromCoords, toCoords) {
-    console.log(fromCoords, toCoords, name);
+    console.log(fromCoords, toCoords);
     const objMessage = {
         move: {
             'fromCoords': fromCoords,

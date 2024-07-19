@@ -58,7 +58,7 @@ wss.on('connection', (ws) => {
 
             setTimeout(() => {
                 playersSockets[matches[objMessage.move.by]].send(strMessage);
-            }, 1000);
+            }, 5000);
             
             // test ends here
 
