@@ -1,5 +1,6 @@
-import { setOnlineAttributes, makeMoveWithExtra, goOffline, createOnlineMatchHtml } from "./board.js";
+import { makeMoveWithExtra } from "./board.js";
 import { resetGameLocally } from "./chess.js";
+import { createOnlineMatchHtml, goOffline, setOnlineAttributes } from "./online.js";
 
 let socket = null;
 let yourName = null;

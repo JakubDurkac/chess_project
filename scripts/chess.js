@@ -1,6 +1,7 @@
-import { initializeBoard, updateBoardPieces, notationElem, resetBoard, isOnlineMatch, flipBoard } from "./board.js";
+import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard } from "./board.js";
 import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
 import { resetGameStats } from "./stats.js";
+import { isOnlineMatch } from "./online.js"
 
 initializeBoard();
 export let isPlaying = false;
