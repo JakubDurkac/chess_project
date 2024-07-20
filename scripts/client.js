@@ -84,6 +84,7 @@ function handleIncomingMessage(event) {
         updateClocks(clockUpdate.white, clockUpdate.black);
 
     } else if (objMessage.availableOpponents !== undefined) {
+        console.log('Server updates opponents list');
         updateOnlineOpponentsHtml(objMessage.availableOpponents, yourName);
 
     } else if (objMessage.notification !== undefined) {
@@ -111,6 +112,17 @@ export function sendMove(fromCoords, toCoords) {
             'toCoords': toCoords,
             'by': yourName,
             'isFirst': gameStats.moveCount === 0
+        }
+    };
+
+    socket.send(JSON.stringify(objMessage));
+}
+
+export function sendJoinRequest(yourName, nameToJoin) {
+    const objMessage = {
+        joinRequest: {
+            'nameToJoin': nameToJoin,
+            'by': yourName
         }
     };
 

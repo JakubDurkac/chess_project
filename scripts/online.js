@@ -1,4 +1,5 @@
 import { flipBoard, isFlippedBoard } from "./board.js";
+import { sendJoinRequest } from "./client.js";
 
 export let isOnlineMatch = false;
 export let onlineYourColor = null;
@@ -61,8 +62,12 @@ export function setOnlineAttributes(opponentName, yourColor, yourName, startCloc
     createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis);
 }
 
+function joinOnlineOpponent(yourName, nameToJoin) {
+    sendJoinRequest(yourName, nameToJoin);
+}
+
 export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis) {
-    const matchHtml = `
+    let matchHtml = `
     <div class="online-match-container js-online-match-container">
         <div class="online-opponent online-${opponentColor}">
             <div class="name-score">
@@ -83,25 +88,45 @@ export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponen
     onlinePanelElem.innerHTML = matchHtml;
 }
 
-export function updateOnlineOpponentsHtml(availableOpponents, yourName) {
-    const opponentHtml = `
-    <div class="online-opponent online-${opponentColor}">
-        <div class="name-score">
-            <p class="online-name">${opponentName}</p>
-            <p class="online-score-${opponentColor}">0</p>
-        </div>
-        <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
-    </div>`;
-    const playerHtml = `
-    <div class="online-player online-${yourColor}">
-        <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
-        <div class="name-score">
-            <p class="online-name">${yourName}</p>
-            <p class="online-score-${yourColor}">0</p>
-        </div>
-    </div>`;
+function generateClickableOpponent(name) {
+    return `
+    <div class="opponent-to-join">
+        <span>${name}</span>
+        <button data-name-to-join="${name}" class="join-button">JOIN</button>
+    </div>`
+}
 
-    onlineMatchContainerElem.innerHTML = opponentHtml + playerHtml;
+function generateOpponentsList(availableOpponents, yourName) {
+    let opponentsListHtml = '';
+
+    availableOpponents.forEach((name) => {
+        if (name !== yourName) {
+            opponentsListHtml += generateClickableOpponent(name);
+        }
+    });
+
+    return opponentsListHtml;
+}
+
+export function updateOnlineOpponentsHtml(availableOpponents, yourName) {
+    if (isOnlineMatch) {
+        return; // do not update when game is going on
+    }
+
+    const availableOpponentsHtml = `
+    <div class="online-opponents-container js-online-opponents-container">
+        ${generateOpponentsList(availableOpponents, yourName)}
+    </div>`
+
+    onlinePanelElem.innerHTML = availableOpponentsHtml;
+
+    document.querySelectorAll('.join-button').forEach((joinButtonElem) => {
+        console.log('Adding event listener');
+        joinButtonElem.addEventListener('click', () => {
+            joinOnlineOpponent(yourName, joinButtonElem.dataset.nameToJoin);
+            console.log(yourName, joinButtonElem.dataset.nameToJoin);
+        });
+    });
 }
 
 export function goOffline() {

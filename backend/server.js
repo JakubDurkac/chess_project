@@ -126,7 +126,7 @@ function handleClientDisconnect(name) {
 
 function sendOutAvailableOpponents() {
     const availableOpponents = activeNames.filter((name) => {
-        return matches[name] === undefined;
+        return matches[name] === undefined && playersSockets[name] !== undefined;
     });
 
     activeNames.forEach((toName) => {
@@ -162,31 +162,44 @@ wss.on('connection', (ws) => {
             // this list and add interactive 'join' button to each opponent,
             // this button will notify the server, which will match these two,
             // send match attributes and so on (this part is already working)
-            // sendOutAvailableOpponents();
+            sendOutAvailableOpponents();
 
             // find any match and initialise game -------------------------
-            for (let i = 0; i < activeNames.length; i++) {
-                const opponentName = activeNames[i];
-                if (name === opponentName) {
-                    continue;
-                }
+            // for (let i = 0; i < activeNames.length; i++) {
+            //     const opponentName = activeNames[i];
+            //     if (name === opponentName) {
+            //         continue;
+            //     }
 
-                if (matches[opponentName] === undefined) {
-                    matches[opponentName] = name;
-                    matches[name] = opponentName;
+            //     if (matches[opponentName] === undefined) {
+            //         matches[opponentName] = name;
+            //         matches[name] = opponentName;
 
-                    const whiteName = Math.random() < 1 / 2 ? opponentName : name;
-                    const game = createGame(whiteName, matches[whiteName], 3 * 60 * 1000);
-                    sendMatchAttributes(whiteName)
+            //         const whiteName = Math.random() < 1 / 2 ? opponentName : name;
+            //         const game = createGame(whiteName, matches[whiteName], 3 * 60 * 1000);
+            //         sendMatchAttributes(whiteName)
                     
-                    break;
-                }
-            }
+            //         break;
+            //     }
+            // }
             // ends here ------------------------------------------------
 
             console.log('Matches:');
             console.log(matches);
     
+        } else if (objMessage.joinRequest !== undefined) {
+            const {nameToJoin, by} = objMessage.joinRequest;
+            if (matches[nameToJoin] === undefined) {
+                matches[nameToJoin] = by;
+                matches[by] = nameToJoin;
+
+                const whiteName = Math.random() < 1 / 2 ? nameToJoin : by;
+                const game = createGame(whiteName, matches[whiteName], 3 * 60 * 1000);
+                sendMatchAttributes(whiteName)
+
+                sendOutAvailableOpponents();
+            }
+
         } else if (objMessage.move !== undefined) {
             const {move} = objMessage;
             pressGameClock(move);
