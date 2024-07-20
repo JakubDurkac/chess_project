@@ -6,49 +6,24 @@ let onlineOpponentName = null;
 export let onlineYourName = null;
 let onlineStartClockMillis = null;
 
-const INTERVAL_LENGTH = 50; // ms
-const clockIntervalIds = {
-    white: null,
-    black: null
-}
-
-const currentClockMillis = {
-    white: 5 * 60 * 1000, // 5 min default
-    black: 5 * 60 * 1000
-}
-
 const onlineMatchContainerElem = document.querySelector('.js-online-match-container');
 
-export function runClock(color, delay) {
-    // stop other colored clock, run this clock
-    const startTimestamp = new Date().getTime();
+export function updateClocks(whiteClockMillis, blackClockMillis) {
+    const whiteClockElem = document.getElementById('white-clock');
+    const blackClockElem = document.getElementById('black-clock');
 
-    const opponentColor = color === 'white' ? 'black' : 'white';
-    if (clockIntervalIds[opponentColor] !== null) { // moveCount > 1
-        currentClockMillis[opponentColor] += delay;    
+    if (whiteClockElem) {
+        console.log("oldTime: White: ", whiteClockElem.innerHTML);
+        whiteClockElem.innerHTML = formatTime(whiteClockMillis);
     }
 
-    clearInterval(clockIntervalIds[opponentColor]);
-    currentClockMillis[color] -= delay;
-
-    const clockElem = document.getElementById(`${color}-clock`);
-    let lastDisplayedTime = clockElem.innerHTML;
-    clockIntervalIds[color] = setInterval(() => {
-        const currentTimestamp = new Date().getTime();
-        currentClockMillis[color] = onlineStartClockMillis - (currentTimestamp - startTimestamp);
-
-        if (currentClockMillis[color] <= 0) {
-            clearInterval(clockIntervalIds[color]);
-            // message the players, player with <color> flagged
-            return;
-        }
-
-        const newTime = formatTime(currentClockMillis[color]);
-        if (newTime !== lastDisplayedTime) {
-            clockElem.innerHTML = newTime;
-            lastDisplayedTime = newTime;
-        }
-    }, INTERVAL_LENGTH);
+    if (blackClockElem) {
+        console.log("oldTime: Black: ", whiteClockElem.innerHTML);
+        blackClockElem.innerHTML = formatTime(blackClockMillis);
+    }
+    
+    console.log("newTime: White: ", whiteClockElem.innerHTML);
+    console.log("newTime: Black: ", blackClockElem.innerHTML);
 }
 
 function formatTime(milliseconds) {
@@ -68,15 +43,6 @@ function formatTime(milliseconds) {
         : `${minutes}:${paddedSeconds}`;
 }
 
-function stopClocks() {
-    clearInterval(clockIntervalIds['white']);
-    clearInterval(clockIntervalIds['black']);
-}
-
-export function stopClock(color) {
-    clearInterval(clockIntervalIds[color]);
-}
-
 export function setOnlineAttributes(opponentName, yourColor, yourName, startClockMillis) {
     onlineOpponentName = opponentName;
     onlineYourColor = yourColor;
@@ -84,10 +50,6 @@ export function setOnlineAttributes(opponentName, yourColor, yourName, startCloc
     isOnlineMatch = true;
 
     onlineStartClockMillis = startClockMillis;
-    currentClockMillis.white = startClockMillis;
-    currentClockMillis.black = startClockMillis;
-    clockIntervalIds.white = null;
-    clockIntervalIds.black = null;
 
     if ((yourColor === 'black' && !isFlippedBoard)
         || (yourColor === 'white' && isFlippedBoard)
@@ -124,7 +86,6 @@ export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';
 
-    stopClocks();
     onlineMatchContainerElem.innerHTML = '';
 }
 

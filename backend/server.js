@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const { send } = require('process');
 const WebSocket = require('ws');
 
 const PORT_NUMBER = 3000;
@@ -10,6 +11,20 @@ const wss = new WebSocket.Server({ server });
 let playersSockets = {}; // {'name': theirSocket}
 let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 let activeNames = [];
+let games = {
+    'player1': {
+        startTimestamp: null,
+        whiteName: 'Player1',
+        blackName: 'Player2',
+        duration: 3 * 60 * 1000, // millis
+        increment: 10 * 1000,
+        whiteClock: 3 * 6 * 1000,
+        blackClock: 3 * 6 * 1000
+    },
+    'player2': {
+
+    }
+};
 
 wss.on('connection', (ws) => {
     console.log(`A new client connected`);
@@ -34,6 +49,26 @@ wss.on('connection', (ws) => {
 
                     const randomNumber = Math.random();
                     const color = randomNumber < 1 / 2 ? 'white' : 'black';
+
+                    const game = {
+                        moveStartTimestamp: null,
+                        whiteName: color === 'white' ? opponentName : name,
+                        blackName: color === 'white' ? name : opponentName,
+                        duration: {
+                            initial: 3 * 60 * 1000,
+                            white: 3 * 60 * 1000,
+                            black: 3 * 60 * 1000
+                        },
+                        increment: 0,
+                        whiteClock: 3 * 60 * 1000,
+                        blackClock: 3 * 60 * 1000,
+                        isWhiteTurn: true,
+                        intervalId: null
+                    }
+
+                    games[name] = game;
+                    games[opponentName] = game;
+
                     ws.send(JSON.stringify({matchAttributes: {
                         'opponentName': opponentName,
                         'yourColor': color
@@ -54,15 +89,44 @@ wss.on('connection', (ws) => {
             console.log(matches);
     
         } else if (objMessage.move !== undefined) {
-            // test mock delay
+            const {move} = objMessage;
+            const game = games[move.by];
+            game.isWhiteTurn = !game.isWhiteTurn;
+            if (move.isFirst) {
+                game.moveStartTimestamp = new Date().getTime();
+                game.intervalId = setInterval(() => {
+                    if (game.isWhiteTurn) {
+                        game.whiteClock = game.duration.white - (new Date().getTime() - game.moveStartTimestamp);
+                    } else {
+                        game.blackClock = game.duration.black - (new Date().getTime() - game.moveStartTimestamp);
+                    }
 
-            setTimeout(() => {
-                playersSockets[matches[objMessage.move.by]].send(strMessage);
-            }, 5000);
-            
-            // test ends here
+                    if (game.whiteClock <= 0 || game.blackClock <= 0) {
+                        clearInterval(game.intervalId);
+                        // someone lost on time, clients should be notified, also last clock update
+                        return;
+                    }
 
-            // playersSockets[matches[objMessage.move.by]].send(strMessage);
+                    const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
+                        white: game.whiteClock,
+                        black: game.blackClock
+                    }});
+
+                    if (playersSockets[game.whiteName] !== undefined
+                        && playersSockets[game.blackName] !== undefined
+                    ) {
+                        playersSockets[game.whiteName].send(clockUpdateMessageStr);
+                        playersSockets[game.blackName].send(clockUpdateMessageStr);
+                    }
+
+                    console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
+                }, 500);
+            }
+
+            game.moveStartTimestamp = new Date().getTime();
+            game.duration.white = game.whiteClock;
+            game.duration.black = game.blackClock;
+            playersSockets[matches[move.by]].send(strMessage);
         
         } else if (objMessage.clockStartTimestamp !== undefined) {
             playersSockets[matches[objMessage.by]]
@@ -71,9 +135,30 @@ wss.on('connection', (ws) => {
         } else if (objMessage.notification !== undefined) {
             const {message, by} = objMessage.notification;
             if (message === 'resign') {
+                const game = games[by];
+                clearInterval(game.intervalId);
+
                 playersSockets[matches[by]].send(
                     JSON.stringify({notification: 'resign'})
                 );
+
+                const restartedClockMillis = game.duration.initial;
+                game.duration.white = restartedClockMillis;
+                game.duration.black = restartedClockMillis;
+                game.whiteClock = restartedClockMillis;
+                game.blackClock = restartedClockMillis;
+
+                const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
+                    white: game.whiteClock,
+                    black: game.blackClock
+                }});
+
+                if (playersSockets[game.whiteName] !== undefined
+                    && playersSockets[game.blackName] !== undefined
+                ) {
+                    playersSockets[game.whiteName].send(clockUpdateMessageStr);
+                    playersSockets[game.blackName].send(clockUpdateMessageStr);
+                }
             }
         }
     });
@@ -91,6 +176,8 @@ wss.on('connection', (ws) => {
                         JSON.stringify({notification: 'opponent disconnected'}));
                 }
 
+                clearInterval(games[name].intervalId);
+                delete games[name];
                 delete playersSockets[name];
                 delete matches[name];
                 removeName(name);

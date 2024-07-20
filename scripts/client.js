@@ -1,6 +1,7 @@
 import { makeMoveWithExtra } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { createOnlineMatchHtml, goOffline, onlineYourColor, setOnlineAttributes, runClock } from "./online.js";
+import { createOnlineMatchHtml, goOffline, setOnlineAttributes, updateClocks } from "./online.js";
+import { gameStats } from "./stats.js";
 
 let socket = null;
 let yourName = null;
@@ -12,7 +13,6 @@ export function findMatch() {
 
     const inputNameElem = document.querySelector('.js-name-input');
     const inputName = inputNameElem.value;
-    inputNameElem.value = '';
 
     if (inputName === '') {
         console.log('empty name');
@@ -77,16 +77,12 @@ function handleIncomingMessage(event) {
     } else if (objMessage.move !== undefined) { // opponent's move played
         const {move} = objMessage;
         makeMoveWithExtra(move.fromCoords, move.toCoords);
-        runClock(onlineYourColor, 0);
-        sendTimestamp(new Date().getTime());
 
-    } else if (objMessage.clockStartTimestamp !== undefined) { // opponent's move played
-        const {clockStartTimestamp} = objMessage;
-        const delay = new Date().getTime() - clockStartTimestamp;
-
-        const opponentColor = onlineYourColor === 'white' ? 'black' : 'white';
-        console.log(delay);
-        runClock(opponentColor, delay);
+    } else if (objMessage.clockUpdate !== undefined) { // server clock times
+        
+        const {clockUpdate} = objMessage;
+        console.log(clockUpdate);
+        updateClocks(clockUpdate.white, clockUpdate.black);
 
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
@@ -111,17 +107,9 @@ export function sendMove(fromCoords, toCoords) {
         move: {
             'fromCoords': fromCoords,
             'toCoords': toCoords,
-            'by': yourName
+            'by': yourName,
+            'isFirst': gameStats.moveCount === 0
         }
-    };
-
-    socket.send(JSON.stringify(objMessage));
-}
-
-function sendTimestamp(timestamp) {
-    const objMessage = {
-        clockStartTimestamp: timestamp,
-        'by': yourName
     };
 
     socket.send(JSON.stringify(objMessage));
