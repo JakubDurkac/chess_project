@@ -82,6 +82,27 @@ export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponen
     onlineMatchContainerElem.innerHTML = opponentHtml + playerHtml;
 }
 
+export function updateOnlineOpponentsHtml(availableOpponents, yourName) {
+    const opponentHtml = `
+    <div class="online-opponent online-${opponentColor}">
+        <div class="name-score">
+            <p class="online-name">${opponentName}</p>
+            <p class="online-score-${opponentColor}">0</p>
+        </div>
+        <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
+    </div>`;
+    const playerHtml = `
+    <div class="online-player online-${yourColor}">
+        <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
+        <div class="name-score">
+            <p class="online-name">${yourName}</p>
+            <p class="online-score-${yourColor}">0</p>
+        </div>
+    </div>`;
+
+    onlineMatchContainerElem.innerHTML = opponentHtml + playerHtml;
+}
+
 export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';

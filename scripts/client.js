@@ -1,6 +1,6 @@
 import { makeMoveWithExtra } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { createOnlineMatchHtml, goOffline, setOnlineAttributes, updateClocks } from "./online.js";
+import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks } from "./online.js";
 import { gameStats } from "./stats.js";
 
 let socket = null;
@@ -58,7 +58,7 @@ function sendInitialMessage() {
 
     // should be set after player is joined matchmaking = server sent 'waiting' notification
     // this notification is yet to be implemented
-    createOnlineMatchHtml(yourName, 'white', 'Finding a match...', 'black', 5 * 60 * 1000); // 5 min default
+    // createOnlineMatchHtml(yourName, 'white', 'Finding a match...', 'black', 5 * 60 * 1000); // 5 min default
 }
 
 function handleIncomingMessage(event) {
@@ -79,10 +79,12 @@ function handleIncomingMessage(event) {
         makeMoveWithExtra(move.fromCoords, move.toCoords);
 
     } else if (objMessage.clockUpdate !== undefined) { // server clock times
-        
         const {clockUpdate} = objMessage;
         console.log(clockUpdate);
         updateClocks(clockUpdate.white, clockUpdate.black);
+
+    } else if (objMessage.availableOpponents !== undefined) {
+        updateOnlineOpponentsHtml(objMessage.availableOpponents, yourName);
 
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
