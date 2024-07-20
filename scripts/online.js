@@ -6,7 +6,7 @@ let onlineOpponentName = null;
 export let onlineYourName = null;
 let onlineStartClockMillis = null;
 
-const onlineMatchContainerElem = document.querySelector('.js-online-match-container');
+const onlinePanelElem = document.querySelector('.js-online-panel');
 
 export function updateClocks(whiteClockMillis, blackClockMillis) {
     const whiteClockElem = document.getElementById('white-clock');
@@ -62,24 +62,25 @@ export function setOnlineAttributes(opponentName, yourColor, yourName, startCloc
 }
 
 export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis) {
-    const opponentHtml = `
-    <div class="online-opponent online-${opponentColor}">
-        <div class="name-score">
-            <p class="online-name">${opponentName}</p>
-            <p class="online-score-${opponentColor}">0</p>
+    const matchHtml = `
+    <div class="online-match-container js-online-match-container">
+        <div class="online-opponent online-${opponentColor}">
+            <div class="name-score">
+                <p class="online-name">${opponentName}</p>
+                <p class="online-score-${opponentColor}">0</p>
+            </div>
+            <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
         </div>
-        <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
-    </div>`;
-    const playerHtml = `
-    <div class="online-player online-${yourColor}">
-        <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
-        <div class="name-score">
-            <p class="online-name">${yourName}</p>
-            <p class="online-score-${yourColor}">0</p>
+        <div class="online-player online-${yourColor}">
+            <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
+            <div class="name-score">
+                <p class="online-name">${yourName}</p>
+                <p class="online-score-${yourColor}">0</p>
+            </div>
         </div>
     </div>`;
 
-    onlineMatchContainerElem.innerHTML = opponentHtml + playerHtml;
+    onlinePanelElem.innerHTML = matchHtml;
 }
 
 export function updateOnlineOpponentsHtml(availableOpponents, yourName) {
@@ -107,7 +108,7 @@ export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';
 
-    onlineMatchContainerElem.innerHTML = '';
+    onlinePanelElem.innerHTML = '';
 }
 
 export function resetOnlineAttributes() {

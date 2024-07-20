@@ -94,14 +94,21 @@ html, body {
     min-height: 220px;
     height: 220px;
     padding: 0px 0px 0px 0px;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+.online-panel {
+    width: 276px;
+    min-height: 220px;
+    height: 220px;
+    padding: 0px 0px 0px 0px;
     background-image: linear-gradient(to bottom right, #036ccf, #1d4b86, #303a7a);
-    margin: 7px 7px 7px 7px;
     border: aliceblue;
     border-width: 2px;
     border-style: solid;
     border-radius: 10px;
-    display: grid;
-    grid-template-rows: 1fr 1fr;
+    margin: 7px 7px 7px 7px;
     overflow: hidden;
 }
 
