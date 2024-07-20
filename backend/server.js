@@ -124,6 +124,22 @@ function handleClientDisconnect(name) {
     removeName(name);
 }
 
+function sendOutAvailableOpponents() {
+    const availableOpponents = activeNames.filter((name) => {
+        return matches[name] === undefined;
+    });
+
+    activeNames.forEach((toName) => {
+        sendOpponentsList(toName, availableOpponents);
+    });
+}
+
+function sendOpponentsList(toName, opponentsList) {
+    playersSockets[toName].send(JSON.stringify({
+        availableOpponents: opponentsList
+    }));
+}
+
 wss.on('connection', (ws) => {
     console.log(`A new client connected`);
     ws.on('message', (message) => {     
@@ -141,6 +157,12 @@ wss.on('connection', (ws) => {
 
             playersSockets[name] = ws;
             activeNames.push(name);
+
+            // send everybody available opponents list, clients will display
+            // this list and add interactive 'join' button to each opponent,
+            // this button will notify the server, which will match these two,
+            // send match attributes and so on (this part is already working)
+            // sendOutAvailableOpponents();
 
             // find any match and initialise game -------------------------
             for (let i = 0; i < activeNames.length; i++) {
