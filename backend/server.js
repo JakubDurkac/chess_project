@@ -11,20 +11,44 @@ const wss = new WebSocket.Server({ server });
 let playersSockets = {}; // {'name': theirSocket}
 let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 let activeNames = [];
-let games = {
-    'player1': {
-        startTimestamp: null,
-        whiteName: 'Player1',
-        blackName: 'Player2',
-        duration: 3 * 60 * 1000, // millis
-        increment: 10 * 1000,
-        whiteClock: 3 * 6 * 1000,
-        blackClock: 3 * 6 * 1000
-    },
-    'player2': {
+let games = {};
 
+function createGame(whiteName, blackName, startClockMillis) {
+    const game = {        
+        moveStartTimestamp: null,
+        whiteName: whiteName,
+        blackName: blackName,
+        duration: {
+            initial: startClockMillis,
+            white: startClockMillis,
+            black: startClockMillis
+        },
+        increment: 0,
+        whiteClock: startClockMillis,
+        blackClock: startClockMillis,
+        isWhiteTurn: true,
+        intervalId: null
+    };
+
+    games[whiteName] = game;
+    games[blackName] = game;
+
+    return game;
+}
+
+function sendClockUpdate(game) {
+    const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
+        white: game.whiteClock,
+        black: game.blackClock
+    }});
+
+    if (playersSockets[game.whiteName] !== undefined
+        && playersSockets[game.blackName] !== undefined
+    ) {
+        playersSockets[game.whiteName].send(clockUpdateMessageStr);
+        playersSockets[game.blackName].send(clockUpdateMessageStr);
     }
-};
+}
 
 wss.on('connection', (ws) => {
     console.log(`A new client connected`);
@@ -50,29 +74,16 @@ wss.on('connection', (ws) => {
                     const randomNumber = Math.random();
                     const color = randomNumber < 1 / 2 ? 'white' : 'black';
 
-                    const game = {
-                        moveStartTimestamp: null,
-                        whiteName: color === 'white' ? opponentName : name,
-                        blackName: color === 'white' ? name : opponentName,
-                        duration: {
-                            initial: 3 * 60 * 1000,
-                            white: 3 * 60 * 1000,
-                            black: 3 * 60 * 1000
-                        },
-                        increment: 0,
-                        whiteClock: 3 * 60 * 1000,
-                        blackClock: 3 * 60 * 1000,
-                        isWhiteTurn: true,
-                        intervalId: null
-                    }
+                    const whiteName = color === 'white' ? opponentName : name;
+                    const blackName = color === 'white' ? name : opponentName;
 
-                    games[name] = game;
-                    games[opponentName] = game;
+                    const game = createGame(whiteName, blackName, 3 * 60 * 1000);
 
                     ws.send(JSON.stringify({matchAttributes: {
                         'opponentName': opponentName,
                         'yourColor': color
                     }}));
+
                     playersSockets[opponentName].send(JSON.stringify({matchAttributes: {
                         'opponentName': name,
                         'yourColor': color === 'white' ? 'black' : 'white'
@@ -107,17 +118,7 @@ wss.on('connection', (ws) => {
                         return;
                     }
 
-                    const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
-                        white: game.whiteClock,
-                        black: game.blackClock
-                    }});
-
-                    if (playersSockets[game.whiteName] !== undefined
-                        && playersSockets[game.blackName] !== undefined
-                    ) {
-                        playersSockets[game.whiteName].send(clockUpdateMessageStr);
-                        playersSockets[game.blackName].send(clockUpdateMessageStr);
-                    }
+                    sendClockUpdate(game);
 
                     console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
                 }, 500);
@@ -142,23 +143,8 @@ wss.on('connection', (ws) => {
                     JSON.stringify({notification: 'resign'})
                 );
 
-                const restartedClockMillis = game.duration.initial;
-                game.duration.white = restartedClockMillis;
-                game.duration.black = restartedClockMillis;
-                game.whiteClock = restartedClockMillis;
-                game.blackClock = restartedClockMillis;
-
-                const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
-                    white: game.whiteClock,
-                    black: game.blackClock
-                }});
-
-                if (playersSockets[game.whiteName] !== undefined
-                    && playersSockets[game.blackName] !== undefined
-                ) {
-                    playersSockets[game.whiteName].send(clockUpdateMessageStr);
-                    playersSockets[game.blackName].send(clockUpdateMessageStr);
-                }
+                const newGame = createGame(game.whiteName, game.blackName, game.duration.initial);
+                sendClockUpdate(newGame);
             }
         }
     });
@@ -176,8 +162,11 @@ wss.on('connection', (ws) => {
                         JSON.stringify({notification: 'opponent disconnected'}));
                 }
 
-                clearInterval(games[name].intervalId);
-                delete games[name];
+                if (games[name]) {
+                    clearInterval(games[name].intervalId);
+                    delete games[name];
+                }
+                
                 delete playersSockets[name];
                 delete matches[name];
                 removeName(name);
