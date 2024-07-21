@@ -50,6 +50,7 @@ export function resignOnlineGame() {
 function sendInitialMessage() {
     console.log('Connected to the WebSocket server');
 
+    // time and increment should be read out from settings inputs in the future
     const objMessage = {
         name: yourName,
         settings: {
@@ -60,10 +61,6 @@ function sendInitialMessage() {
     };
 
     socket.send(JSON.stringify(objMessage));
-
-    // should be set after player is joined matchmaking = server sent 'waiting' notification
-    // this notification is yet to be implemented
-    // createOnlineMatchHtml(yourName, 'white', 'Finding a match...', 'black', 5 * 60 * 1000); // 5 min default
 }
 
 function handleIncomingMessage(event) {
@@ -73,11 +70,10 @@ function handleIncomingMessage(event) {
     console.log(objMessage);
 
     if (objMessage.matchAttributes !== undefined) { // opponent found
-        const {opponentName, yourColor} = objMessage.matchAttributes;
+        const {opponentName, yourColor, time} = objMessage.matchAttributes;
         
-        setOnlineAttributes(opponentName, yourColor, yourName, 3 * 60 * 1000); // 3 min test
+        setOnlineAttributes(opponentName, yourColor, yourName, time);
         resetGameLocally();
-        // display attributes visually
     
     } else if (objMessage.move !== undefined) { // opponent's move played
         const {move} = objMessage;

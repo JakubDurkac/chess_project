@@ -14,7 +14,7 @@ let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 let activeNames = [];
 let games = {};
 
-function createGame(whiteName, blackName, startClockMillis) {
+function createGame(whiteName, blackName, startClockMillis, incrementMillis) {
     const game = {        
         moveStartTimestamp: null,
         whiteName: whiteName,
@@ -24,7 +24,7 @@ function createGame(whiteName, blackName, startClockMillis) {
             white: startClockMillis,
             black: startClockMillis
         },
-        increment: 0,
+        increment: incrementMillis,
         whiteClock: startClockMillis,
         blackClock: startClockMillis,
         isWhiteTurn: true,
@@ -52,15 +52,18 @@ function sendClockUpdate(game) {
 }
 
 function sendMatchAttributes(whiteName) {
-    const blackName = matches[whiteName];
+    const {blackName, duration} = games[whiteName];
+
     playersSockets[whiteName].send(JSON.stringify({matchAttributes: {
         'opponentName': blackName,
-        'yourColor': 'white'
+        'yourColor': 'white',
+        'time': duration.initial,
     }}));
 
     playersSockets[blackName].send(JSON.stringify({matchAttributes: {
         'opponentName': whiteName,
-        'yourColor': 'black'
+        'yourColor': 'black',
+        'time': duration.initial,
     }}));
 }
 
@@ -95,12 +98,15 @@ function pressGameClock(move) {
     
     game.duration.white = game.whiteClock;
     game.duration.black = game.blackClock;
+
+    game[game.isWhiteTurn ? 'blackClock' : 'whiteClock'] += game.increment;
+    sendClockUpdate(game);
 }
 
 function restartGame(restartInitiatorName) {
     const game = games[restartInitiatorName];
     clearInterval(game.intervalId);
-    const newGame = createGame(game.whiteName, game.blackName, game.duration.initial);
+    const newGame = createGame(game.whiteName, game.blackName, game.duration.initial, game.increment);
     sendClockUpdate(newGame);
 }
 
@@ -148,7 +154,7 @@ function sendOpponentsList(toName, opponentsList) {
     }));
 }
 
-function pickWhitename(settings) {
+function pickWhitename(nameToJoin, by, settings) {
     const {color} = settings;
     if (color === 'random') {
         return Math.random() < 1 / 2 ? nameToJoin : by;
@@ -191,8 +197,10 @@ wss.on('connection', (ws) => {
                 matches[nameToJoin] = by;
                 matches[by] = nameToJoin;
 
-                const whiteName = pickWhitename(nameToJoin, by, playersSettings[nameToJoin]);
-                const game = createGame(whiteName, matches[whiteName], 3 * 60 * 1000);
+                const gameSettings = playersSettings[nameToJoin];
+                const whiteName = pickWhitename(nameToJoin, by, gameSettings);
+                const game = createGame(whiteName, matches[whiteName], 
+                    gameSettings.time, gameSettings.increment);
 
                 sendMatchAttributes(whiteName)
 
