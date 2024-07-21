@@ -165,28 +165,8 @@ wss.on('connection', (ws) => {
             // send everybody available opponents list, clients will display
             // this list and add interactive 'join' button to each opponent,
             // this button will notify the server, which will match these two,
-            // send match attributes and so on (this part is already working)
+            // send match attributes and so on
             sendOutAvailableOpponents();
-
-            // find any match and initialise game -------------------------
-            // for (let i = 0; i < activeNames.length; i++) {
-            //     const opponentName = activeNames[i];
-            //     if (name === opponentName) {
-            //         continue;
-            //     }
-
-            //     if (matches[opponentName] === undefined) {
-            //         matches[opponentName] = name;
-            //         matches[name] = opponentName;
-
-            //         const whiteName = Math.random() < 1 / 2 ? opponentName : name;
-            //         const game = createGame(whiteName, matches[whiteName], 3 * 60 * 1000);
-            //         sendMatchAttributes(whiteName)
-                    
-            //         break;
-            //     }
-            // }
-            // ends here ------------------------------------------------
 
             console.log('Matches:');
             console.log(matches);

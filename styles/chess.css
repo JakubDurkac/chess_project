@@ -60,12 +60,12 @@ html, body {
 }
 
 .options-button:hover {
-    background-image: linear-gradient(to bottom right, #55f12a, #239029, #0ccf15);
+    filter: brightness(1.1);
     cursor: pointer;
 }
 
 .options-button:active {
-    background-image: linear-gradient(to bottom right, #47e31c, #18951e, #0aee15);
+    filter: brightness(1.2);
 }
 
 .options {
@@ -89,15 +89,6 @@ html, body {
     scrollbar-color: #61b0fb #131c57;
 }
 
-.online-match-container {
-    width: 276px;
-    min-height: 220px;
-    height: 220px;
-    padding: 0px 0px 0px 0px;
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-}
-
 .online-panel {
     width: 276px;
     min-height: 220px;
@@ -110,6 +101,70 @@ html, body {
     border-radius: 10px;
     margin: 7px 7px 7px 7px;
     overflow: hidden;
+}
+
+.online-opponents-container {
+    width: 276px;
+    min-height: 220px;
+    height: 220px;
+    padding: 0px 0px 0px 0px;
+    background-image: linear-gradient(to bottom right, #212121, #3e3e3e, #181818);
+    color: #fbefe1;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.opponent-to-join {
+    padding-left: 10px;
+    display: grid;
+    grid-template-columns: 100px 50px 30px 30px;
+    border-bottom: 1px solid #fbefe1;
+    background-image: linear-gradient(to bottom right, #212121, #3e3e3e, #181818);
+}
+
+.opponents-header {
+    background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
+    color: rgb(44, 44, 44);
+}
+
+.opponent-to-join span {
+    padding-top: 3px;
+}
+
+.join-button {
+    background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
+    color: rgb(44, 44, 44);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.join-button:hover {
+    cursor: pointer;
+    filter: brightness(1.1);
+}
+
+.join-button:active {
+    filter: brightness(1.2);
+}
+
+.online-match-container {
+    width: 276px;
+    min-height: 220px;
+    height: 220px;
+    padding: 0px 0px 0px 0px;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+.no-opponents-online {
+    margin-top: 90px;
+    margin-left: 12px;
 }
 
 .online-match-container p {

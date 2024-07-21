@@ -92,18 +92,31 @@ function generateClickableOpponent(name) {
     return `
     <div class="opponent-to-join">
         <span>${name}</span>
-        <button data-name-to-join="${name}" class="join-button">JOIN</button>
+        <button data-name-to-join="${name}" class="join-button">GO</button>
     </div>`
 }
 
 function generateOpponentsList(availableOpponents, yourName) {
-    let opponentsListHtml = '';
+    let opponentsListHtml = `
+    <div class="opponent-to-join opponents-header">
+        <span>Name</span>
+        <span>Match</span>
+    </div>`;
 
+    let opponentsCount = 0;
     availableOpponents.forEach((name) => {
         if (name !== yourName) {
             opponentsListHtml += generateClickableOpponent(name);
+            opponentsCount++;
         }
     });
+
+    if (opponentsCount === 0) {
+        opponentsListHtml += `
+        <div class="no-opponents-online">
+            <span>No players online at the moment</span>
+        </div>`
+    }
 
     return opponentsListHtml;
 }
