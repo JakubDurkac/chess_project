@@ -122,6 +122,10 @@ function handleClientDisconnect(name) {
     delete playersSockets[name];
     delete matches[name];
     removeName(name);
+
+    if (opponent === undefined) {
+        sendOutAvailableOpponents();
+    }
 }
 
 function sendOutAvailableOpponents() {
@@ -189,7 +193,7 @@ wss.on('connection', (ws) => {
     
         } else if (objMessage.joinRequest !== undefined) {
             const {nameToJoin, by} = objMessage.joinRequest;
-            if (matches[nameToJoin] === undefined) {
+            if (matches[nameToJoin] === undefined && playersSockets[nameToJoin] !== undefined) {
                 matches[nameToJoin] = by;
                 matches[by] = nameToJoin;
 
