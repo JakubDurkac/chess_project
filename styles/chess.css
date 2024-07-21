@@ -118,7 +118,7 @@ html, body {
 .opponent-to-join {
     padding-left: 10px;
     display: grid;
-    grid-template-columns: 100px 50px 30px 30px;
+    grid-template-columns: 100px 70px 50px 40px;
     border-bottom: 1px solid #fbefe1;
     background-image: linear-gradient(to bottom right, #212121, #3e3e3e, #181818);
 }

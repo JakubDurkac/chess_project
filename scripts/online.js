@@ -88,10 +88,24 @@ export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponen
     onlinePanelElem.innerHTML = matchHtml;
 }
 
-function generateClickableOpponent(name) {
+function formatTimeControl(timeMillis, incrementMillis) {
+    const timeMinutes = Math.round(timeMillis / 1000 / 60);
+    const incrementSeconds = Math.round(incrementMillis / 1000);
+    return `${timeMinutes}|${incrementSeconds}`;
+}
+
+function formatColor(color) {
+    return color;
+}
+
+function generateClickableOpponent(name, settings) {
+    console.log(settings);
+    const {time, increment, color} = settings;
     return `
     <div class="opponent-to-join">
         <span>${name}</span>
+        <span>${formatColor(color)}</span>
+        <span>${formatTimeControl(time, increment)}</span>
         <button data-name-to-join="${name}" class="join-button">GO</button>
     </div>`
 }
@@ -100,13 +114,16 @@ function generateOpponentsList(availableOpponents, yourName) {
     let opponentsListHtml = `
     <div class="opponent-to-join opponents-header">
         <span>Name</span>
-        <span>Match</span>
+        <span>Color</span>
+        <span>Time</span>
+        <span></span>
     </div>`;
 
     let opponentsCount = 0;
-    availableOpponents.forEach((name) => {
+    availableOpponents.forEach((opponent) => {
+        const {name, settings} = opponent;
         if (name !== yourName) {
-            opponentsListHtml += generateClickableOpponent(name);
+            opponentsListHtml += generateClickableOpponent(name, settings);
             opponentsCount++;
         }
     });

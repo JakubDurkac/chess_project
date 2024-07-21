@@ -9,6 +9,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 let playersSockets = {}; // {'name': theirSocket}
+let playersSettings = {}; // {'name': {time, increment, color}}
 let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 let activeNames = [];
 let games = {};
@@ -120,6 +121,7 @@ function handleClientDisconnect(name) {
     }
     
     delete playersSockets[name];
+    delete playersSettings[name];
     delete matches[name];
     removeName(name);
 
@@ -131,6 +133,8 @@ function handleClientDisconnect(name) {
 function sendOutAvailableOpponents() {
     const availableOpponents = activeNames.filter((name) => {
         return matches[name] === undefined && playersSockets[name] !== undefined;
+    }).map((opponentName) => {
+        return {name: opponentName, settings: playersSettings[opponentName]};
     });
 
     activeNames.forEach((toName) => {
@@ -144,6 +148,15 @@ function sendOpponentsList(toName, opponentsList) {
     }));
 }
 
+function pickWhitename(settings) {
+    const {color} = settings;
+    if (color === 'random') {
+        return Math.random() < 1 / 2 ? nameToJoin : by;
+    }
+
+    return color === 'white' ? nameToJoin : by;
+}
+
 wss.on('connection', (ws) => {
     console.log(`A new client connected`);
     ws.on('message', (message) => {     
@@ -152,14 +165,15 @@ wss.on('connection', (ws) => {
         console.log(strMessage);
     
         if (objMessage.name !== undefined) {
-            const name = objMessage.name;
+            const {name, settings} = objMessage;
             if (activeNames.includes(name)) {
                 console.log(`Client name is taken.`);
                 ws.send(JSON.stringify({notification: 'duplicate'}));
                 return;
             }
-
+           
             playersSockets[name] = ws;
+            playersSettings[name] = settings;
             activeNames.push(name);
 
             // send everybody available opponents list, clients will display
@@ -177,8 +191,9 @@ wss.on('connection', (ws) => {
                 matches[nameToJoin] = by;
                 matches[by] = nameToJoin;
 
-                const whiteName = Math.random() < 1 / 2 ? nameToJoin : by;
+                const whiteName = pickWhitename(nameToJoin, by, playersSettings[nameToJoin]);
                 const game = createGame(whiteName, matches[whiteName], 3 * 60 * 1000);
+
                 sendMatchAttributes(whiteName)
 
                 sendOutAvailableOpponents();

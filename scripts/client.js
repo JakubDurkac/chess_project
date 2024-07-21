@@ -51,7 +51,12 @@ function sendInitialMessage() {
     console.log('Connected to the WebSocket server');
 
     const objMessage = {
-        name: yourName
+        name: yourName,
+        settings: {
+            time: 5 * 60 * 1000,
+            increment: 5 * 1000,
+            color: 'random'
+        }
     };
 
     socket.send(JSON.stringify(objMessage));
