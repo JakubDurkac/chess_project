@@ -132,6 +132,10 @@ html, body {
     padding-top: 3px;
 }
 
+.opponents-list-color-field, .opponents-list-time-field {
+    justify-self: center;
+}
+
 .join-button {
     background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
     color: rgb(44, 44, 44);

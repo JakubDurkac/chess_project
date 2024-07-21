@@ -104,8 +104,8 @@ function generateClickableOpponent(name, settings) {
     return `
     <div class="opponent-to-join">
         <span>${name}</span>
-        <span>${formatColor(color)}</span>
-        <span>${formatTimeControl(time, increment)}</span>
+        <span class="opponents-list-color-field">${formatColor(color)}</span>
+        <span class="opponents-list-time-field">${formatTimeControl(time, increment)}</span>
         <button data-name-to-join="${name}" class="join-button">GO</button>
     </div>`
 }
@@ -114,8 +114,8 @@ function generateOpponentsList(availableOpponents, yourName) {
     let opponentsListHtml = `
     <div class="opponent-to-join opponents-header">
         <span>Name</span>
-        <span>Color</span>
-        <span>Time</span>
+        <span class="opponents-list-color-field">Color</span>
+        <span class="opponents-list-time-field">Time</span>
         <span></span>
     </div>`;
 
