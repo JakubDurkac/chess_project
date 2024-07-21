@@ -131,7 +131,7 @@ function generateOpponentsList(availableOpponents, yourName) {
     if (opponentsCount === 0) {
         opponentsListHtml += `
         <div class="no-opponents-online">
-            <span>No players online at the moment</span>
+            <span>No players looking for a game</span>
         </div>`
     }
 
