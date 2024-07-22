@@ -376,7 +376,34 @@ function highlightStalemate(firstKingCoords, secondKingCoords) {
 
 function setResult(keyword, firstKingCoords, secondKingCoords) {
     gameStats.result = {keyword, firstKingCoords, secondKingCoords};
+    if (isOnlineMatch) {
+        updateOnlineScore();
+    }
+
     document.querySelector('.js-play-button').innerText = 'Play Again';
+}
+
+function updateOnlineScore() {
+    console.log(gameStats);
+    const {keyword, firstKingCoords} = gameStats.result;
+    const [firstRow, firstCol] = firstKingCoords;
+    console.log(firstRow, firstCol, chessBoard[firstRow, firstCol]);
+    const firstKingColor = chessBoard[firstRow][firstCol] === 'wk' ? 'white' : 'black';
+    const secondKingColor = firstKingColor === 'white' ? 'black' : 'white';
+
+    const firstScoreElem = document.querySelector(`.online-score-${firstKingColor}`);
+    const secondScoreElem = document.querySelector(`.online-score-${secondKingColor}`);
+
+    if (!firstScoreElem || !secondScoreElem) {
+        return;
+    }
+
+    if (keyword === 'win') {
+        firstScoreElem.innerText = Number(firstScoreElem.innerText) + 1;
+    } else if (keyword === 'draw') {
+        firstScoreElem.innerText = Number(firstScoreElem.innerText) + 0.5;
+        secondScoreElem.innerText = Number(secondScoreElem.innerText) + 0.5;
+    }
 }
 
 function addPieceToBoard(row, col, piece) {
