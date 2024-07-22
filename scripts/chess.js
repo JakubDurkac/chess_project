@@ -3,6 +3,7 @@ import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
 import { resetGameStats } from "./stats.js";
 import { isOnlineMatch } from "./online.js"
 
+setUpModalSettings();
 initializeBoard();
 export let isPlaying = false;
 
@@ -31,4 +32,24 @@ export function resetGameLocally() {
 
     updateBoardPieces();
     playButtonElem.innerText = isOnlineMatch ? 'Resign Game' : 'Restart Game';
+}
+
+function setUpModalSettings() {
+    var modalWindowElem = document.querySelector(".settings-modal");
+    var settingsButtonElem = document.querySelector(".js-settings-button");
+    var closeSpanElem = document.getElementsByClassName("close")[0];
+
+    settingsButtonElem.onclick = function() {
+        modalWindowElem.style.display = "block";
+    }
+
+    closeSpanElem.onclick = function() {
+        modalWindowElem.style.display = "none";
+    }
+
+    modalWindowElem.onclick = function(event) {
+        if (event.target == modalWindowElem) {
+            modalWindowElem.style.display = "none";
+        }
+    }
 }
