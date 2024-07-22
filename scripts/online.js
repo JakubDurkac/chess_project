@@ -181,7 +181,8 @@ export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';
 
-    onlinePanelElem.innerHTML = '';
+    document.querySelector(".online-opponent").style.opacity = 0.6;
+    document.querySelector(".online-player").style.opacity = 0.6;
 }
 
 export function resetOnlineAttributes() {

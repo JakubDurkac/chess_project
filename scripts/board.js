@@ -383,6 +383,13 @@ function setResult(keyword, firstKingCoords, secondKingCoords) {
     document.querySelector('.js-play-button').innerText = 'Play Again';
 }
 
+export function updateScoreResignation(resigneeColor) {
+    if (gameStats.moveCount > 2) {
+        const winnerColor = resigneeColor === 'white' ? 'black' : 'white';
+        announceCheckmate(gameStats.kingCoords[winnerColor], gameStats.kingCoords[resigneeColor]);
+    }
+}
+
 function updateOnlineScore() {
     console.log(gameStats);
     const {keyword, firstKingCoords} = gameStats.result;

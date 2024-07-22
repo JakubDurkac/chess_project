@@ -1,6 +1,6 @@
-import { makeMoveWithExtra } from "./board.js";
+import { makeMoveWithExtra, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks } from "./online.js";
+import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor } from "./online.js";
 import { gameStats } from "./stats.js";
 
 let socket = null;
@@ -112,6 +112,7 @@ function handleIncomingMessage(event) {
             
 
         } else if (notification === 'resign') {
+            updateScoreResignation(onlineYourColor === 'white' ? 'black' : 'white');
             resetGameLocally();
         }
     }

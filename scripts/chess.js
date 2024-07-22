@@ -1,7 +1,7 @@
-import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard } from "./board.js";
+import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, announceCheckmate, updateScoreResignation } from "./board.js";
 import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
-import { resetGameStats } from "./stats.js";
-import { isOnlineMatch } from "./online.js"
+import { gameStats, resetGameStats } from "./stats.js";
+import { isOnlineMatch, onlineYourColor } from "./online.js"
 
 setUpModalSettings();
 initializeBoard();
@@ -19,6 +19,7 @@ flipBoardButtonElem.addEventListener('click', flipBoard);
 export function resetGameCompletely() {
     if (isOnlineMatch) {
         resignOnlineGame();
+        updateScoreResignation(onlineYourColor);
     }
 
     resetGameLocally();
