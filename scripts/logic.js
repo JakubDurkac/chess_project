@@ -3,6 +3,10 @@ import { gameStats } from "./stats.js";
 import { onlineYourColor } from "./online.js";
 
 export function isLegalMove(fromCoords, toCoords, isOnlineMatch) {
+    if (gameStats.result.keyword !== null) { // game ended
+        return false;
+    }
+
     if (isOnlineMatch 
         && onlineYourColor === 'white' !== gameStats.isWhiteTurn ) {
             return false;

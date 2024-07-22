@@ -38,6 +38,7 @@ function createGame(whiteName, blackName, startClockMillis, incrementMillis) {
 }
 
 function sendClockUpdate(game) {
+    console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
     const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
         white: game.whiteClock,
         black: game.blackClock
@@ -46,6 +47,7 @@ function sendClockUpdate(game) {
     if (playersSockets[game.whiteName] !== undefined
         && playersSockets[game.blackName] !== undefined
     ) {
+        console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
         playersSockets[game.whiteName].send(clockUpdateMessageStr);
         playersSockets[game.blackName].send(clockUpdateMessageStr);
     }
@@ -77,13 +79,12 @@ function startGameClock(game) {
 
         if (game.whiteClock <= 0 || game.blackClock <= 0) {
             clearInterval(game.intervalId);
-            // someone lost on time, clients should be notified, also last clock update
+            sendClockUpdate(game);
             return;
         }
 
         sendClockUpdate(game);
 
-        console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
     }, 1000);    
 }
 

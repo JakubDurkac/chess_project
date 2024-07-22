@@ -345,7 +345,7 @@ function castleRooksIfAny() {
     }
 }
 
-function announceCheckmate(winnerKingCoords, loserKingCoords) {
+export function announceCheckmate(winnerKingCoords, loserKingCoords) {
     highlightCheckmate(winnerKingCoords, loserKingCoords);
     setResult('win', winnerKingCoords, loserKingCoords);
 }

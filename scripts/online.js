@@ -1,5 +1,6 @@
-import { flipBoard, isFlippedBoard } from "./board.js";
+import { announceCheckmate, flipBoard, isFlippedBoard } from "./board.js";
 import { sendJoinRequest } from "./client.js";
+import { gameStats } from "./stats.js";
 
 export let isOnlineMatch = false;
 export let onlineYourColor = null;
@@ -10,17 +11,34 @@ let onlineStartClockMillis = null;
 const onlinePanelElem = document.querySelector('.js-online-panel');
 
 export function updateClocks(whiteClockMillis, blackClockMillis) {
+    if (gameStats.result.keyword !== null) { 
+        return; // game ended, no need to update clocks
+    }
+
     const whiteClockElem = document.getElementById('white-clock');
     const blackClockElem = document.getElementById('black-clock');
 
     if (whiteClockElem) {
         console.log("oldTime: White: ", whiteClockElem.innerHTML);
-        whiteClockElem.innerHTML = formatTime(whiteClockMillis);
+        whiteClockElem.innerHTML = formatTime(whiteClockMillis >= 0
+            ? whiteClockMillis
+            : 0);
     }
 
     if (blackClockElem) {
         console.log("oldTime: Black: ", whiteClockElem.innerHTML);
-        blackClockElem.innerHTML = formatTime(blackClockMillis);
+        blackClockElem.innerHTML = formatTime(blackClockMillis >= 0
+            ? blackClockMillis
+            : 0);
+    }
+
+    if (whiteClockMillis <= 0) {
+        console.log('Black won on time.');
+        announceCheckmate(gameStats.kingCoords.black, gameStats.kingCoords.white);
+
+    } else if (blackClockMillis <= 0) {
+        announceCheckmate(gameStats.kingCoords.white, gameStats.kingCoords.black);
+        console.log('White won on time.');
     }
     
     console.log("newTime: White: ", whiteClockElem.innerHTML);
