@@ -1,7 +1,7 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
-import { sendMove } from "./client.js";
+import { notifyServerGameEnded, sendMove } from "./client.js";
 import { isPlaying } from "./chess.js";
 import { isOnlineMatch, onlineYourColor } from "./online.js";
 
@@ -291,6 +291,11 @@ function makeMove(fromCoords, toCoords) {
         } else {
             announceStalemate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
         }
+    }
+
+    if (isOnlineMatch && gameStats.result.keyword !== null
+        && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
+        notifyServerGameEnded();
     }
 }
 

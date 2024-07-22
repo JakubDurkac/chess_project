@@ -218,6 +218,12 @@ wss.on('connection', (ws) => {
             if (message === 'resign') {
                 restartGame(by);
                 notifyOpponent('resign', by);
+
+            } else if (message === 'game ended') {
+                const game = games[by];
+                if (game !== undefined) {
+                    clearInterval(game.intervalId);
+                }
             }
         }
     });

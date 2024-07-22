@@ -141,3 +141,14 @@ export function sendJoinRequest(yourName, nameToJoin) {
 
     socket.send(JSON.stringify(objMessage));
 }
+
+export function notifyServerGameEnded() {
+    const objMessage = {
+        notification: {
+            message: 'game ended',
+            by: yourName
+        }
+    };
+
+    socket.send(JSON.stringify(objMessage));
+}
