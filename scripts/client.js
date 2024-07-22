@@ -104,6 +104,7 @@ function handleIncomingMessage(event) {
         const {notification} = objMessage;
         if (notification === 'opponent disconnected') {
             // show message to the user
+            updateScoreResignation(onlineYourColor === 'white' ? 'black' : 'white');
             disconnectFromServer();
 
         } else if (notification === 'duplicate') {

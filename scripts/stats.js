@@ -103,3 +103,7 @@ export function updateMaterialCount() {
         gameStats.materialCount[color] += pieceValue[autoPromotionPieceCode] - 1;
     }
 }
+
+export function hasGameEnded() {
+    return gameStats.result.keyword !== null;
+}

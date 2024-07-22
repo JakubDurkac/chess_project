@@ -1,6 +1,6 @@
 import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, announceCheckmate, updateScoreResignation } from "./board.js";
 import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
-import { gameStats, resetGameStats } from "./stats.js";
+import { resetGameStats } from "./stats.js";
 import { isOnlineMatch, onlineYourColor } from "./online.js"
 
 setUpModalSettings();
@@ -13,7 +13,10 @@ const disconectButtonElem = document.querySelector('.js-disconnect-button');
 const flipBoardButtonElem = document.querySelector('.js-flip-button');
 playButtonElem.addEventListener('click', resetGameCompletely);
 findMatchButtonElem.addEventListener('click', findMatch);
-disconectButtonElem.addEventListener('click', disconnectFromServer);
+disconectButtonElem.addEventListener('click', () => {
+    updateScoreResignation(onlineYourColor);
+    disconnectFromServer();
+});
 flipBoardButtonElem.addEventListener('click', flipBoard);
 
 export function resetGameCompletely() {

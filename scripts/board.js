@@ -1,5 +1,5 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { isPlaying } from "./chess.js";
@@ -384,7 +384,8 @@ function setResult(keyword, firstKingCoords, secondKingCoords) {
 }
 
 export function updateScoreResignation(resigneeColor) {
-    if (gameStats.moveCount > 2) {
+    console.log(gameStats);
+    if (gameStats.moveCount > 2 && !hasGameEnded()) {
         const winnerColor = resigneeColor === 'white' ? 'black' : 'white';
         announceCheckmate(gameStats.kingCoords[winnerColor], gameStats.kingCoords[resigneeColor]);
     }
