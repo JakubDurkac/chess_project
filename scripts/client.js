@@ -47,6 +47,18 @@ export function resignOnlineGame() {
     socket.send(JSON.stringify(objMessage));
 }
 
+function getSelectedTimeMinutes() {
+    return Number(document.getElementById("game-length").value);
+}
+
+function getSelectedIncrementSeconds() {
+    return Number(document.getElementById("game-increment").value);
+}
+
+function getSelectedColor() {
+    return document.getElementById("game-color").value;
+}
+
 function sendInitialMessage() {
     console.log('Connected to the WebSocket server');
 
@@ -54,9 +66,9 @@ function sendInitialMessage() {
     const objMessage = {
         name: yourName,
         settings: {
-            time: 5 * 60 * 1000,
-            increment: 5 * 1000,
-            color: 'random'
+            time: getSelectedTimeMinutes() * 60 * 1000,
+            increment: getSelectedIncrementSeconds() * 1000,
+            color: getSelectedColor()
         }
     };
 

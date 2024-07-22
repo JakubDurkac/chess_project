@@ -489,8 +489,8 @@ html, body {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 15vh;
-    padding-left: 10vw;
+    padding-top: 17vh;
+    padding-left: 8.5vw;
     left: 0;
     top: 0;
     width: 100%;
@@ -501,10 +501,23 @@ html, body {
   }
   
   .settings-modal-content {
-    background-color: #fefefe;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+    font-weight: 600;
+    background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
     padding: 20px;
-    border: 1px solid #888;
-    width: 500px;
+    border: 2px solid #f7e9d8;
+    border-radius: 5px;
+    width: 59vmin;
+    height: 59vmin;
+    overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-color: #272727 #f7e9d8;
+  }
+
+  .settings-modal-content p {
+    margin: 0px 10px 20px 0px;
+    color: #fbefe1;
   }
   
   .close {
@@ -516,7 +529,58 @@ html, body {
   
   .close:hover,
   .close:focus {
-    color: #000;
+    color: #fbefe1;
     text-decoration: none;
     cursor: pointer;
   }
+
+  .select-container {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.select-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.select-label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #fbefe1;
+}
+
+.custom-select {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    appearance: none;
+    background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
+    border: 1px solid #fbefe1;
+    padding: 10px;
+    color: rgb(44, 44, 44);
+    border-radius: 4px;
+    width: 130px;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.custom-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+option { 
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #f7e9d8;
+    color: #373737;
+}
