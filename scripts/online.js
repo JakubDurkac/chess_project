@@ -195,8 +195,18 @@ export function goOffline() {
     isOnlineMatch = false;
     document.querySelector('.js-play-button').innerText = 'Restart Game';
 
-    document.querySelector(".online-opponent").style.opacity = 0.6;
-    document.querySelector(".online-player").style.opacity = 0.6;
+    const onlineOpponentElem = document.querySelector(".online-opponent");
+    const onlinePlayerElem = document.querySelector(".online-player");
+    const onlineOpponentsContainerElem = document.querySelector(".online-opponents-container");
+
+    if (onlinePlayerElem && onlineOpponentElem) {
+        onlinePlayerElem.style.opacity = 0.6;
+        onlineOpponentElem.style.opacity = 0.6;
+    }
+
+    if (onlineOpponentsContainerElem) {
+        onlinePanelElem.innerHTML = ''; // should be set to default content
+    }
 }
 
 export function resetOnlineAttributes() {
