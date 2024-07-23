@@ -41,7 +41,7 @@ export function resetGameLocally() {
     isPlaying = true;
 
     updateBoardPieces();
-    playButtonElem.innerText = isOnlineMatch ? 'Resign Game' : 'Restart Game';
+    playButtonElem.innerHTML = isOnlineMatch ? getResignGameIcon() : getRestartPlayAgainIcon();
 }
 
 function setUpModalSettings() {
@@ -62,4 +62,12 @@ function setUpModalSettings() {
             modalWindowElem.style.display = "none";
         }
     }
+}
+
+export function getResignGameIcon() {
+    return '<img src="images/icons/resign_icon.png" class="icon">'
+}
+
+export function getRestartPlayAgainIcon() {
+    return '<img src="images/icons/restart_play_again_icon.png" class="icon">';
 }

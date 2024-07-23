@@ -2,7 +2,7 @@ import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSaf
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
-import { isPlaying } from "./chess.js";
+import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
 import { isOnlineMatch, onlineYourColor } from "./online.js";
 
 export const boardSize = 8;
@@ -380,7 +380,7 @@ function setResult(keyword, firstKingCoords, secondKingCoords) {
         updateOnlineScore();
     }
 
-    document.querySelector('.js-play-button').innerText = 'Play Again';
+    document.querySelector('.js-play-button').innerHTML = getRestartPlayAgainIcon();
 }
 
 export function updateScoreResignation(resigneeColor) {

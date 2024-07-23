@@ -1,4 +1,5 @@
 import { announceCheckmate, flipBoard, isFlippedBoard, oppositeColor } from "./board.js";
+import { getRestartPlayAgainIcon } from "./chess.js";
 import { sendJoinRequest } from "./client.js";
 import { gameStats } from "./stats.js";
 
@@ -193,7 +194,7 @@ export function updateOnlineOpponentsHtml(availableOpponents, yourName) {
 
 export function goOffline() {
     isOnlineMatch = false;
-    document.querySelector('.js-play-button').innerText = 'Restart Game';
+    document.querySelector('.js-play-button').innerHTML = getRestartPlayAgainIcon();
 
     const onlineOpponentElem = document.querySelector(".online-opponent");
     const onlinePlayerElem = document.querySelector(".online-player");
