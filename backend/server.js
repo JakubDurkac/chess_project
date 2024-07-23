@@ -14,11 +14,12 @@ let matches = {}; // match ... 'name1': 'name2', 'name2': 'name1'
 let activeNames = [];
 let games = {};
 
-function createGame(whiteName, blackName, startClockMillis, incrementMillis) {
+function createGame(whiteName, blackName, startClockMillis, incrementMillis, color) {
     const game = {        
         moveStartTimestamp: null,
         whiteName: whiteName,
         blackName: blackName,
+        color: color,
         duration: {
             initial: startClockMillis,
             white: startClockMillis,
@@ -54,18 +55,20 @@ function sendClockUpdate(game) {
 }
 
 function sendMatchAttributes(whiteName) {
-    const {blackName, duration} = games[whiteName];
+    const {blackName, duration, color} = games[whiteName];
 
     playersSockets[whiteName].send(JSON.stringify({matchAttributes: {
         'opponentName': blackName,
         'yourColor': 'white',
         'time': duration.initial,
+        'gameColorType': color
     }}));
 
     playersSockets[blackName].send(JSON.stringify({matchAttributes: {
         'opponentName': whiteName,
         'yourColor': 'black',
         'time': duration.initial,
+        'gameColorType': color
     }}));
 }
 
@@ -106,8 +109,17 @@ function pressGameClock(move) {
 
 function restartGame(restartInitiatorName) {
     const game = games[restartInitiatorName];
-    clearInterval(game.intervalId);
-    const newGame = createGame(game.whiteName, game.blackName, game.duration.initial, game.increment);
+    const {intervalId, whiteName, blackName, duration, increment, color} = game;
+    clearInterval(intervalId);
+
+    let newWhiteName = whiteName;
+    let newBlackName = blackName;
+    if (color === 'random') {
+        newWhiteName = blackName;
+        newBlackName = whiteName;
+    }
+
+    const newGame = createGame(newWhiteName, newBlackName, duration.initial, increment, color);
     sendClockUpdate(newGame);
 }
 
@@ -201,7 +213,7 @@ wss.on('connection', (ws) => {
                 const gameSettings = playersSettings[nameToJoin];
                 const whiteName = pickWhitename(nameToJoin, by, gameSettings);
                 const game = createGame(whiteName, matches[whiteName], 
-                    gameSettings.time, gameSettings.increment);
+                    gameSettings.time, gameSettings.increment, gameSettings.color);
 
                 sendMatchAttributes(whiteName)
 

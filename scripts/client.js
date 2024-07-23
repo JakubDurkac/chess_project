@@ -82,9 +82,9 @@ function handleIncomingMessage(event) {
     console.log(objMessage);
 
     if (objMessage.matchAttributes !== undefined) { // opponent found
-        const {opponentName, yourColor, time} = objMessage.matchAttributes;
+        const {opponentName, yourColor, time, gameColorType} = objMessage.matchAttributes;
         
-        setOnlineAttributes(opponentName, yourColor, yourName, time);
+        setOnlineAttributes(opponentName, yourColor, yourName, time, gameColorType);
         resetGameLocally();
     
     } else if (objMessage.move !== undefined) { // opponent's move played

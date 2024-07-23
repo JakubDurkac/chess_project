@@ -1,7 +1,7 @@
-import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, announceCheckmate, updateScoreResignation } from "./board.js";
+import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation } from "./board.js";
 import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
 import { resetGameStats } from "./stats.js";
-import { isOnlineMatch, onlineYourColor } from "./online.js"
+import { isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes } from "./online.js"
 
 setUpModalSettings();
 initializeBoard();
@@ -29,6 +29,12 @@ export function resetGameCompletely() {
 }
 
 export function resetGameLocally() {
+    if (isOnlineMatch && onlineGameColorType === 'random') {
+        const newColor = onlineYourColor === 'white' ? 'black' : 'white';
+        setOnlineAttributes(onlineOpponentName, 
+            newColor, onlineYourName, onlineStartClockMillis, onlineGameColorType);
+    }
+
     resetBoard();
     resetGameStats();
     notationElem.innerHTML = '';

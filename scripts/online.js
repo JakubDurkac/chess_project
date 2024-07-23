@@ -4,9 +4,10 @@ import { gameStats } from "./stats.js";
 
 export let isOnlineMatch = false;
 export let onlineYourColor = null;
-let onlineOpponentName = null;
+export let onlineOpponentName = null;
 export let onlineYourName = null;
-let onlineStartClockMillis = null;
+export let onlineStartClockMillis = null;
+export let onlineGameColorType = null;
 
 const onlinePanelElem = document.querySelector('.js-online-panel');
 
@@ -62,11 +63,12 @@ function formatTime(milliseconds) {
         : `${minutes}:${paddedSeconds}`;
 }
 
-export function setOnlineAttributes(opponentName, yourColor, yourName, startClockMillis) {
+export function setOnlineAttributes(opponentName, yourColor, yourName, startClockMillis, gameColorType) {
     onlineOpponentName = opponentName;
     onlineYourColor = yourColor;
     onlineYourName = yourName;
     isOnlineMatch = true;
+    onlineGameColorType = gameColorType;
 
     onlineStartClockMillis = startClockMillis;
 
@@ -85,12 +87,28 @@ function joinOnlineOpponent(yourName, nameToJoin) {
 }
 
 export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis) {
+    const yourScoreElem = document.querySelector(`.online-score-${yourColor}`);
+    const opponentScoreElem = document.querySelector(`.online-score-${opponentColor}`);
+    let yourScore = 0;
+    let opponentScore = 0;
+
+    if (yourScoreElem && opponentScoreElem) {
+        if (onlineGameColorType === 'random') {
+            yourScore = opponentScoreElem.innerText;
+            opponentScore = yourScoreElem.innerText;
+
+        } else {
+            yourScore = yourScoreElem.innerText;
+            opponentScore = opponentScoreElem.innerText;
+        }
+    }
+
     let matchHtml = `
     <div class="online-match-container js-online-match-container">
         <div class="online-opponent online-${opponentColor}">
             <div class="name-score">
                 <p class="online-name">${opponentName}</p>
-                <p class="online-score-${opponentColor}">0</p>
+                <p class="online-score-${opponentColor}">${opponentScore}</p>
             </div>
             <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
         </div>
@@ -98,7 +116,7 @@ export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponen
             <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
             <div class="name-score">
                 <p class="online-name">${yourName}</p>
-                <p class="online-score-${yourColor}">0</p>
+                <p class="online-score-${yourColor}">${yourScore}</p>
             </div>
         </div>
     </div>`;
