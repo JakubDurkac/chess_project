@@ -31,8 +31,7 @@ html, body {
     scrollbar-color: #61b0fb #131c57;
 }
 
-.menu-button ,.name-input {
-    width: 280px;
+.name-input, .play-online-button, .icon-button, .game-button{
     padding: 10px 10px 10px 10px;
     font-family: Arial, Helvetica, sans-serif;
     color: aliceblue;
@@ -45,35 +44,15 @@ html, body {
     border-radius: 10px;
 }
 
-/* Duplication to be resolved later */
 .play-online-button {
     width: 213px;
-    padding: 10px 10px 10px 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    color: aliceblue;
-    font-size: 25px;
-    font-weight: 550;
-    border-style: solid;
-    border-color: aliceblue;
-    margin: 7px 7px 7px 7px;
-    background-image: linear-gradient(to bottom right, #0686ff, #1d4b86, #303a7a);
-    border-radius: 10px;
 }
 
-/* Duplication to be resolved later */
 .icon-button, .game-button {
     width: 53px;
     height: 53px;
     padding: 0px 0px 0px 0px;
-    font-family: Arial, Helvetica, sans-serif;
-    color: aliceblue;
-    font-size: 25px;
-    font-weight: 550;
-    border-style: solid;
-    border-color: aliceblue;
     margin: 7px 0px 7px 7px;
-    background-image: linear-gradient(to bottom right, #0686ff, #1d4b86, #303a7a);
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,41 +77,6 @@ html, body {
 
 .name-input {
     width: 256px;
-}
-
-.options-button {
-    margin: 7px 7px 7px 7px;
-    padding: 3px 10px 3px 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    color: aliceblue;
-    font-size: 30px;
-    font-weight: 550;
-    border: none;
-    background-image: linear-gradient(to bottom right, #51cd2f, #1c6b20, #0bba14);
-    border-radius: 30px;
-}
-
-.options-button:hover {
-    filter: brightness(1.1);
-    cursor: pointer;
-}
-
-.options-button:active {
-    filter: brightness(1.2);
-}
-
-.options {
-    display: flex;
-    flex-direction: column;
-    height: 200px;
-    outline-style: solid;
-    outline-color: aliceblue;
-    outline-width: 2px;
-    padding: 0px 7px 0px 0px;
-    margin: 10px 0px 10px 0px;
-    background-image: linear-gradient(to bottom right, #212427, #1d4b86, #131c57);
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
 }
 
 .chess-notation-container {
