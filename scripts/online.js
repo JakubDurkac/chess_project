@@ -12,10 +12,6 @@ export let onlineGameColorType = null;
 const onlinePanelElem = document.querySelector('.js-online-panel');
 
 export function updateClocks(whiteClockMillis, blackClockMillis) {
-    if (gameStats.result.keyword !== null) { 
-        return; // game ended, no need to update clocks
-    }
-
     const whiteClockElem = document.getElementById('white-clock');
     const blackClockElem = document.getElementById('black-clock');
 
