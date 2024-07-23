@@ -28,7 +28,7 @@ html, body {
     z-index: 1;
     overflow-y: auto;
     overflow-x: auto;
-    scrollbar-color: #61b0fb #131c57;
+    scrollbar-color: #61b0fb #0a204c;
 }
 
 .name-input, .play-online-button, .icon-button, .game-button{
@@ -85,10 +85,11 @@ html, body {
 }
 
 .chess-notation-container {
+    padding: 15px 15px 15px 15px;
     width: 246px;
     height: 100%;
     overflow-y: auto;
-    scrollbar-color: #61b0fb #131c57;
+    scrollbar-color: #61b0fb #0a204c;
 }
 
 .online-panel {
@@ -431,8 +432,7 @@ html, body {
 
 .notation-container-border {
     min-height: 100px;
-    width: 246px;
-    padding: 15px 15px 15px 15px;
+    width: 276px;
     margin: 7px 7px 7px 7px;
     overflow: hidden;
     border: #fbefe1;
