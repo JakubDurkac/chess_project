@@ -1,5 +1,5 @@
 import { announceCheckmate, flipBoard, isFlippedBoard, oppositeColor } from "./board.js";
-import { getRestartPlayAgainIcon } from "./chess.js";
+import { getRestartPlayAgainIcon, getWelcomeMessage } from "./chess.js";
 import { sendJoinRequest } from "./client.js";
 import { gameStats } from "./stats.js";
 
@@ -206,7 +206,7 @@ export function goOffline() {
     }
 
     if (onlineOpponentsContainerElem) {
-        onlinePanelElem.innerHTML = ''; // should be set to default content
+        onlinePanelElem.innerHTML = getWelcomeMessage();
     }
 }
 

@@ -7,6 +7,8 @@ setUpModalSettings();
 initializeBoard();
 export let isPlaying = false;
 
+document.querySelector('.online-panel').innerHTML = getWelcomeMessage();
+
 const playButtonElem = document.querySelector('.js-play-button');
 const findMatchButtonElem = document.querySelector('.js-find-match-button');
 const disconectButtonElem = document.querySelector('.js-disconnect-button');
@@ -70,4 +72,12 @@ export function getResignGameIcon() {
 
 export function getRestartPlayAgainIcon() {
     return '<img src="images/icons/restart_play_again_icon.png" class="icon">';
+}
+
+export function getWelcomeMessage() {
+    return `
+    <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Enter your name to challenge opponents online.</p>
+    <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Choose your favorite time control in the settings.</p> 
+    <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Nobody around? Dive into singleplayer mode. (&#9658;)</p>
+    `;
 }
