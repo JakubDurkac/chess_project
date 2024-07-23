@@ -24,6 +24,7 @@ html, body {
     margin: 10px 0px 10px 0px;
     background-image: linear-gradient(to bottom right, #212427, #1d4b86, #131c57);
     border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
     z-index: 1;
     overflow-y: auto;
     overflow-x: auto;
@@ -60,7 +61,7 @@ html, body {
 }
 
 /* Duplication to be resolved later */
-.icon-button {
+.icon-button, .game-button {
     width: 53px;
     height: 53px;
     padding: 0px 0px 0px 0px;
@@ -76,6 +77,18 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.game-button {
+    width: 60px;
+    height: 60px;
+}
+
+.game-buttons-container {
+    gap: 6.4px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
 }
 
 .play-online-with-settings-container {
