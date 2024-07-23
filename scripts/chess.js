@@ -8,6 +8,7 @@ initializeBoard();
 export let isPlaying = false;
 
 document.querySelector('.online-panel').innerHTML = getWelcomeMessage();
+notationElem.innerHTML = getInitialNotationMessage();
 
 const playButtonElem = document.querySelector('.js-play-button');
 const findMatchButtonElem = document.querySelector('.js-find-match-button');
@@ -39,7 +40,7 @@ export function resetGameLocally() {
 
     resetBoard();
     resetGameStats();
-    notationElem.innerHTML = '';
+    notationElem.innerHTML = getInitialNotationMessage();
     isPlaying = true;
 
     updateBoardPieces();
@@ -80,4 +81,9 @@ export function getWelcomeMessage() {
     <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Choose your favorite time control in the settings.</p> 
     <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Nobody around? Dive into singleplayer mode. (&#9658;)</p>
     `;
+}
+
+export function getInitialNotationMessage() {
+    return `<span class="initial-notation-message">
+        <span class="online-panel-index">&#x2022;</span> Moves unfold here!</span>`
 }

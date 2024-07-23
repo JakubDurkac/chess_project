@@ -2,7 +2,7 @@ import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSaf
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
-import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
+import { getInitialNotationMessage, getRestartPlayAgainIcon, isPlaying } from "./chess.js";
 import { isOnlineMatch, onlineYourColor } from "./online.js";
 
 export const boardSize = 8;
@@ -160,6 +160,10 @@ function generateSquares() {
 }
 
 function updateNotation() {
+    if (gameStats.moveCount === 1) {
+        notationElem.innerHTML = '';
+    }
+
     const cssTextClass = `class="chess-notation-text"`;
     const cssIndexClass = `class="chess-notation-index"`;
     const {moveCount} = gameStats;
