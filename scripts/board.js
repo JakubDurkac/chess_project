@@ -386,7 +386,7 @@ function setResult(keyword, firstKingCoords, secondKingCoords) {
 export function updateScoreResignation(resigneeColor) {
     console.log(gameStats);
     if (gameStats.moveCount > 2 && !hasGameEnded()) {
-        const winnerColor = resigneeColor === 'white' ? 'black' : 'white';
+        const winnerColor = oppositeColor(resigneeColor);
         announceCheckmate(gameStats.kingCoords[winnerColor], gameStats.kingCoords[resigneeColor]);
     }
 }
@@ -397,7 +397,7 @@ function updateOnlineScore() {
     const [firstRow, firstCol] = firstKingCoords;
     console.log(firstRow, firstCol, chessBoard[firstRow, firstCol]);
     const firstKingColor = chessBoard[firstRow][firstCol] === 'wk' ? 'white' : 'black';
-    const secondKingColor = firstKingColor === 'white' ? 'black' : 'white';
+    const secondKingColor = oppositeColor(firstKingColor);
 
     const firstScoreElem = document.querySelector(`.online-score-${firstKingColor}`);
     const secondScoreElem = document.querySelector(`.online-score-${secondKingColor}`);
@@ -489,4 +489,14 @@ export function boardDeepCopy(board) {
     });
 
     return boardCopy;
+}
+
+export function oppositeColor(color) {
+    if (color === 'white') {
+        return 'black';
+    }
+
+    if (color === 'black') {
+        return 'white';
+    }
 }

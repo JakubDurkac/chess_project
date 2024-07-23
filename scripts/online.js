@@ -1,4 +1,4 @@
-import { announceCheckmate, flipBoard, isFlippedBoard } from "./board.js";
+import { announceCheckmate, flipBoard, isFlippedBoard, oppositeColor } from "./board.js";
 import { sendJoinRequest } from "./client.js";
 import { gameStats } from "./stats.js";
 
@@ -74,7 +74,7 @@ export function setOnlineAttributes(opponentName, yourColor, yourName, startCloc
         flipBoard();
     }
 
-    const opponentColor = yourColor === 'white' ? 'black' : 'white';
+    const opponentColor = oppositeColor(yourColor);
     createOnlineMatchHtml(yourName, yourColor, opponentName, opponentColor, startClockMillis);
 }
 

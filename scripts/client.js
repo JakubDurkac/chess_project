@@ -1,4 +1,4 @@
-import { makeMoveWithExtra, updateScoreResignation } from "./board.js";
+import { makeMoveWithExtra, oppositeColor, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
 import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor } from "./online.js";
 import { gameStats } from "./stats.js";
@@ -104,7 +104,7 @@ function handleIncomingMessage(event) {
         const {notification} = objMessage;
         if (notification === 'opponent disconnected') {
             // show message to the user
-            updateScoreResignation(onlineYourColor === 'white' ? 'black' : 'white');
+            updateScoreResignation(oppositeColor(onlineYourColor));
             disconnectFromServer();
 
         } else if (notification === 'duplicate') {
@@ -113,7 +113,7 @@ function handleIncomingMessage(event) {
             
 
         } else if (notification === 'resign') {
-            updateScoreResignation(onlineYourColor === 'white' ? 'black' : 'white');
+            updateScoreResignation(oppositeColor(onlineYourColor));
             resetGameLocally();
         }
     }
