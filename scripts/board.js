@@ -3,7 +3,7 @@ import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, h
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getInitialNotationMessage, getRestartPlayAgainIcon, isPlaying } from "./chess.js";
-import { isOnlineMatch, onlineYourColor } from "./online.js";
+import { declineDraw, isOnlineMatch, onlineYourColor } from "./online.js";
 
 export const boardSize = 8;
 
@@ -273,6 +273,7 @@ function makeMove(fromCoords, toCoords) {
     if (isOnlineMatch && 
         (onlineYourColor === 'white') === gameStats.isWhiteTurn) {
         sendMove(fromCoords, toCoords);
+        declineDrawIfNeeded();
     }
 
     const piece = chessBoard[fromRow][fromCol];
@@ -359,7 +360,7 @@ export function announceCheckmate(winnerKingCoords, loserKingCoords) {
     setResult('win', winnerKingCoords, loserKingCoords);
 }
 
-function announceStalemate(firstKingCoords, secondKingCoords) {
+export function announceStalemate(firstKingCoords, secondKingCoords) {
     highlightStalemate(firstKingCoords, secondKingCoords);
     setResult('draw', firstKingCoords, secondKingCoords);
 }
@@ -416,6 +417,17 @@ function updateOnlineScore() {
         firstScoreElem.innerText = Number(firstScoreElem.innerText) + 0.5;
         secondScoreElem.innerText = Number(secondScoreElem.innerText) + 0.5;
     }
+}
+
+function declineDrawIfNeeded() {
+    const acceptDrawButtonElem = document.querySelector('.js-accept-draw-button');
+    const declineDrawButtonElem = document.querySelector('.js-decline-draw-button');
+
+    if (!acceptDrawButtonElem || !declineDrawButtonElem) {
+        return;
+    }
+
+    declineDraw();
 }
 
 function addPieceToBoard(row, col, piece) {

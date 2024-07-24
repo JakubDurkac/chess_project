@@ -23,12 +23,12 @@ html, body {
     padding: 12px 12px 12px 12px;
     margin: 10px 0px 10px 0px;
     background-image: linear-gradient(to bottom right, #494949, #262626, #1c1c1c);
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
     z-index: 1;
     overflow-y: auto;
     overflow-x: auto;
-    scrollbar-color: #61b0fb #0a204c;
+    scrollbar-color: #000000 #272727;
     scrollbar-width:thin;
 }
 
@@ -151,12 +151,12 @@ html, body {
     margin-bottom: 2px;
 }
 
-.join-button:hover {
+.join-button:hover, .accept-draw-button:hover, .decline-draw-button:hover {
     cursor: pointer;
     filter: brightness(1.1);
 }
 
-.join-button:active {
+.join-button:active, .accept-draw-button:active, .decline-draw-button:active {
     filter: brightness(1.2);
 }
 
@@ -234,8 +234,8 @@ html, body {
     outline-style: solid;
     outline-color: #fbefe1;
     outline-width: 2px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
     background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
     display: flex;
     justify-content: center;
@@ -440,7 +440,7 @@ html, body {
     width: 246px;
     height: 100%;
     overflow-y: auto;
-    scrollbar-color: #61b0fb #0a204c;
+    scrollbar-color: #000000 #272727;
     scrollbar-width: thin;
 }
 
@@ -471,7 +471,7 @@ html, body {
     height: 110px;
     min-height: 110px;
     overflow-y: auto;
-    scrollbar-color: #61b0fb #0a204c;
+    scrollbar-color: #000000 #272727;
     scrollbar-width: thin;
 }
 
@@ -510,12 +510,13 @@ html, body {
     background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
     padding: 20px;
     border: 2px solid #f7e9d8;
-    border-radius: 5px;
+    border-radius: 4px;
     width: 59vmin;
     height: 59vmin;
     overflow-y: auto;
     overflow-x: auto;
-    scrollbar-color: #272727 #f7e9d8;
+    scrollbar-color: #000000 #272727;
+    scrollbar-width: thin;
   }
 
   .settings-modal-content p {
@@ -586,4 +587,23 @@ option {
     font-weight: 600;
     background-color: #f7e9d8;
     color: #373737;
+}
+
+.accept-draw-button, .decline-draw-button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 5px 5px 5px 5px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 10px;
+    border: 2px solid #f7e9d8;
+    color: #f7e9d8;
+}
+
+.accept-draw-button {
+    background-image: linear-gradient(to bottom right, #028900, #1e9c08, #033e00);
+}
+
+.decline-draw-button {
+    background-image: linear-gradient(to bottom right, #9f0000, #a60000, #5d0000);
 }

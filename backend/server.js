@@ -229,13 +229,27 @@ wss.on('connection', (ws) => {
             const {message, by} = objMessage.notification;
             if (message === 'resign') {
                 restartGame(by);
-                notifyOpponent('resign', by);
+                notifyOpponent(message, by);
 
             } else if (message === 'game ended') {
                 const game = games[by];
                 if (game !== undefined) {
                     clearInterval(game.intervalId);
                 }
+
+            } else if (message === 'draw offer') {
+                const {moveCount} = objMessage.notification;
+                notifyOpponent({drawOfferOnMove: moveCount}, by);
+            
+            } else if (message === 'draw accepted') {
+                notifyOpponent(message, by);
+                const game = games[by];
+                if (game !== undefined) {
+                    clearInterval(game.intervalId);
+                }
+
+            } else if (message === 'draw declined') {
+                notifyOpponent(message, by);
             }
         }
     });

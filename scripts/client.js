@@ -1,11 +1,17 @@
-import { makeMoveWithExtra, oppositeColor, updateScoreResignation } from "./board.js";
+import { announceStalemate, makeMoveWithExtra, oppositeColor, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage } from "./online.js";
+import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage, displayDrawOffer } from "./online.js";
 import { gameStats, hasGameEnded } from "./stats.js";
 
 let socket = null;
 let yourName = null;
 let isConnected = false;
+let canOfferDraw = true;
+
+export function setCanOfferDraw(isEnabled) {
+    canOfferDraw = isEnabled;
+}
+
 export function findMatch() {
     if (isConnected) {
         addLogMessage("Already online.");
@@ -25,6 +31,9 @@ export function findMatch() {
     socket = new WebSocket('ws://localhost:3000');
     socket.addEventListener('open', sendInitialMessage);
     socket.addEventListener('message', handleIncomingMessage);
+    socket.addEventListener('error', () => {
+        addLogMessage('Error: Server is not available.');
+    });
 
     isConnected = true;
 }
@@ -113,7 +122,6 @@ function handleIncomingMessage(event) {
         } else if (notification === 'duplicate') {
             addLogMessage("Name is already taken. Try another!")
             disconnectFromServer();
-            
 
         } else if (notification === 'resign') {
             if (gameStats.moveCount > 2 && !hasGameEnded()) {
@@ -124,6 +132,17 @@ function handleIncomingMessage(event) {
 
             updateScoreResignation(oppositeColor(onlineYourColor));
             resetGameLocally();
+
+        } else if (notification.drawOfferOnMove !== undefined) {
+            displayDrawOffer(notification.drawOfferOnMove);
+        
+        } else if (notification === 'draw accepted') {
+            addLogMessage("Opponent accepted the draw.");
+            announceStalemate(gameStats.kingCoords.white, gameStats.kingCoords.black);
+            
+        } else if (notification === 'draw declined') {
+            addLogMessage("Opponent declined the draw.");
+            canOfferDraw = true;
         }
     }
 }
@@ -158,6 +177,51 @@ export function notifyServerGameEnded() {
         notification: {
             message: 'game ended',
             by: yourName
+        }
+    };
+
+    socket.send(JSON.stringify(objMessage));
+}
+
+export function sendDrawOffer() {
+    if (hasGameEnded()) {
+        addLogMessage('No draw offers now.');
+        return;
+    }
+
+    if (!canOfferDraw) {
+        addLogMessage('Draw offer pending.');
+        return;
+    }
+
+    canOfferDraw = false;
+    const objMessage = {
+        notification: {
+            message: 'draw offer',
+            by: yourName,
+            moveCount: gameStats.moveCount
+        }
+    };
+
+    socket.send(JSON.stringify(objMessage));
+}
+
+export function sendDrawAccepted() {
+    const objMessage = {
+        notification: {
+            message: 'draw accepted',
+            by: yourName,
+        }
+    };
+
+    socket.send(JSON.stringify(objMessage));
+}
+
+export function sendDrawDeclined() {
+    const objMessage = {
+        notification: {
+            message: 'draw declined',
+            by: yourName,
         }
     };
 

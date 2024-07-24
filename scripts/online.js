@@ -1,6 +1,6 @@
-import { announceCheckmate, flipBoard, isFlippedBoard, oppositeColor } from "./board.js";
+import { announceCheckmate, announceStalemate, flipBoard, isFlippedBoard, oppositeColor } from "./board.js";
 import { getRestartPlayAgainIcon, getWelcomeMessage } from "./chess.js";
-import { sendJoinRequest } from "./client.js";
+import { sendDrawAccepted, sendDrawDeclined, sendJoinRequest } from "./client.js";
 import { gameStats } from "./stats.js";
 
 export let isOnlineMatch = false;
@@ -209,6 +209,8 @@ export function goOffline() {
     if (onlineOpponentsContainerElem) {
         onlinePanelElem.innerHTML = getWelcomeMessage();
     }
+
+    removeDrawOfferButtons();
 }
 
 export function resetOnlineAttributes() {
@@ -219,4 +221,54 @@ export function resetOnlineAttributes() {
 export function addLogMessage(message) {
     gameLogElem.innerHTML += `<div class="game-log-line">> ${message}</div>`;
     gameLogElem.scrollTop = gameLogElem.scrollHeight;
+}
+
+export function displayDrawOffer(moveNumber) {
+    if (gameStats.moveCount > moveNumber + 1) {
+        return;
+    }
+
+    addLogMessage(`Opponent offered a draw.<br> ${getAcceptDrawButton()} ${getDeclineDrawButton()}`);
+    const acceptDrawButtonElem = document.querySelector('.js-accept-draw-button');
+    const declineDrawButtonElem = document.querySelector('.js-decline-draw-button');
+
+    if (!acceptDrawButtonElem || !declineDrawButtonElem) {
+        return;
+    }
+
+    acceptDrawButtonElem.addEventListener('click', acceptDraw);
+
+    declineDrawButtonElem.addEventListener('click', declineDraw);
+}
+
+function getAcceptDrawButton() {
+    return `<button class="accept-draw-button js-accept-draw-button">Accept</button>`;
+}
+
+function getDeclineDrawButton() {
+    return `<button class="decline-draw-button js-decline-draw-button">Decline</button>`;
+}
+
+function acceptDraw() {
+    announceStalemate(gameStats.kingCoords.white, gameStats.kingCoords.black);
+    sendDrawAccepted();
+    removeDrawOfferButtons();
+}
+
+export function declineDraw() {
+    sendDrawDeclined();
+    removeDrawOfferButtons();
+}
+
+function removeDrawOfferButtons() {
+    const acceptDrawButtonElem = document.querySelector('.js-accept-draw-button');
+    const declineDrawButtonElem = document.querySelector('.js-decline-draw-button');
+
+    if (acceptDrawButtonElem) {
+        acceptDrawButtonElem.remove();
+    }
+
+    if (declineDrawButtonElem) {
+        declineDrawButtonElem.remove();
+    }
 }

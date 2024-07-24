@@ -1,7 +1,7 @@
 import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation, oppositeColor } from "./board.js";
-import { findMatch, disconnectFromServer, resignOnlineGame } from "./client.js";
+import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw } from "./client.js";
 import { resetGameStats } from "./stats.js";
-import { isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes } from "./online.js"
+import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes } from "./online.js"
 
 setUpModalSettings();
 initializeBoard();
@@ -14,6 +14,7 @@ const playButtonElem = document.querySelector('.js-play-button');
 const findMatchButtonElem = document.querySelector('.js-find-match-button');
 const disconectButtonElem = document.querySelector('.js-disconnect-button');
 const flipBoardButtonElem = document.querySelector('.js-flip-button');
+const drawOfferButtonElem = document.querySelector('.js-draw-offer-button');
 playButtonElem.addEventListener('click', resetGameCompletely);
 findMatchButtonElem.addEventListener('click', findMatch);
 disconectButtonElem.addEventListener('click', () => {
@@ -21,6 +22,13 @@ disconectButtonElem.addEventListener('click', () => {
     disconnectFromServer();
 });
 flipBoardButtonElem.addEventListener('click', flipBoard);
+drawOfferButtonElem.addEventListener('click', () => {
+    if (isOnlineMatch) {
+        sendDrawOffer();
+    } else {
+        addLogMessage('No draw offers in singleplayer.');
+    }
+});
 
 export function resetGameCompletely() {
     if (isOnlineMatch) {
@@ -37,6 +45,8 @@ export function resetGameLocally() {
         setOnlineAttributes(onlineOpponentName, 
             newColor, onlineYourName, onlineStartClockMillis, onlineGameColorType);
     }
+
+    setCanOfferDraw(true);
 
     resetBoard();
     resetGameStats();
