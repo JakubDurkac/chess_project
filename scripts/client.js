@@ -1,13 +1,14 @@
 import { makeMoveWithExtra, oppositeColor, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor } from "./online.js";
-import { gameStats } from "./stats.js";
+import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage } from "./online.js";
+import { gameStats, hasGameEnded } from "./stats.js";
 
 let socket = null;
 let yourName = null;
 let isConnected = false;
 export function findMatch() {
     if (isConnected) {
+        addLogMessage("Already online.");
         return;
     }
 
@@ -16,6 +17,7 @@ export function findMatch() {
 
     if (inputName === '') {
         console.log('empty name');
+        addLogMessage('Enter your name.');
         return;
     }
 
@@ -84,6 +86,7 @@ function handleIncomingMessage(event) {
     if (objMessage.matchAttributes !== undefined) { // opponent found
         const {opponentName, yourColor, time, gameColorType} = objMessage.matchAttributes;
         
+        addLogMessage("Match found.");
         setOnlineAttributes(opponentName, yourColor, yourName, time, gameColorType);
         resetGameLocally();
     
@@ -103,16 +106,22 @@ function handleIncomingMessage(event) {
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
         if (notification === 'opponent disconnected') {
-            // show message to the user
+            addLogMessage("Opponent left. Entered singleplayer.")
             updateScoreResignation(oppositeColor(onlineYourColor));
             disconnectFromServer();
 
         } else if (notification === 'duplicate') {
-            // show message to the user 
+            addLogMessage("Name is already taken. Try another!")
             disconnectFromServer();
             
 
         } else if (notification === 'resign') {
+            if (gameStats.moveCount > 2 && !hasGameEnded()) {
+                addLogMessage("Opponent resigned. Game restarts.");
+            } else {
+                addLogMessage("Opponent restarted the game.");
+            }
+
             updateScoreResignation(oppositeColor(onlineYourColor));
             resetGameLocally();
         }

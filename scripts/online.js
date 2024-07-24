@@ -11,6 +11,7 @@ export let onlineStartClockMillis = null;
 export let onlineGameColorType = null;
 
 const onlinePanelElem = document.querySelector('.js-online-panel');
+const gameLogElem = document.querySelector('.game-log');
 
 export function updateClocks(whiteClockMillis, blackClockMillis) {
     const whiteClockElem = document.getElementById('white-clock');
@@ -213,4 +214,9 @@ export function goOffline() {
 export function resetOnlineAttributes() {
     onlineOpponentName = null;
     onlineYourColor = null;
+}
+
+export function addLogMessage(message) {
+    gameLogElem.innerHTML += `<div class="game-log-line">> ${message}</div>`;
+    gameLogElem.scrollTop = gameLogElem.scrollHeight;
 }

@@ -85,15 +85,6 @@ html, body {
     width: 256px;
 }
 
-.chess-notation-container {
-    padding: 15px 15px 15px 15px;
-    width: 246px;
-    height: 100%;
-    overflow-y: auto;
-    scrollbar-color: #61b0fb #0a204c;
-    scrollbar-width: thin;
-}
-
 .welcome-message {
     color: #fbefe1;
     font-family: Arial, Helvetica, sans-serif;
@@ -116,7 +107,7 @@ html, body {
     overflow: hidden;
 }
 
-.online-opponents-container {
+.online-opponents-container, .game-log {
     width: 276px;
     min-height: 220px;
     height: 220px;
@@ -136,7 +127,7 @@ html, body {
     background-image: linear-gradient(to bottom right, #212121, #3e3e3e, #181818);
 }
 
-.opponents-header {
+.opponents-header, .game-log-header {
     background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
     color: rgb(44, 44, 44);
 }
@@ -235,12 +226,6 @@ html, body {
 
 #white-clock, #black-clock {
     font-size: 50px;
-}
-
-@media (max-height: 500px) {
-    .chess-notation-container {
-        height: 100px;
-    }
 }
 
 .chessboard-container {
@@ -450,7 +435,16 @@ html, body {
     color: #fbefe1;
 }
 
-.notation-container-border {
+.chess-notation-container, .game-log {
+    padding: 15px 15px 15px 15px;
+    width: 246px;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-color: #61b0fb #0a204c;
+    scrollbar-width: thin;
+}
+
+.notation-container-border, .game-log-container {
     padding: 0px 0px 30px 0px;
     min-height: 100px;
     width: 276px;
@@ -462,6 +456,32 @@ html, body {
     border-radius: 10px;
     flex: 1;
     background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
+}
+
+.game-log-container {
+    padding: 0px 0px 0px 0px;
+    flex: 0 1 auto;
+    height: 110px;
+    min-height: 110px;
+}
+
+.game-log {
+    padding: 0px 0px 0px 0px;
+    width: 276px;
+    height: 110px;
+    min-height: 110px;
+    overflow-y: auto;
+    scrollbar-color: #61b0fb #0a204c;
+    scrollbar-width: thin;
+}
+
+.game-log-header {
+    padding: 3px 0px 1px 10px;
+}
+
+.game-log-line {
+    font-size: 14px;
+    margin: 5px 5px 5px 5px;
 }
 
 .icon {
