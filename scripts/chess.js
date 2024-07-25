@@ -4,12 +4,14 @@ import { resetGameStats } from "./stats.js";
 import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes } from "./online.js"
 
 setUpModalSettings();
+
 initializeBoard();
 export let isPlaying = false;
 
 document.querySelector('.online-panel').innerHTML = getWelcomeMessage();
 notationElem.innerHTML = getInitialNotationMessage();
 const promotionSettingsElem = document.querySelector('.promotion-settings');
+resetPromotionSettings('white');
 
 const playButtonElem = document.querySelector('.js-play-button');
 const findMatchButtonElem = document.querySelector('.js-find-match-button');
