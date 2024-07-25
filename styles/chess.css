@@ -458,6 +458,50 @@ html, body {
     background-image: linear-gradient(to bottom right, #2c2c2c, #3e3e3e, #181818);
 }
 
+.notation-container-border {
+    margin-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.promotion-settings {
+    width: 262px;
+    background-image: linear-gradient(to bottom right, #3d81d8, #2861ad, #0d4277);
+    color: #fbefe1;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0px 7px 7px 7px;
+    padding: 0px 7px 1px 7px;
+    border: #fbefe1;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-top: none;
+    display: flex;
+    gap: 11px;
+    justify-content: center;
+}
+
+.promotion-radio {
+    display: none;
+  }
+  
+  .promotion-radio:checked + .promotion-piece-icon {
+    opacity: 1;
+  }
+
+.promotion-piece-icon {
+    height: 35px;
+}
+
+.promotion-choice {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
 .game-log-container {
     padding: 0px 0px 0px 0px;
     flex: 0 1 auto;
