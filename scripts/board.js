@@ -2,7 +2,7 @@ import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSaf
 import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
-import { getInitialNotationMessage, getRestartPlayAgainIcon, isPlaying } from "./chess.js";
+import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
 import { declineDraw, isOnlineMatch, onlineYourColor } from "./online.js";
 
 export const boardSize = 8;
@@ -26,6 +26,7 @@ let originalSquare = null;
 let dragoverSquare = null;
 
 export let isFlippedBoard = false;
+let opponentPromotionPieceCode = null;
 
 export function initializeBoard() {
     generateSquares();
@@ -336,9 +337,37 @@ function promotePieceIfAny() {
     const {piece, toCoords} = gameStats.lastMove;
     if ((piece === 'wp' || piece === 'bp')  
         && (toCoords[0] === 0 || toCoords[0] === boardSize - 1)) {
-            const pieceAfterPromotion = isWhitePiece(piece) ? 'wq' : 'bq';
+            const pieceCodeAfterPromotion = getPromotionPieceCode();
+            const pieceAfterPromotion = isWhitePiece(piece) 
+                ? `w${pieceCodeAfterPromotion}` 
+                : `b${pieceCodeAfterPromotion}`;
             addPieceToBoard(toCoords[0], toCoords[1], pieceAfterPromotion);
     }
+}
+
+function getPromotionPieceCode() {
+    if (!isOnlineMatch || gameStats.isWhiteTurn !== (onlineYourColor === 'white')) {
+        const pieceCode = getPlayerPromotionPieceCode();
+        setSelectedPromotionTo('queen');
+        return pieceCode;
+    }
+
+    return getOpponentPromotionPieceCode();
+}
+
+export function getPlayerPromotionPieceCode() {
+    const promotionRadioElem = document.querySelector('input[name="promotion"]:checked');
+    const promotionPieceCode = promotionRadioElem ? promotionRadioElem.value : 'q';
+    
+    return promotionPieceCode;
+}
+
+function getOpponentPromotionPieceCode() {
+    return opponentPromotionPieceCode ? opponentPromotionPieceCode : 'q';
+}
+
+export function setOpponentPromotionPieceCode(promotionPieceCode) {
+    opponentPromotionPieceCode = promotionPieceCode;
 }
 
 function castleRooksIfAny() {
@@ -352,6 +381,13 @@ function castleRooksIfAny() {
             
             const newCol = col === 0 ? toCoords[1] + 1 : toCoords[1] - 1;
             addPieceToBoard(row, newCol, rook);
+    }
+}
+
+function setSelectedPromotionTo(pieceName) {
+    const radio = document.getElementById(`promotion-${pieceName}`);
+    if (radio) {
+        radio.checked = true;
     }
 }
 

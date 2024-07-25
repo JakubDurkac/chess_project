@@ -1,4 +1,4 @@
-import { announceStalemate, makeMoveWithExtra, oppositeColor, updateScoreResignation } from "./board.js";
+import { announceStalemate, getPlayerPromotionPieceCode, makeMoveWithExtra, oppositeColor, setOpponentPromotionPieceCode, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
 import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage, displayDrawOffer } from "./online.js";
 import { gameStats, hasGameEnded } from "./stats.js";
@@ -101,6 +101,7 @@ function handleIncomingMessage(event) {
     
     } else if (objMessage.move !== undefined) { // opponent's move played
         const {move} = objMessage;
+        setOpponentPromotionPieceCode(move.promotionPieceCode);
         makeMoveWithExtra(move.fromCoords, move.toCoords);
 
     } else if (objMessage.clockUpdate !== undefined) { // server clock times
@@ -154,7 +155,8 @@ export function sendMove(fromCoords, toCoords) {
             'fromCoords': fromCoords,
             'toCoords': toCoords,
             'by': yourName,
-            'isFirst': gameStats.moveCount === 0
+            'isFirst': gameStats.moveCount === 0,
+            'promotionPieceCode': getPlayerPromotionPieceCode()
         }
     };
 
