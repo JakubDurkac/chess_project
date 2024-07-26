@@ -3,7 +3,7 @@ import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, h
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
-import { declineDraw, isOnlineMatch, onlineYourColor } from "./online.js";
+import { addLogMessage, declineDraw, isOnlineMatch, onlineYourColor } from "./online.js";
 
 export const boardSize = 8;
 
@@ -299,6 +299,10 @@ function makeMove(fromCoords, toCoords) {
         }
     }
 
+    if (gameStats.movesSinceLastProgress >= 50 && !hasGameEnded()) {
+        announceSpecialDraw('50-Move-Rule');
+    }
+
     if (isOnlineMatch && gameStats.result.keyword !== null
         && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
         notifyServerGameEnded();
@@ -399,6 +403,14 @@ export function announceCheckmate(winnerKingCoords, loserKingCoords) {
 export function announceStalemate(firstKingCoords, secondKingCoords) {
     highlightStalemate(firstKingCoords, secondKingCoords);
     setResult('draw', firstKingCoords, secondKingCoords);
+}
+
+function announceSpecialDraw(drawMessage) {
+    const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
+    const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';
+    const [kingRow, kingCol] = gameStats.kingCoords[cannotMoveColor];
+    announceStalemate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
+    addLogMessage(`Draw: ${drawMessage}.`);
 }
 
 function highlightCheckmate(winnerKingCoords, loserKingCoords) {

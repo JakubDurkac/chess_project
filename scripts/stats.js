@@ -29,6 +29,7 @@ const gameStatsInitial = {
         white: 39,
         black: 39
     },
+    movesSinceLastProgress: 0, // since last pawn push or capture
     result: {
         // <firstKingCoords> won or drew against the <secondKingCoords>
         keyword: null, // 'win' / 'draw'
@@ -70,6 +71,12 @@ export function updateLastMove(fromCoords, toCoords, piece) {
         gameStats.lastMove.pieceTaken = isWhite ? 'bp' : 'wp';
     } else {
         gameStats.lastMove.toRemoveCoords = null;
+    }
+    
+    if (pieceTaken || piece === 'wp' || piece === 'bp') {
+        gameStats.movesSinceLastProgress = 0;
+    } else {
+        gameStats.movesSinceLastProgress++;
     }
 }
 
