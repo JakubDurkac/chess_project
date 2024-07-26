@@ -1,6 +1,6 @@
 import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation, oppositeColor } from "./board.js";
 import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw } from "./client.js";
-import { resetGameStats } from "./stats.js";
+import { resetGameHistory, resetGameStats } from "./stats.js";
 import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes } from "./online.js"
 
 setUpModalSettings();
@@ -53,6 +53,7 @@ export function resetGameLocally() {
 
     resetBoard();
     resetGameStats();
+    resetGameHistory();
     notationElem.innerHTML = getInitialNotationMessage();
     isPlaying = true;
 

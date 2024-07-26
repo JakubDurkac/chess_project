@@ -1,5 +1,5 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
@@ -238,6 +238,11 @@ export function makeMoveWithExtra(fromCoords, toCoords) {
     promotePieceIfAny();
     castleRooksIfAny();
     updateMaterialCount();
+    addPositionToGameHistory();
+
+    if (!hasGameEnded() && isThreefoldRepetition()) {
+        announceSpecialDraw('Threefold Repetition');
+    }
 }
 
 function highlightSquare(buttonElem) {
