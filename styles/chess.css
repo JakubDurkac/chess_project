@@ -119,10 +119,16 @@ html, body {
     font-weight: 600;
 }
 
+.online-opponents-container {
+    overflow-y: auto;
+    scrollbar-color: #000000 #272727;
+    scrollbar-width: thin;
+}
+
 .opponent-to-join {
     padding-left: 10px;
     display: grid;
-    grid-template-columns: 100px 70px 50px 40px;
+    grid-template-columns: 115px 45px 50px 40px;
     border-bottom: 1px solid #fbefe1;
     background-image: linear-gradient(to bottom right, #212121, #3e3e3e, #181818);
 }
@@ -138,6 +144,14 @@ html, body {
 
 .opponents-list-color-field, .opponents-list-time-field {
     justify-self: center;
+}
+
+.opponents-list-name-field {
+    overflow: hidden;
+}
+
+.color-type-icon {
+    width: 18px;
 }
 
 .join-button {

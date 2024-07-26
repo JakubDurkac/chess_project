@@ -8,6 +8,8 @@ let yourName = null;
 let isConnected = false;
 let canOfferDraw = true;
 
+const allowedNamePattern = /^[a-zA-Z0-9_-]+$/;
+
 export function setCanOfferDraw(isEnabled) {
     canOfferDraw = isEnabled;
 }
@@ -24,6 +26,16 @@ export function findMatch() {
     if (inputName === '') {
         console.log('empty name');
         addLogMessage('Enter your name.');
+        return;
+    }
+
+    if (inputName.length > 11) {
+        addLogMessage('Name is too long. (> 11)');
+        return;
+    }
+
+    if (!allowedNamePattern.test(inputName)) {
+        addLogMessage('Invalid name. Use english letters, numbers, underscore and dash.');
         return;
     }
 

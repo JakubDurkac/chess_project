@@ -129,7 +129,7 @@ function formatTimeControl(timeMillis, incrementMillis) {
 }
 
 function formatColor(color) {
-    return color;
+    return `<img src="images/icons/color_type_${color}_icon.png" class="color-type-icon">`;
 }
 
 function generateClickableOpponent(name, settings) {
@@ -137,7 +137,7 @@ function generateClickableOpponent(name, settings) {
     const {time, increment, color} = settings;
     return `
     <div class="opponent-to-join">
-        <span>${name}</span>
+        <span class="opponents-list-name-field">${name}</span>
         <span class="opponents-list-color-field">${formatColor(color)}</span>
         <span class="opponents-list-time-field">${formatTimeControl(time, increment)}</span>
         <button data-name-to-join="${name}" class="join-button">GO</button>
