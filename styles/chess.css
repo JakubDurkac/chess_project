@@ -579,8 +579,8 @@ ul.welcome-message li::marker {
     padding: 20px;
     border: 2px solid #f7e9d8;
     border-radius: 4px;
-    width: 59vmin;
-    height: 59vmin;
+    width: 500px;
+    height: 180px;
     overflow-y: auto;
     overflow-x: auto;
     scrollbar-color: #000000 #272727;
