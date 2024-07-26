@@ -1,4 +1,4 @@
-import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece } from "./board.js";
+import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode } from "./board.js";
 
 const gameStatsInitial = {
     lastMove: {
@@ -18,6 +18,9 @@ const gameStatsInitial = {
             canCastleKingside: true,
             canCastleQueenside: true
         },
+    },
+    enpassantRights: {
+        passerCol: null, 
     },
     kingCoords: {
         white: [7, 4],
@@ -51,8 +54,6 @@ const pieceValue = {
     'q': 9,
     'p': 1
 };
-
-let autoPromotionPieceCode = 'q';
 
 export function updateLastMove(fromCoords, toCoords, piece) {
     const isWhite = isWhitePiece(piece);
@@ -97,6 +98,18 @@ export function updateCastlingRights() {
     }
 }
 
+export function updateEnpassantRights() {
+    const {lastMove, enpassantRights} = gameStats;
+    const {piece, fromCoords, toCoords} = lastMove;
+    if ((piece === 'wp' || piece === 'bp') &&
+        Math.abs(fromCoords[0] - toCoords[0]) === 2) {
+        enpassantRights.passerCol = fromCoords[1];
+
+    } else {
+        enpassantRights.passerCol = null;
+    }
+}
+
 export function updateMaterialCount() {
     const {toCoords, piece, isWhite, pieceTaken} = gameStats.lastMove;
     const color = isWhite ? 'white' : 'black';
@@ -107,7 +120,7 @@ export function updateMaterialCount() {
     }
 
     if (wasPromotion(toCoords[0], piece)) {
-        gameStats.materialCount[color] += pieceValue[autoPromotionPieceCode] - 1;
+        gameStats.materialCount[color] += pieceValue[getPieceTypeCode(toCoords[0], toCoords[1])] - 1;
     }
 }
 

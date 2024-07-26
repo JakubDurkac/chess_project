@@ -1,5 +1,5 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
@@ -237,6 +237,7 @@ export function makeMoveWithExtra(fromCoords, toCoords) {
     removeExtraPiece(); // in case of en passant
     promotePieceIfAny();
     castleRooksIfAny();
+    updateMaterialCount();
 }
 
 function highlightSquare(buttonElem) {
@@ -281,11 +282,11 @@ function makeMove(fromCoords, toCoords) {
     removePieceFromBoard(fromRow, fromCol);
     highlightLastMove(fromCoords, toCoords);
     updateLastMove(fromCoords, toCoords, piece);
-    updateCastlingRights();
-    updateMaterialCount();
+    updateCastlingRights(); 
     addPieceToBoard(toRow, toCol, piece);
     gameStats.isWhiteTurn = !gameStats.isWhiteTurn;
     gameStats.moveCount++;
+    updateEnpassantRights();
     updateNotation();
 
     if (!canOpponentMove()) {
@@ -299,14 +300,16 @@ function makeMove(fromCoords, toCoords) {
         }
     }
 
-    if (gameStats.movesSinceLastProgress >= 50 && !hasGameEnded()) {
-        announceSpecialDraw('50-Move-Rule');
+    if (gameStats.movesSinceLastProgress >= 100 && !hasGameEnded()) {
+        announceSpecialDraw('50-Move-Rule'); // 100 = 50 for each player
     }
 
     if (isOnlineMatch && gameStats.result.keyword !== null
         && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
         notifyServerGameEnded();
     }
+
+    console.log(gameStats);
 }
 
 function canOpponentMove() {
