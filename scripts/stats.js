@@ -101,7 +101,6 @@ function compressCastlingRights(castlingRights) {
 }
 
 export function isThreefoldRepetition() {
-    console.log(gameHistory);
     const size = gameHistory.length;
     if (size < 6) { // 3 repeats for same colored turn is not possible
         return false;
@@ -119,7 +118,6 @@ export function isThreefoldRepetition() {
         movesSinceProgress = olderMovesSinceProgress;
         if (lastPosition === gameHistory[i].compressed) {
             repeats++;
-            console.log(repeats);
             if (repeats >= 3) {
                 return true;
             }

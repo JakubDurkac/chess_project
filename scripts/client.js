@@ -24,7 +24,6 @@ export function findMatch() {
     const inputName = inputNameElem.value;
 
     if (inputName === '') {
-        console.log('empty name');
         addLogMessage('Enter your name.');
         return;
     }
@@ -83,9 +82,6 @@ function getSelectedColor() {
 }
 
 function sendInitialMessage() {
-    console.log('Connected to the WebSocket server');
-
-    // time and increment should be read out from settings inputs in the future
     const objMessage = {
         name: yourName,
         settings: {
@@ -101,8 +97,6 @@ function sendInitialMessage() {
 function handleIncomingMessage(event) {
     const strMessage = event.data.toString();
     const objMessage = JSON.parse(strMessage);
-    console.log(strMessage);
-    console.log(objMessage);
 
     if (objMessage.matchAttributes !== undefined) { // opponent found
         const {opponentName, yourColor, time, gameColorType} = objMessage.matchAttributes;
@@ -118,11 +112,9 @@ function handleIncomingMessage(event) {
 
     } else if (objMessage.clockUpdate !== undefined) { // server clock times
         const {clockUpdate} = objMessage;
-        console.log(clockUpdate);
         updateClocks(clockUpdate.white, clockUpdate.black);
 
     } else if (objMessage.availableOpponents !== undefined) {
-        console.log('Server updates opponents list');
         updateOnlineOpponentsHtml(objMessage.availableOpponents, yourName);
 
     } else if (objMessage.notification !== undefined) {
@@ -161,7 +153,6 @@ function handleIncomingMessage(event) {
 }
 
 export function sendMove(fromCoords, toCoords) {
-    console.log(fromCoords, toCoords);
     const objMessage = {
         move: {
             'fromCoords': fromCoords,

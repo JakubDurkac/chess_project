@@ -313,8 +313,6 @@ function makeMove(fromCoords, toCoords) {
         && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
         notifyServerGameEnded();
     }
-
-    console.log(gameStats);
 }
 
 function canOpponentMove() {
@@ -445,7 +443,6 @@ function setResult(keyword, firstKingCoords, secondKingCoords) {
 }
 
 export function updateScoreResignation(resigneeColor) {
-    console.log(gameStats);
     if (gameStats.moveCount > 2 && !hasGameEnded()) {
         const winnerColor = oppositeColor(resigneeColor);
         announceCheckmate(gameStats.kingCoords[winnerColor], gameStats.kingCoords[resigneeColor]);
@@ -453,10 +450,8 @@ export function updateScoreResignation(resigneeColor) {
 }
 
 function updateOnlineScore() {
-    console.log(gameStats);
     const {keyword, firstKingCoords} = gameStats.result;
     const [firstRow, firstCol] = firstKingCoords;
-    console.log(firstRow, firstCol, chessBoard[firstRow, firstCol]);
     const firstKingColor = chessBoard[firstRow][firstCol] === 'wk' ? 'white' : 'black';
     const secondKingColor = oppositeColor(firstKingColor);
 

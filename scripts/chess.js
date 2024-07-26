@@ -93,15 +93,18 @@ export function getRestartPlayAgainIcon() {
 
 export function getWelcomeMessage() {
     return `
-    <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Enter your name to challenge opponents online.</p>
-    <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Choose your favorite time control in the settings.</p> 
-    <p class="welcome-message"><span class="online-panel-index">&#x2022;</span> Nobody around? Dive into singleplayer mode. (&#9658;)</p>
-    `;
+    <ul class="welcome-message">
+        <li class="welcome-message-line">Enter your name to challenge opponents online.</li>
+        <li class="welcome-message-line">Choose your favorite time control in the settings.</li>
+        <li class="welcome-message-line">Nobody around? Dive into singleplayer mode. (&#9658;)</li>
+    </ul>`;
 }
 
 export function getInitialNotationMessage() {
-    return `<span class="initial-notation-message">
-        <span class="online-panel-index">&#x2022;</span> Moves unfold here!</span>`
+    return `
+    <ul class="welcome-message initial-notation-message">
+        <li>Moves unfold here!</li>
+    </ul>`
 }
 
 function resetPromotionSettings(color) {

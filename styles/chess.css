@@ -91,6 +91,16 @@ html, body {
     font-weight: bold;
     font-size: 18px;
     margin: 7px 7px 7px 7px;
+    padding-left: 25px;
+    padding-top: 10px;
+}
+
+ul.welcome-message li {
+    margin-bottom: 10px;
+}
+
+ul.welcome-message li::marker {
+    color: #3d81d8;
 }
 
 .online-panel {
@@ -423,10 +433,9 @@ html, body {
 }
 
 .initial-notation-message {
-    color: #fbefe1;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 18px;
+    padding-top: 2px;
+    margin: 0px 0px 0px 0px;
+    padding-left: 18px;
 }
 
 .chess-notation-text, .chess-notation-index {

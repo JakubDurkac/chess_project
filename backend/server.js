@@ -39,7 +39,6 @@ function createGame(whiteName, blackName, startClockMillis, incrementMillis, col
 }
 
 function sendClockUpdate(game) {
-    console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
     const clockUpdateMessageStr = JSON.stringify({clockUpdate:{
         white: game.whiteClock,
         black: game.blackClock
@@ -48,7 +47,6 @@ function sendClockUpdate(game) {
     if (playersSockets[game.whiteName] !== undefined
         && playersSockets[game.blackName] !== undefined
     ) {
-        console.log(`Clock: White: ${game.whiteClock / 1000} sec, Black: ${game.blackClock / 1000} sec`);
         playersSockets[game.whiteName].send(clockUpdateMessageStr);
         playersSockets[game.blackName].send(clockUpdateMessageStr);
     }
@@ -130,7 +128,7 @@ function notifyOpponent(message, by) {
 function handleClientDisconnect(name) {
     const opponent = matches[name];
     if (playersSockets[opponent] !== undefined) {
-        console.log(`Sending "opponent disconnected" to <${opponent}>.`);
+        console.log(`<${name}> disconnected, notifying <${opponent}>.`);
         notifyOpponent('opponent disconnected', name);
     }
 
@@ -180,13 +178,10 @@ wss.on('connection', (ws) => {
     console.log(`A new client connected`);
     ws.on('message', (message) => {     
         const strMessage = message.toString();
-        const objMessage = JSON.parse(strMessage);
-        console.log(strMessage);
-    
+        const objMessage = JSON.parse(strMessage);    
         if (objMessage.name !== undefined) {
             const {name, settings} = objMessage;
             if (activeNames.includes(name)) {
-                console.log(`Client name is taken.`);
                 ws.send(JSON.stringify({notification: 'duplicate'}));
                 return;
             }
@@ -195,14 +190,7 @@ wss.on('connection', (ws) => {
             playersSettings[name] = settings;
             activeNames.push(name);
 
-            // send everybody available opponents list, clients will display
-            // this list and add interactive 'join' button to each opponent,
-            // this button will notify the server, which will match these two,
-            // send match attributes and so on
             sendOutAvailableOpponents();
-
-            console.log('Matches:');
-            console.log(matches);
     
         } else if (objMessage.joinRequest !== undefined) {
             const {nameToJoin, by} = objMessage.joinRequest;
@@ -212,11 +200,10 @@ wss.on('connection', (ws) => {
 
                 const gameSettings = playersSettings[nameToJoin];
                 const whiteName = pickWhitename(nameToJoin, by, gameSettings);
-                const game = createGame(whiteName, matches[whiteName], 
+                createGame(whiteName, matches[whiteName], 
                     gameSettings.time, gameSettings.increment, gameSettings.color);
 
                 sendMatchAttributes(whiteName)
-
                 sendOutAvailableOpponents();
             }
 

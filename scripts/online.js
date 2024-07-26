@@ -18,30 +18,23 @@ export function updateClocks(whiteClockMillis, blackClockMillis) {
     const blackClockElem = document.getElementById('black-clock');
 
     if (whiteClockElem) {
-        console.log("oldTime: White: ", whiteClockElem.innerHTML);
         whiteClockElem.innerHTML = formatTime(whiteClockMillis >= 0
             ? whiteClockMillis
             : 0);
     }
 
     if (blackClockElem) {
-        console.log("oldTime: Black: ", whiteClockElem.innerHTML);
         blackClockElem.innerHTML = formatTime(blackClockMillis >= 0
             ? blackClockMillis
             : 0);
     }
 
     if (whiteClockMillis <= 0) {
-        console.log('Black won on time.');
         announceCheckmate(gameStats.kingCoords.black, gameStats.kingCoords.white);
 
     } else if (blackClockMillis <= 0) {
         announceCheckmate(gameStats.kingCoords.white, gameStats.kingCoords.black);
-        console.log('White won on time.');
     }
-    
-    console.log("newTime: White: ", whiteClockElem.innerHTML);
-    console.log("newTime: Black: ", blackClockElem.innerHTML);
 }
 
 function formatTime(milliseconds) {
@@ -133,7 +126,6 @@ function formatColor(color) {
 }
 
 function generateClickableOpponent(name, settings) {
-    console.log(settings);
     const {time, increment, color} = settings;
     return `
     <div class="opponent-to-join">
@@ -185,10 +177,8 @@ export function updateOnlineOpponentsHtml(availableOpponents, yourName) {
     onlinePanelElem.innerHTML = availableOpponentsHtml;
 
     document.querySelectorAll('.join-button').forEach((joinButtonElem) => {
-        console.log('Adding event listener');
         joinButtonElem.addEventListener('click', () => {
             joinOnlineOpponent(yourName, joinButtonElem.dataset.nameToJoin);
-            console.log(yourName, joinButtonElem.dataset.nameToJoin);
         });
     });
 }
