@@ -39,7 +39,7 @@ export function findMatch() {
     }
 
     yourName = inputName;
-    socket = new WebSocket('ws://localhost:3000');
+    socket = new WebSocket('wss://chess-project-backend-jakubdurkac.onrender.com');
     socket.addEventListener('open', sendInitialMessage);
     socket.addEventListener('message', handleIncomingMessage);
     socket.addEventListener('error', () => {
