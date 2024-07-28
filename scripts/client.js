@@ -7,7 +7,6 @@ let socket = null;
 let yourName = null;
 let isConnected = false;
 let canOfferDraw = true;
-let pingIntervalId;
 
 const allowedNamePattern = /^[a-zA-Z0-9_-]+$/;
 
@@ -41,27 +40,17 @@ export function findMatch() {
 
     yourName = inputName;
     socket = new WebSocket('wss://chess-project-backend-jakubdurkac.onrender.com');
-    socket.addEventListener('open', () => {
-        sendInitialMessage();
-        startPingingServer();
-    });
+    socket.addEventListener('open', sendInitialMessage);
     socket.addEventListener('message', handleIncomingMessage);
     socket.addEventListener('error', () => {
         addLogMessage('Error: Server is not available.');
     });
     socket.addEventListener('close', () => {
-        clearInterval(pingIntervalId);
         console.log('Disconnecting.');
         goOffline();
         socket = null;
         isConnected = false;
     });
-}
-
-function startPingingServer() {
-    pingIntervalId = setInterval(() => {
-        socket.send('ping');
-    }, 60000); // every minute to prevent autodisconnect 
 }
 
 export function disconnectFromServer() {
@@ -113,11 +102,6 @@ function handleIncomingMessage(event) {
     isConnected = true;
 
     const strMessage = event.data.toString();
-    if (strMessage === 'pong') {
-        console.log('Server received our ping.');
-        return;
-    }
-
     const objMessage = JSON.parse(strMessage);
 
     if (objMessage.matchAttributes !== undefined) { // opponent found
