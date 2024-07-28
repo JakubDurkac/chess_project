@@ -49,6 +49,13 @@ export function findMatch() {
     socket.addEventListener('error', () => {
         addLogMessage('Error: Server is not available.');
     });
+    socket.addEventListener('close', () => {
+        clearInterval(pingIntervalId);
+        console.log('Disconnecting.');
+        goOffline();
+        socket = null;
+        isConnected = false;
+    });
 }
 
 function startPingingServer() {
@@ -60,12 +67,7 @@ function startPingingServer() {
 export function disconnectFromServer() {
     console.log('Function disconnectFromServer is called.');
     if (isConnected && socket !== null) {
-        clearInterval(pingIntervalId);
-        console.log('Disconnecting.');
-        goOffline();
         socket.close();
-        socket = null;
-        isConnected = false;
     } else {
         console.log(`Cannot disconnect. isConnected=${isConnected}`);
     }
