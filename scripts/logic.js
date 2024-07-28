@@ -1,9 +1,10 @@
 import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy } from "./board.js";
-import { gameStats } from "./stats.js";
+import { gameStats, hasGameEnded } from "./stats.js";
 import { onlineYourColor } from "./online.js";
 
 export function isLegalMove(fromCoords, toCoords, isOnlineMatch) {
-    if (gameStats.result.keyword !== null) { // game ended
+    const piece = chessBoard[fromCoords[0]][fromCoords[1]];
+    if (!piece || hasGameEnded()) {
         return false;
     }
 
@@ -12,7 +13,7 @@ export function isLegalMove(fromCoords, toCoords, isOnlineMatch) {
             return false;
     }
 
-    const isWhite = isWhitePiece(chessBoard[fromCoords[0]][fromCoords[1]]);
+    const isWhite = isWhitePiece(piece);
     if (isWhite !== gameStats.isWhiteTurn || 
         !containsCoords(getAllReachableCoords(fromCoords), toCoords)) {
         return false;

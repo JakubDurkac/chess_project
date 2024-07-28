@@ -45,16 +45,18 @@ export function findMatch() {
     socket.addEventListener('error', () => {
         addLogMessage('Error: Server is not available.');
     });
-
-    isConnected = true;
 }
 
 export function disconnectFromServer() {
-    if (socket !== null) {
+    console.log('Function disconnectFromServer is called.');
+    if (isConnected && socket !== null) {
+        console.log('Disconnecting.');
         goOffline();
         socket.close();
         socket = null;
         isConnected = false;
+    } else {
+        console.log(`Cannot disconnect. isConnected=${isConnected}`);
     }
 }
 
@@ -95,6 +97,8 @@ function sendInitialMessage() {
 }
 
 function handleIncomingMessage(event) {
+    isConnected = true;
+
     const strMessage = event.data.toString();
     const objMessage = JSON.parse(strMessage);
 
