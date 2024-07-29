@@ -196,15 +196,21 @@ export function updateMaterialCount() {
     const color = isWhite ? 'white' : 'black';
     const opponentColor = isWhite ? 'black' : 'white';
 
+    let hasMaterialChanged = false;
     if (pieceTaken) {
-        gameStats.materialCount[opponentColor] -= pieceValue[pieceTaken.charAt(1)];        
+        gameStats.materialCount[opponentColor] -= pieceValue[pieceTaken.charAt(1)];
+        hasMaterialChanged = true;
     }
 
     if (wasPromotion(toCoords[0], piece)) {
+        console.log('Piece after promotion: ', getPieceTypeCode(toCoords[0], toCoords[1]));
         gameStats.materialCount[color] += pieceValue[getPieceTypeCode(toCoords[0], toCoords[1])] - 1;
+        hasMaterialChanged = true;
     }
 
-    updateMaterialCountDifference();
+    if (hasMaterialChanged) {
+        updateMaterialCountDifference();
+    }
 }
 
 export function hasGameEnded() {

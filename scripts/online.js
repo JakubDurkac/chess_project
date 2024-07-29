@@ -1,4 +1,4 @@
-import { announceCheckmate, announceStalemate, flipBoard, isFlippedBoard, oppositeColor } from "./board.js";
+import { announceCheckmate, announceStalemate, flipBoard, isFlippedBoard, oppositeColor, wasPromotion } from "./board.js";
 import { getRestartPlayAgainIcon, getWelcomeMessage } from "./chess.js";
 import { sendDrawAccepted, sendDrawDeclined, sendJoinRequest } from "./client.js";
 import { gameStats } from "./stats.js";
@@ -45,11 +45,7 @@ export function updateMaterialCountDifference() {
         return;
     }
 
-    const {materialCount, lastMove} = gameStats;
-    if (!lastMove.pieceTaken) {
-        return;
-    }
-    
+    const {materialCount} = gameStats;
     whiteMaterialElem.innerHTML = '';
     blackMaterialElem.innerHTML = '';
     const difference = Math.abs(materialCount.white - materialCount.black);
