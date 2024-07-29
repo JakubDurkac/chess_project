@@ -102,9 +102,17 @@
                     </select>
                 </div>
             </div>
+            
+            <div class="sounds-volume-settings">
+                <label for="volume-control">Sounds Volume:</label>
+                <input type="range" id="volume-control" name="volume-control" min="0" max="1" step="0.1" value="0.5">
+            </div>
         </div>
     </div>
 
+    <audio id="player-move-sound" src="./assets/sounds/move-self.webm"></audio>
+    <audio id="capture-sound" src="./assets/sounds/capture.webm"></audio>
+    <audio id="castle-sound" src="./assets/sounds/castle.webm"></audio>
     <script type="module" src="scripts/chess.js"></script>
 </body>
 </html>

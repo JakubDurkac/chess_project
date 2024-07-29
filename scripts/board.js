@@ -4,6 +4,7 @@ import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
 import { addLogMessage, declineDraw, isOnlineMatch, onlineYourColor } from "./online.js";
+import { makeSoundBasedOnLastMove } from "./sounds.js";
 
 export const boardSize = 8;
 
@@ -287,6 +288,7 @@ function makeMove(fromCoords, toCoords) {
     removePieceFromBoard(fromRow, fromCol);
     highlightLastMove(fromCoords, toCoords);
     updateLastMove(fromCoords, toCoords, piece);
+    makeSoundBasedOnLastMove();
     updateCastlingRights(); 
     addPieceToBoard(toRow, toCol, piece);
     gameStats.isWhiteTurn = !gameStats.isWhiteTurn;
