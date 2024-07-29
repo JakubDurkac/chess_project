@@ -1,4 +1,5 @@
-import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize, getColorCode } from "./board.js";
+import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize } from "./board.js";
+import { updateMaterialCountDifference } from "./online.js";
 
 const gameStatsInitial = {
     lastMove: {
@@ -202,6 +203,8 @@ export function updateMaterialCount() {
     if (wasPromotion(toCoords[0], piece)) {
         gameStats.materialCount[color] += pieceValue[getPieceTypeCode(toCoords[0], toCoords[1])] - 1;
     }
+
+    updateMaterialCountDifference();
 }
 
 export function hasGameEnded() {

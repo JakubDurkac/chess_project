@@ -222,9 +222,14 @@ ul.welcome-message li::marker {
     color: rgb(44, 44, 44);
 }
 
-.name-score {
+.name-score, .clock-and-material-difference {
     display: grid;
     grid-template-columns: 5fr 1fr;
+}
+
+#white-material-difference, #black-material-difference {
+    align-self: center;
+    justify-self: center;
 }
 
 .online-score-white, .online-score-black {

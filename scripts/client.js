@@ -39,6 +39,7 @@ export function findMatch() {
     }
 
     yourName = inputName;
+    // socket = new WebSocket('ws://localhost:3000');
     socket = new WebSocket('wss://chess-project-backend-jakubdurkac.onrender.com');
     socket.addEventListener('open', sendInitialMessage);
     socket.addEventListener('message', handleIncomingMessage);
@@ -46,7 +47,6 @@ export function findMatch() {
         addLogMessage('Error: Server is not available.');
     });
     socket.addEventListener('close', () => {
-        console.log('Disconnecting.');
         goOffline();
         socket = null;
         isConnected = false;
@@ -54,11 +54,11 @@ export function findMatch() {
 }
 
 export function disconnectFromServer() {
-    console.log('Function disconnectFromServer is called.');
     if (isConnected && socket !== null) {
         socket.close();
+        addLogMessage(`You disconnected.`);
     } else {
-        console.log(`Cannot disconnect. isConnected=${isConnected}`);
+        addLogMessage(`Already offline.`);
     }
 }
 
@@ -126,7 +126,7 @@ function handleIncomingMessage(event) {
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
         if (notification === 'opponent disconnected') {
-            addLogMessage("Opponent left. Entered singleplayer.")
+            addLogMessage("Opponent disconnected.")
             updateScoreResignation(oppositeColor(onlineYourColor));
             disconnectFromServer();
 

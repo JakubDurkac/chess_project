@@ -37,6 +37,31 @@ export function updateClocks(whiteClockMillis, blackClockMillis) {
     }
 }
 
+export function updateMaterialCountDifference() {
+    const whiteMaterialElem = document.getElementById('white-material-difference');
+    const blackMaterialElem = document.getElementById('black-material-difference');
+
+    if (!whiteMaterialElem || !blackMaterialElem) {
+        return;
+    }
+
+    const {materialCount, lastMove} = gameStats;
+    if (!lastMove.pieceTaken) {
+        return;
+    }
+    
+    whiteMaterialElem.innerHTML = '';
+    blackMaterialElem.innerHTML = '';
+    const difference = Math.abs(materialCount.white - materialCount.black);
+    if (materialCount.white > materialCount.black) {
+        whiteMaterialElem.innerHTML = `+${difference}`;
+        blackMaterialElem.innerHTML = '';
+    } else if (materialCount.white < materialCount.black) {
+        whiteMaterialElem.innerHTML = '';
+        blackMaterialElem.innerHTML = `+${difference}`;
+    }
+}
+
 function formatTime(milliseconds) {
     let minutes, seconds, total_hours, total_minutes, total_seconds;
     total_seconds = parseInt(Math.floor(milliseconds / 1000));
@@ -101,10 +126,16 @@ export function createOnlineMatchHtml(yourName, yourColor, opponentName, opponen
                 <p class="online-name">${opponentName}</p>
                 <p class="online-score-${opponentColor}">${opponentScore}</p>
             </div>
-            <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
+            <div class='clock-and-material-difference'>
+                <div id="${opponentColor}-clock">${formatTime(startClockMillis)}</div>
+                <div id="${opponentColor}-material-difference"></div>
+            </div>
         </div>
         <div class="online-player online-${yourColor}">
-            <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
+            <div class='clock-and-material-difference'>
+                <div id="${yourColor}-clock">${formatTime(startClockMillis)}</div>
+                <div id="${yourColor}-material-difference"></div>
+            </div>
             <div class="name-score">
                 <p class="online-name">${yourName}</p>
                 <p class="online-score-${yourColor}">${yourScore}</p>
