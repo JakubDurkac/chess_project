@@ -1,5 +1,5 @@
 import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation, oppositeColor } from "./board.js";
-import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw } from "./client.js";
+import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw, sendChatMessage } from "./client.js";
 import { resetGameHistory, resetGameStats } from "./stats.js";
 import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes } from "./online.js"
 
@@ -18,6 +18,9 @@ const findMatchButtonElem = document.querySelector('.js-find-match-button');
 const disconectButtonElem = document.querySelector('.js-disconnect-button');
 const flipBoardButtonElem = document.querySelector('.js-flip-button');
 const drawOfferButtonElem = document.querySelector('.js-draw-offer-button');
+const chatSendButtonElem = document.querySelector('.js-chat-send-button');
+const chatInputElem = document.querySelector('.js-chat-input');
+
 playButtonElem.addEventListener('click', resetGameCompletely);
 findMatchButtonElem.addEventListener('click', findMatch);
 disconectButtonElem.addEventListener('click', () => {
@@ -30,6 +33,13 @@ drawOfferButtonElem.addEventListener('click', () => {
         sendDrawOffer();
     } else {
         addLogMessage('No draw offers in singleplayer.');
+    }
+});
+chatSendButtonElem.addEventListener('click', sendChatMessage);
+chatInputElem.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        sendChatMessage();
     }
 });
 

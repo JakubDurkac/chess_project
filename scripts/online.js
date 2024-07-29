@@ -236,7 +236,10 @@ export function resetOnlineAttributes() {
 }
 
 export function addLogMessage(message) {
-    gameLogElem.innerHTML += `<div class="game-log-line">> ${message}</div>`;
+    const newLogLine = document.createElement('div');
+    newLogLine.classList.add('game-log-line');
+    newLogLine.innerHTML = `> ${message}`;
+    gameLogElem.appendChild(newLogLine);
     gameLogElem.scrollTop = gameLogElem.scrollHeight;
 }
 

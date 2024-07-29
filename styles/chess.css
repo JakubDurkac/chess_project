@@ -175,12 +175,12 @@ ul.welcome-message li::marker {
     margin-bottom: 2px;
 }
 
-.join-button:hover, .accept-draw-button:hover, .decline-draw-button:hover {
+.join-button:hover, .accept-draw-button:hover, .decline-draw-button:hover, .chat-send-button:hover {
     cursor: pointer;
     filter: brightness(1.1);
 }
 
-.join-button:active, .accept-draw-button:active, .decline-draw-button:active {
+.join-button:active, .accept-draw-button:active, .decline-draw-button:active, .chat-send-button:active {
     filter: brightness(1.2);
 }
 
@@ -473,6 +473,7 @@ ul.welcome-message li::marker {
 }
 
 .notation-container-border, .game-log-container {
+    position: relative;
     padding: 0px 0px 30px 0px;
     min-height: 100px;
     width: 276px;
@@ -532,7 +533,7 @@ ul.welcome-message li::marker {
 }
 
 .game-log-container {
-    padding: 0px 0px 0px 0px;
+    padding: 0px 0px 26px 0px;
     flex: 0 1 auto;
     height: 110px;
     min-height: 110px;
@@ -555,6 +556,40 @@ ul.welcome-message li::marker {
 .game-log-line {
     font-size: 14px;
     margin: 5px 5px 5px 5px;
+}
+
+.game-log-chat {
+    display: flex;
+    position: absolute;
+    bottom: 0px;
+}
+
+.chat-input {
+    padding: 0px 5px 1px 5px;
+    border-top: #fbefe1;
+    border-width: 2px 0px 0px 0px;
+    border-style: solid;
+    width: 214px;
+    height: 23px;
+}
+
+.chat-input::placeholder {
+    color: #b8b8b8;
+}
+
+.chat-send-button, .chat-input {
+    background-image: linear-gradient(to bottom right, #3d81d8, #2861ad, #0d4277);
+    color: #fbefe1;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.chat-send-button {
+    border-top: #fbefe1;
+    border-left: #fbefe1;
+    border-width: 2px 0px 0px 2px;
+    border-style: solid;
 }
 
 .icon {

@@ -1,6 +1,6 @@
 import { announceStalemate, getPlayerPromotionPieceCode, makeMoveWithExtra, oppositeColor, setOpponentPromotionPieceCode, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
-import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage, displayDrawOffer } from "./online.js";
+import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage, displayDrawOffer, isOnlineMatch } from "./online.js";
 import { gameStats, hasGameEnded } from "./stats.js";
 
 let socket = null;
@@ -123,6 +123,9 @@ function handleIncomingMessage(event) {
     } else if (objMessage.availableOpponents !== undefined) {
         updateOnlineOpponentsHtml(objMessage.availableOpponents, yourName);
 
+    } else if (objMessage.chat !== undefined) {
+        addLogMessage(`${objMessage.by}: ${objMessage.chat}`);
+
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
         if (notification === 'opponent disconnected') {
@@ -235,6 +238,32 @@ export function sendDrawDeclined() {
             by: yourName,
         }
     };
+
+    socket.send(JSON.stringify(objMessage));
+}
+
+export function sendChatMessage() {
+    const chatInputElem = document.querySelector('.js-chat-input');
+    if (!chatInputElem || chatInputElem.value === '') {
+        return;
+    }
+
+    const chatMessage = chatInputElem.value;
+    chatInputElem.value = '';
+
+    const objMessage = {
+        notification: {
+            message: 'chat',
+            by: yourName,
+            chatContent: chatMessage
+        }
+    };
+
+    addLogMessage(`${yourName ?? 'Guest'}: ${chatMessage}`);
+
+    if (socket === null || !isOnlineMatch) {
+        return;
+    }
 
     socket.send(JSON.stringify(objMessage));
 }
