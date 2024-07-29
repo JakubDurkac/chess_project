@@ -239,6 +239,7 @@ export function makeMoveWithExtra(fromCoords, toCoords) {
     promotePieceIfAny();
     castleRooksIfAny();
     updateMaterialCount();
+    makeSoundBasedOnLastMove();
     addPositionToGameHistory();
 
     if (!hasGameEnded() && isThreefoldRepetition()) {
@@ -288,7 +289,6 @@ function makeMove(fromCoords, toCoords) {
     removePieceFromBoard(fromRow, fromCol);
     highlightLastMove(fromCoords, toCoords);
     updateLastMove(fromCoords, toCoords, piece);
-    makeSoundBasedOnLastMove();
     updateCastlingRights(); 
     addPieceToBoard(toRow, toCol, piece);
     gameStats.isWhiteTurn = !gameStats.isWhiteTurn;

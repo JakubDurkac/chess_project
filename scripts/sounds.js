@@ -1,4 +1,5 @@
 import { wasCastling } from "./board.js";
+import { isAttackedSquare } from "./logic.js";
 import { gameStats } from "./stats.js";
 
 const volumeControlElem = document.getElementById('volume-control');
@@ -6,11 +7,13 @@ const volumeControlElem = document.getElementById('volume-control');
 const playerMoveSoundElem = document.getElementById('player-move-sound');
 const captureSoundElem = document.getElementById('capture-sound');
 const castleSoundElem = document.getElementById('castle-sound');
+const checkSoundElem = document.getElementById('check-sound');
 
 const soundNameToElem = {
     'move': playerMoveSoundElem,
     'capture': captureSoundElem,
-    'castle': castleSoundElem
+    'castle': castleSoundElem,
+    'check': checkSoundElem
 };
 
 export function playSound(soundName) {
@@ -23,11 +26,16 @@ export function playSound(soundName) {
 }
 
 export function makeSoundBasedOnLastMove() {
-    const {lastMove} = gameStats;
-    const {fromCoords, toCoords, piece, pieceTaken} = lastMove;
+    const {lastMove, kingCoords} = gameStats;
+    const {fromCoords, toCoords, piece, pieceTaken, isWhite} = lastMove;
     let soundName = 'move';
-    if (wasCastling(fromCoords, toCoords, piece)) {
-        soundName = 'castle'
+
+    const opponentColor = isWhite ? 'black' : 'white';
+    const opponentKingCoords = kingCoords[opponentColor];
+    if (isAttackedSquare(opponentKingCoords[0], opponentKingCoords[1], opponentColor.charAt(0))) {
+        soundName = 'check';
+    } else if (wasCastling(fromCoords, toCoords, piece)) {
+        soundName = 'castle';
     } else if (pieceTaken) {
         soundName = 'capture';
     }

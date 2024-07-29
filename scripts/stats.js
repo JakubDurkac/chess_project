@@ -203,7 +203,6 @@ export function updateMaterialCount() {
     }
 
     if (wasPromotion(toCoords[0], piece)) {
-        console.log('Piece after promotion: ', getPieceTypeCode(toCoords[0], toCoords[1]));
         gameStats.materialCount[color] += pieceValue[getPieceTypeCode(toCoords[0], toCoords[1])] - 1;
         hasMaterialChanged = true;
     }
