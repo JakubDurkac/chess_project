@@ -412,11 +412,11 @@ ul.welcome-message li::marker {
 }
 
 .winner-square {
-    background-image: linear-gradient(to bottom right, #55ff06, #18a000, #055f00);
+    background-image: linear-gradient(to bottom right, #55ff06, #18a000, #055f00) !important;
 }
 
 .loser-square {
-    background-image: linear-gradient(to bottom right, #e10000, #a60000, #5d0000);
+    background-image: linear-gradient(to bottom right, #e10000, #a60000, #5d0000) !important;
 }
 
 .draw-square {

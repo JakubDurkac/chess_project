@@ -241,9 +241,32 @@ export function makeMoveWithExtra(fromCoords, toCoords) {
     updateMaterialCount();
     makeSoundBasedOnLastMove();
     addPositionToGameHistory();
+    handleGameOverIfAny();
+}
 
-    if (!hasGameEnded() && isThreefoldRepetition()) {
-        announceSpecialDraw('Threefold Repetition');
+function handleGameOverIfAny() {
+    if (!canOpponentMove()) {
+        const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
+        const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';
+        const [kingRow, kingCol] = gameStats.kingCoords[cannotMoveColor];
+        if (isAttackedSquare(kingRow, kingCol, cannotMoveColor.charAt(0))) {
+            announceCheckmate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
+        } else {
+            announceStalemate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
+        }
+    }
+
+    if (!hasGameEnded()) {
+        if (gameStats.movesSinceLastProgress >= 100) {
+            announceSpecialDraw('50-Move-Rule');
+        } else if (isThreefoldRepetition()) {
+            announceSpecialDraw('Threefold Repetition');
+        }
+    }
+
+    if (isOnlineMatch && hasGameEnded()
+        && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
+        notifyServerGameEnded();
     }
 }
 
@@ -295,26 +318,6 @@ function makeMove(fromCoords, toCoords) {
     gameStats.moveCount++;
     updateEnpassantRights();
     updateNotation();
-
-    if (!canOpponentMove()) {
-        const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
-        const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';
-        const [kingRow, kingCol] = gameStats.kingCoords[cannotMoveColor];
-        if (isAttackedSquare(kingRow, kingCol, cannotMoveColor.charAt(0))) {
-            announceCheckmate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
-        } else {
-            announceStalemate(gameStats.kingCoords[canMoveColor], [kingRow, kingCol]);
-        }
-    }
-
-    if (gameStats.movesSinceLastProgress >= 100 && !hasGameEnded()) {
-        announceSpecialDraw('50-Move-Rule'); // 100 = 50 for each player
-    }
-
-    if (isOnlineMatch && gameStats.result.keyword !== null
-        && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
-        notifyServerGameEnded();
-    }
 }
 
 function canOpponentMove() {
