@@ -76,6 +76,28 @@ html, body {
     flex-wrap: nowrap;
 }
 
+.tooltip-text {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #fbefe1;
+    font-size: 15px;
+    font-weight: 550;
+    visibility: hidden;
+    background-color: rgb(31, 31, 31);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    transform: translateY(150%);
+    transition: opacity 0.5s;
+    opacity: 0;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 .play-online-with-settings-container {
     width: 287px;
     display: flex;

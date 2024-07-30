@@ -267,8 +267,7 @@ function handleGameOverIfAny() {
         }
     }
 
-    if (isOnlineMatch && hasGameEnded()
-        && (onlineYourColor === 'white') !== gameStats.isWhiteTurn) {
+    if (isOnlineMatch && hasGameEnded() && onlineYourColor === 'white') {
         notifyServerGameEnded();
     }
 }

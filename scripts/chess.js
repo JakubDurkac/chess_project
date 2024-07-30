@@ -24,8 +24,12 @@ const chatInputElem = document.querySelector('.js-chat-input');
 playButtonElem.addEventListener('click', resetGameCompletely);
 findMatchButtonElem.addEventListener('click', findMatch);
 disconectButtonElem.addEventListener('click', () => {
-    updateScoreResignation(onlineYourColor);
-    disconnectFromServer();
+    if (isOnlineMatch) {
+        updateScoreResignation(onlineYourColor);
+        disconnectFromServer();
+    } else {
+        addLogMessage('Already offline.');
+    }
 });
 flipBoardButtonElem.addEventListener('click', flipBoard);
 drawOfferButtonElem.addEventListener('click', () => {
@@ -95,11 +99,13 @@ function setUpModalSettings() {
 }
 
 export function getResignGameIcon() {
-    return '<img src="images/icons/resign_icon.png" class="icon">'
+    return `<img src="images/icons/resign_icon.png" class="icon">
+        <span class="tooltip-text js-play-tooltip-text">Resign</span>`
 }
 
 export function getRestartPlayAgainIcon() {
-    return '<img src="images/icons/restart_play_again_icon.png" class="icon">';
+    return `<img src="images/icons/restart_play_again_icon.png" class="icon">
+        <span class="tooltip-text js-play-tooltip-text">Rematch</span>`;
 }
 
 export function getWelcomeMessage() {
