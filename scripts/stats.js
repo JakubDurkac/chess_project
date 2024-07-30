@@ -1,4 +1,4 @@
-import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize } from "./board.js";
+import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize, getColorCode, isEmptySquare } from "./board.js";
 import { updateMaterialCountDifference } from "./online.js";
 
 const gameStatsInitial = {
@@ -214,4 +214,43 @@ export function updateMaterialCount() {
 
 export function hasGameEnded() {
     return gameStats.result.keyword !== null;
+}
+
+export function hasInsufficientMaterial(colorCode) {
+    let knightCount = 0;
+    let bishopCount = 0;
+    for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+            if (isEmptySquare(row, col)) {
+                continue;
+            }
+
+            const pieceColorCode = getColorCode(row, col);
+            const pieceTypeCode = getPieceTypeCode(row, col);
+            if (pieceColorCode === colorCode) {
+                switch (pieceTypeCode) {
+                    case 'p':
+                        return false;
+                    case 'r':
+                        return false;
+                    case 'q':
+                        return false;
+                    case 'n':
+                        knightCount++;
+                        break;
+                    case 'b':
+                        bishopCount++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    if (knightCount === 0 && bishopCount <= 1) {
+        return true;
+    }
+
+    return bishopCount === 0 && knightCount <= 1;
 }

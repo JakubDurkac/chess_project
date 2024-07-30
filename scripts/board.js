@@ -1,5 +1,5 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition, hasInsufficientMaterial } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
@@ -261,6 +261,9 @@ function handleGameOverIfAny() {
             announceSpecialDraw('50-Move-Rule');
         } else if (isThreefoldRepetition()) {
             announceSpecialDraw('Threefold Repetition');
+        } else if (gameStats.movesSinceLastProgress === 0 &&
+            hasInsufficientMaterial('w') && hasInsufficientMaterial('b')) {
+            announceSpecialDraw('Insufficient Material');
         }
     }
 
@@ -416,7 +419,7 @@ export function announceStalemate(firstKingCoords, secondKingCoords) {
     setResult('draw', firstKingCoords, secondKingCoords);
 }
 
-function announceSpecialDraw(drawMessage) {
+export function announceSpecialDraw(drawMessage) {
     const canMoveColor = gameStats.isWhiteTurn ? 'black' : 'white';
     const cannotMoveColor = gameStats.isWhiteTurn ? 'white' : 'black';
     const [kingRow, kingCol] = gameStats.kingCoords[cannotMoveColor];
