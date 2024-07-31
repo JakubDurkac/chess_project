@@ -624,6 +624,12 @@ ul.welcome-message li::marker {
     border-style: solid;
 }
 
+.chat-name {
+    background-image: linear-gradient(to bottom right, #3d81d8, #2861ad, #0d4277);
+    padding: 2px 3px 2px 3px;
+    border-radius: 3px;
+}
+
 .icon {
     width: 42px;
 }

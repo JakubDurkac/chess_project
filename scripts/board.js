@@ -315,7 +315,6 @@ function makeMove(fromCoords, toCoords) {
     }
 
     const piece = chessBoard[fromRow][fromCol];
-    removePieceFromBoard(fromRow, fromCol);
     highlightLastMove(fromCoords, toCoords);
     updateLastMove(fromCoords, toCoords, piece);
     updateCastlingRights(); 
@@ -324,6 +323,7 @@ function makeMove(fromCoords, toCoords) {
     gameStats.moveCount++;
     updateEnpassantRights();
     updateNotation();
+    removePieceFromBoard(fromRow, fromCol);
 }
 
 function canOpponentMove() {

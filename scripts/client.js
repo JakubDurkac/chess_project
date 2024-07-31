@@ -124,7 +124,7 @@ function handleIncomingMessage(event) {
         updateOnlineOpponentsHtml(objMessage.availableOpponents, yourName);
 
     } else if (objMessage.chat !== undefined) {
-        addLogMessage(`${objMessage.by}: ${objMessage.chat}`);
+        addLogMessage(`<span class="chat-name">${objMessage.by}</span>: ${objMessage.chat}`);
 
     } else if (objMessage.notification !== undefined) {
         const {notification} = objMessage;
@@ -259,7 +259,7 @@ export function sendChatMessage() {
         }
     };
 
-    addLogMessage(`${yourName ?? 'Guest'}: ${chatMessage}`);
+    addLogMessage(`<span class="chat-name">${yourName ?? 'Guest'}</span>: ${chatMessage}`);
 
     if (socket === null || !isOnlineMatch) {
         return;

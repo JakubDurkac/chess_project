@@ -35,10 +35,11 @@ function specifyNotation(pieceTypeCode, colorCode, fromCoords, toCoords) {
     let rankSpecification = '';
     const opponentColorCode = colorCode === 'w' ? 'b' : 'w';
     const reachable = reachableFunctions[pieceTypeCode](
-        toCoords[0], toCoords[1], opponentColorCode)
+        toCoords[0], toCoords[1], opponentColorCode);
 
     const concurrentCoords = reachable.filter((coords) => {
-        return chessBoard[coords[0]][coords[1]] === colorCode + pieceTypeCode;
+        return chessBoard[coords[0]][coords[1]] === colorCode + pieceTypeCode &&
+            !(coords[0] === fromCoords[0] && coords[1] === fromCoords[1]); // no self concurrence
     });
 
     concurrentCoords.forEach((coords) => {
