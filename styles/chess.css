@@ -207,12 +207,14 @@ ul.welcome-message li::marker {
     margin-bottom: 2px;
 }
 
-.join-button:hover, .accept-draw-button:hover, .decline-draw-button:hover, .chat-send-button:hover {
+.join-button:hover, .accept-draw-button:hover, .decline-draw-button:hover,
+.chat-send-button:hover, .chess-notation-text:hover {
     cursor: pointer;
     filter: brightness(1.1);
 }
 
-.join-button:active, .accept-draw-button:active, .decline-draw-button:active, .chat-send-button:active {
+.join-button:active, .accept-draw-button:active, .decline-draw-button:active,
+.chat-send-button:active, .chess-notation-text:active {
     filter: brightness(1.2);
 }
 
@@ -457,7 +459,6 @@ ul.welcome-message li::marker {
 
 .last-move-highlight {
     background-image: linear-gradient(to bottom right, #4be4ff, #21b7f7, #0377a9);
-    
 }
 
 .chess-piece-image {
@@ -479,10 +480,8 @@ ul.welcome-message li::marker {
     color: #373737;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
-
     margin: 0px 5px 10px 5px;
     display: inline-block;
-
     background-image: linear-gradient(to bottom right, #FDFCFB, #eccda8);
     padding: 4px 4px 4px 4px;
     border-radius: 5px;
@@ -493,6 +492,10 @@ ul.welcome-message li::marker {
     border-radius: 20px;
     padding: 4px 7px 4px 7px;
     color: #fbefe1;
+}
+
+.chess-notation-text-current {
+    background-image: linear-gradient(to bottom right, #4be4ff, #4fccf1, #35d7ff);
 }
 
 .chess-notation-container, .game-log {

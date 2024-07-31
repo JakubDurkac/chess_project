@@ -1,8 +1,13 @@
-import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy } from "./board.js";
+import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy, displayedPositionNumber } from "./board.js";
 import { gameStats, hasGameEnded } from "./stats.js";
-import { onlineYourColor } from "./online.js";
+import { addLogMessage, onlineYourColor } from "./online.js";
 
 export function isLegalMove(fromCoords, toCoords, isOnlineMatch) {
+    if (displayedPositionNumber !== gameStats.moveCount) {
+        addLogMessage('Cannot move in analysis mode. Click on the last move notation (e.g. Nf3) to continue your game.');
+        return false;
+    }
+
     const piece = chessBoard[fromCoords[0]][fromCoords[1]];
     if (!piece || hasGameEnded()) {
         return false;

@@ -2,7 +2,7 @@ import { announceCheckmate, announceSpecialDraw, announceStalemate, flipBoard, i
 import { getRestartPlayAgainIcon, getWelcomeMessage } from "./chess.js";
 import { sendDrawAccepted, sendDrawDeclined, sendJoinRequest } from "./client.js";
 import { playSound } from "./sounds.js";
-import { gameStats, hasInsufficientMaterial } from "./stats.js";
+import { gameStats, hasInsufficientMaterial, updateHighlightedSquaresOfPosition } from "./stats.js";
 
 export let isOnlineMatch = false;
 export let onlineYourColor = null;
@@ -37,6 +37,7 @@ export function updateClocks(whiteClockMillis, blackClockMillis) {
             announceCheckmate(gameStats.kingCoords.black, gameStats.kingCoords.white);
         }
 
+        updateHighlightedSquaresOfPosition();
         playSound('end');
 
     } else if (blackClockMillis <= 0) {
@@ -46,6 +47,7 @@ export function updateClocks(whiteClockMillis, blackClockMillis) {
             announceCheckmate(gameStats.kingCoords.white, gameStats.kingCoords.black);
         }
 
+        updateHighlightedSquaresOfPosition();
         playSound('end');
     }
 }
@@ -284,6 +286,7 @@ function getDeclineDrawButton() {
 
 function acceptDraw() {
     announceStalemate(gameStats.kingCoords.white, gameStats.kingCoords.black);
+    updateHighlightedSquaresOfPosition();
     sendDrawAccepted();
     removeDrawOfferButtons();
 }

@@ -1,4 +1,4 @@
-import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize, getColorCode, isEmptySquare } from "./board.js";
+import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize, getColorCode, isEmptySquare, highlightLastMove, highlightCheckmate, highlightStalemate } from "./board.js";
 import { updateMaterialCountDifference } from "./online.js";
 
 const gameStatsInitial = {
@@ -55,7 +55,43 @@ export function resetGameHistory() {
 }
 
 export function addPositionToGameHistory() {
-    gameHistory.push({compressed: [generateChessboardCompressed(), generateGameStatsCompressed()].join('/'), movesSinceProgress: gameStats.movesSinceLastProgress});
+    gameHistory.push({compressed: [generateChessboardCompressed(), generateGameStatsCompressed()].join('/'), 
+        movesSinceProgress: gameStats.movesSinceLastProgress,
+        highlightedSquares: null});
+    
+    updateHighlightedSquaresOfPosition();
+}
+
+export function updateHighlightedSquaresOfPosition() {
+    const {lastMove, result} = gameStats;
+    const highlightedSquares = {
+        lastMoveHighlight: [lastMove.fromCoords, lastMove.toCoords],
+        winnerHighlight: null,
+        loserHighlight: null,
+        drawHighlight: null
+    }
+
+    if (hasGameEnded()) {
+        if (result.keyword === 'win') {
+            highlightedSquares.winnerHighlight = result.firstKingCoords;
+            highlightedSquares.loserHighlight = result.secondKingCoords;
+        } else if (result.keyword === 'draw') {
+            highlightedSquares.drawHighlight = [result.firstKingCoords, result.secondKingCoords];
+        }
+    }
+
+    gameHistory[gameHistory.length - 1].highlightedSquares = highlightedSquares;
+}
+
+export function highlightSquaresOfPosition(positionIndex) {
+    const {lastMoveHighlight, winnerHighlight, loserHighlight, drawHighlight} = gameHistory[positionIndex].highlightedSquares;
+    highlightLastMove(lastMoveHighlight[0], lastMoveHighlight[1]);
+
+    if (winnerHighlight && loserHighlight) {
+        highlightCheckmate(winnerHighlight, loserHighlight);
+    } else if (drawHighlight) {
+        highlightStalemate(drawHighlight[0], drawHighlight[1]);
+    }
 }
 
 function generateChessboardCompressed() {
@@ -99,6 +135,33 @@ function compressCastlingRights(castlingRights) {
     }
 
     return result;
+}
+
+export function getChessboardDecompressed(positionIndex) {
+    const boardStr = gameHistory[positionIndex].compressed.split('/')[0];
+    const board = [];
+    let line = [];
+
+    let i = 0;
+    for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+            const char = boardStr.charAt(i);
+            if (char === '0') {
+                line.push(null);
+                i++;    
+            } else {
+                line.push(char + boardStr.charAt(i + 1));
+                i += 2;
+            }
+
+            if (line.length >= boardSize) {
+                board.push(line);
+                line = [];
+            }
+        }
+    }
+
+    return board;
 }
 
 export function isThreefoldRepetition() {

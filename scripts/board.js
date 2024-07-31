@@ -1,5 +1,5 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition, hasInsufficientMaterial } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition, hasInsufficientMaterial, getChessboardDecompressed, highlightSquaresOfPosition, updateHighlightedSquaresOfPosition } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
@@ -28,6 +28,8 @@ let dragoverSquare = null;
 
 export let isFlippedBoard = false;
 let opponentPromotionPieceCode = null;
+
+export let displayedPositionNumber = 0;
 
 export function initializeBoard() {
     generateSquares();
@@ -83,6 +85,7 @@ export function updateBoardPieces() {
 
 export function resetBoard() {
     setBoard(boardDeepCopy(chessBoardInitial));
+    displayedPositionNumber = 0;
 }
 
 function removeAllHighlighting(buttonElem) {
@@ -126,10 +129,14 @@ export function flipBoard() {
 }
 
 function rehighlightSquares() {
-    const {lastMove} = gameStats;
+    const {lastMove, moveCount, result} = gameStats;
     if (lastMove.piece) {
-        highlightLastMove(lastMove.fromCoords, lastMove.toCoords);
-        const {result} = gameStats;
+        if (moveCount === displayedPositionNumber) {
+            highlightLastMove(lastMove.fromCoords, lastMove.toCoords);
+        } else {
+            highlightSquaresOfPosition(displayedPositionNumber - 1);
+        }
+        
         if (result.keyword !== null) {
             if (result.keyword === 'win') {
                 highlightCheckmate(result.firstKingCoords,
@@ -166,18 +173,57 @@ function updateNotation() {
         notationElem.innerHTML = '';
     }
 
-    const cssTextClass = `class="chess-notation-text"`;
-    const cssIndexClass = `class="chess-notation-index"`;
     const {moveCount} = gameStats;
     const lineBreak = moveCount % 2 === 0 ? '<br>' : '';
     if (moveCount % 2 === 1) {
-        notationElem.innerHTML += `<p ${cssIndexClass}>${String((moveCount + 1) / 2)}.</p>`;
+        const indexElem = document.createElement('p');
+        indexElem.className = 'chess-notation-index';
+        indexElem.innerText = `${String((moveCount + 1) / 2)}.`;
+        notationElem.appendChild(indexElem);
+    }
+    
+    const moveTextElem = document.createElement('p');
+    moveTextElem.id = `move-${String(moveCount)}`;
+    moveTextElem.className = 'chess-notation-text chess-notation-text-current';
+    moveTextElem.innerText = generateLastMoveNotation();
+    notationElem.appendChild(moveTextElem);
+    
+    moveTextElem.addEventListener('click', () => {
+        changeDisplayedPosition(moveCount);
+    });
+
+    if (lineBreak === '<br>') {
+        const br = document.createElement('br');
+        notationElem.appendChild(br);
     }
 
-    notationElem.innerHTML += `<p id="move-${String(moveCount)}" 
-        ${cssTextClass}>${generateLastMoveNotation()}</p>${lineBreak}`;
+    const oldNotationTextElem = document.getElementById(`move-${String(moveCount - 1)}`);
+    if (oldNotationTextElem) {
+        oldNotationTextElem.classList.remove("chess-notation-text-current");
+    }
     
     notationElem.scrollTop = notationElem.scrollHeight;
+}
+
+export function changeDisplayedPosition(toPositionNumber) {
+    if (displayedPositionNumber === toPositionNumber) {
+        return; // change to same position
+    }
+
+    const oldNotationTextElem = document.getElementById(`move-${String(displayedPositionNumber)}`);
+    const newNotationTextElem = document.getElementById(`move-${String(toPositionNumber)}`);
+    if (!oldNotationTextElem || !newNotationTextElem) {
+        return;
+    }
+
+    oldNotationTextElem.classList.remove("chess-notation-text-current");
+    newNotationTextElem.classList.add("chess-notation-text-current");
+
+    displayedPositionNumber = toPositionNumber;
+    setBoard(getChessboardDecompressed(toPositionNumber - 1));
+    updateBoardPieces();
+
+    highlightSquaresOfPosition(toPositionNumber - 1);
 }
 
 function visualizePiece(row, col, buttonElem) {
@@ -240,8 +286,8 @@ export function makeMoveWithExtra(fromCoords, toCoords) {
     castleRooksIfAny();
     updateMaterialCount();
     makeSoundBasedOnLastMove();
-    addPositionToGameHistory();
     handleGameOverIfAny();
+    addPositionToGameHistory();
 }
 
 function handleGameOverIfAny() {
@@ -289,7 +335,7 @@ function highlightSquare(buttonElem) {
     }, 200);
 }
 
-function highlightLastMove(newFromCoords, newToCoords) {
+export function highlightLastMove(newFromCoords, newToCoords) {
     if (gameStats.moveCount > 0) {
         const {fromCoords, toCoords} = gameStats.lastMove;
         getButtonElemByCoords(fromCoords[0], fromCoords[1])
@@ -321,6 +367,7 @@ function makeMove(fromCoords, toCoords) {
     addPieceToBoard(toRow, toCol, piece);
     gameStats.isWhiteTurn = !gameStats.isWhiteTurn;
     gameStats.moveCount++;
+    displayedPositionNumber++;
     updateEnpassantRights();
     updateNotation();
     removePieceFromBoard(fromRow, fromCol);
@@ -430,14 +477,14 @@ export function announceSpecialDraw(drawMessage) {
     addLogMessage(`Draw: ${drawMessage}.`);
 }
 
-function highlightCheckmate(winnerKingCoords, loserKingCoords) {
+export function highlightCheckmate(winnerKingCoords, loserKingCoords) {
     getButtonElemByCoords(winnerKingCoords[0], winnerKingCoords[1])
         .classList.add('winner-square');
     getButtonElemByCoords(loserKingCoords[0], loserKingCoords[1])
         .classList.add('loser-square');
 }
 
-function highlightStalemate(firstKingCoords, secondKingCoords) {
+export function highlightStalemate(firstKingCoords, secondKingCoords) {
     getButtonElemByCoords(firstKingCoords[0], firstKingCoords[1])
         .classList.add('draw-square');
     getButtonElemByCoords(secondKingCoords[0], secondKingCoords[1])
@@ -457,6 +504,7 @@ export function updateScoreResignation(resigneeColor) {
     if (gameStats.moveCount > 2 && !hasGameEnded()) {
         const winnerColor = oppositeColor(resigneeColor);
         announceCheckmate(gameStats.kingCoords[winnerColor], gameStats.kingCoords[resigneeColor]);
+        updateHighlightedSquaresOfPosition();
     }
 }
 

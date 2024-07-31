@@ -1,7 +1,7 @@
-import { announceStalemate, getPlayerPromotionPieceCode, makeMoveWithExtra, oppositeColor, setOpponentPromotionPieceCode, updateScoreResignation } from "./board.js";
+import { announceStalemate, changeDisplayedPosition, getPlayerPromotionPieceCode, makeMoveWithExtra, oppositeColor, setOpponentPromotionPieceCode, updateScoreResignation } from "./board.js";
 import { resetGameLocally } from "./chess.js";
 import { updateOnlineOpponentsHtml, goOffline, setOnlineAttributes, updateClocks, onlineYourColor, addLogMessage, displayDrawOffer, isOnlineMatch } from "./online.js";
-import { gameStats, hasGameEnded } from "./stats.js";
+import { gameStats, hasGameEnded, updateHighlightedSquaresOfPosition } from "./stats.js";
 
 let socket = null;
 let yourName = null;
@@ -114,6 +114,7 @@ function handleIncomingMessage(event) {
     } else if (objMessage.move !== undefined) { // opponent's move played
         const {move} = objMessage;
         setOpponentPromotionPieceCode(move.promotionPieceCode);
+        changeDisplayedPosition(gameStats.moveCount);
         makeMoveWithExtra(move.fromCoords, move.toCoords);
 
     } else if (objMessage.clockUpdate !== undefined) { // server clock times
@@ -153,6 +154,7 @@ function handleIncomingMessage(event) {
         } else if (notification === 'draw accepted') {
             addLogMessage("Opponent accepted the draw.");
             announceStalemate(gameStats.kingCoords.white, gameStats.kingCoords.black);
+            updateHighlightedSquaresOfPosition();
             
         } else if (notification === 'draw declined') {
             addLogMessage("Opponent declined the draw.");
