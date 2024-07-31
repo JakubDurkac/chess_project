@@ -1,5 +1,5 @@
 import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation, oppositeColor } from "./board.js";
-import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw, sendChatMessage } from "./client.js";
+import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw, sendChatMessage, isConnected } from "./client.js";
 import { resetGameHistory, resetGameStats } from "./stats.js";
 import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes, updateMaterialCountDifference } from "./online.js"
 
@@ -24,9 +24,13 @@ const chatInputElem = document.querySelector('.js-chat-input');
 playButtonElem.addEventListener('click', resetGameCompletely);
 findMatchButtonElem.addEventListener('click', findMatch);
 disconectButtonElem.addEventListener('click', () => {
-    if (isOnlineMatch) {
-        updateScoreResignation(onlineYourColor);
+    if (isConnected) {
+        if (isOnlineMatch) {
+            updateScoreResignation(onlineYourColor);
+        }
+
         disconnectFromServer();
+        
     } else {
         addLogMessage('Already offline.');
     }

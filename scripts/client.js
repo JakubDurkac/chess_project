@@ -5,7 +5,7 @@ import { gameStats, hasGameEnded } from "./stats.js";
 
 let socket = null;
 let yourName = null;
-let isConnected = false;
+export let isConnected = false;
 let canOfferDraw = true;
 
 const allowedNamePattern = /^[a-zA-Z0-9_-]+$/;
