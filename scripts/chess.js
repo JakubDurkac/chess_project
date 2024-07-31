@@ -2,6 +2,7 @@ import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard
 import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw, sendChatMessage, isConnected } from "./client.js";
 import { resetGameHistory, resetGameStats } from "./stats.js";
 import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes, updateMaterialCountDifference } from "./online.js"
+import { playSound } from "./sounds.js";
 
 setUpModalSettings();
 
@@ -30,7 +31,7 @@ disconectButtonElem.addEventListener('click', () => {
         }
 
         disconnectFromServer();
-        
+
     } else {
         addLogMessage('Already offline.');
     }
@@ -80,6 +81,7 @@ export function resetGameLocally() {
 
     resetPromotionSettings(isOnlineMatch ? onlineYourColor : 'white');
     playButtonElem.innerHTML = isOnlineMatch ? getResignGameIcon() : getRestartPlayAgainIcon();
+    playSound('start');
 }
 
 function setUpModalSettings() {

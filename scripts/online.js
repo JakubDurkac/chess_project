@@ -1,6 +1,7 @@
 import { announceCheckmate, announceSpecialDraw, announceStalemate, flipBoard, isFlippedBoard, oppositeColor, wasPromotion } from "./board.js";
 import { getRestartPlayAgainIcon, getWelcomeMessage } from "./chess.js";
 import { sendDrawAccepted, sendDrawDeclined, sendJoinRequest } from "./client.js";
+import { playSound } from "./sounds.js";
 import { gameStats, hasInsufficientMaterial } from "./stats.js";
 
 export let isOnlineMatch = false;
@@ -36,12 +37,16 @@ export function updateClocks(whiteClockMillis, blackClockMillis) {
             announceCheckmate(gameStats.kingCoords.black, gameStats.kingCoords.white);
         }
 
+        playSound('end');
+
     } else if (blackClockMillis <= 0) {
         if (hasInsufficientMaterial('w')) {
             announceSpecialDraw('Timeout + Insufficient Material');
         } else {
             announceCheckmate(gameStats.kingCoords.white, gameStats.kingCoords.black);
         }
+
+        playSound('end');
     }
 }
 

@@ -8,12 +8,16 @@ const playerMoveSoundElem = document.getElementById('player-move-sound');
 const captureSoundElem = document.getElementById('capture-sound');
 const castleSoundElem = document.getElementById('castle-sound');
 const checkSoundElem = document.getElementById('check-sound');
+const startSoundElem = document.getElementById('start-sound');
+const endSoundElem = document.getElementById('end-sound');
 
 const soundNameToElem = {
     'move': playerMoveSoundElem,
     'capture': captureSoundElem,
     'castle': castleSoundElem,
-    'check': checkSoundElem
+    'check': checkSoundElem,
+    'start': startSoundElem,
+    'end': endSoundElem
 };
 
 export function playSound(soundName) {

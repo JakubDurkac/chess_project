@@ -4,7 +4,7 @@ import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
 import { addLogMessage, declineDraw, isOnlineMatch, onlineYourColor } from "./online.js";
-import { makeSoundBasedOnLastMove } from "./sounds.js";
+import { makeSoundBasedOnLastMove, playSound } from "./sounds.js";
 
 export const boardSize = 8;
 
@@ -267,8 +267,12 @@ function handleGameOverIfAny() {
         }
     }
 
-    if (isOnlineMatch && hasGameEnded() && onlineYourColor === 'white') {
-        notifyServerGameEnded();
+    if (hasGameEnded()) {
+        if (isOnlineMatch && onlineYourColor === 'white') {
+            notifyServerGameEnded();
+        }
+
+        playSound('end');
     }
 }
 
