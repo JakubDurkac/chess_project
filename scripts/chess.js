@@ -99,11 +99,13 @@ function setUpModalSettings() {
 }
 
 export function getResignGameIcon() {
-    return `<img src="images/icons/resign_icon.png" class="icon">`
+    return `<img src="images/icons/resign_icon.png" class="icon">
+        <div class="tooltip-text">Resign Game</div>`
 }
 
 export function getRestartPlayAgainIcon() {
-    return `<img src="images/icons/restart_play_again_icon.png" class="icon">`;
+    return `<img src="images/icons/restart_play_again_icon.png" class="icon">
+        <div class="tooltip-text">Restart Game</div>`;
 }
 
 export function getWelcomeMessage() {
