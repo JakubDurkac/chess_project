@@ -44,5 +44,6 @@ export function makeSoundBasedOnLastMove() {
         soundName = 'capture';
     }
 
+    lastMove.soundName = soundName;
     playSound(soundName);
 }

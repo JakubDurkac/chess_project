@@ -1,5 +1,6 @@
 import { chessBoard, wasEnpassant, wasPromotion, isWhitePiece, getPieceTypeCode, boardSize, getColorCode, isEmptySquare, highlightLastMove, highlightCheckmate, highlightStalemate } from "./board.js";
 import { updateMaterialCountDifference } from "./online.js";
+import { playSound } from "./sounds.js";
 
 const gameStatsInitial = {
     lastMove: {
@@ -8,7 +9,8 @@ const gameStatsInitial = {
         piece: null,
         isWhite: null,
         pieceTaken: null,
-        toRemoveCoords: null, // piece taken with en passant 
+        toRemoveCoords: null, // piece taken with en passant
+        soundName: null
     },
     castlingRights: {
         white: {
@@ -55,9 +57,11 @@ export function resetGameHistory() {
 }
 
 export function addPositionToGameHistory() {
+    const {movesSinceLastProgress, lastMove} = gameStats;
     gameHistory.push({compressed: [generateChessboardCompressed(), generateGameStatsCompressed()].join('/'), 
-        movesSinceProgress: gameStats.movesSinceLastProgress,
-        highlightedSquares: null});
+        movesSinceProgress: movesSinceLastProgress,
+        highlightedSquares: null,
+        soundName: lastMove.soundName});
     
     updateHighlightedSquaresOfPosition();
 }
@@ -92,6 +96,10 @@ export function highlightSquaresOfPosition(positionIndex) {
     } else if (drawHighlight) {
         highlightStalemate(drawHighlight[0], drawHighlight[1]);
     }
+}
+
+export function playSoundOfPosition(positionIndex) {
+    playSound(gameHistory[positionIndex].soundName);
 }
 
 function generateChessboardCompressed() {

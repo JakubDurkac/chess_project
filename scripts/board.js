@@ -1,5 +1,5 @@
 import { isLegalMove, getAllReachableCoords, isAttackedSquare, canPlayCuzKingSafe } from "./logic.js";
-import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition, hasInsufficientMaterial, getChessboardDecompressed, highlightSquaresOfPosition, updateHighlightedSquaresOfPosition } from "./stats.js";
+import { gameStats, updateLastMove, updateCastlingRights, updateMaterialCount, hasGameEnded, updateEnpassantRights, addPositionToGameHistory, isThreefoldRepetition, hasInsufficientMaterial, getChessboardDecompressed, highlightSquaresOfPosition, updateHighlightedSquaresOfPosition, playSoundOfPosition } from "./stats.js";
 import { generateLastMoveNotation } from "./notation.js";
 import { notifyServerGameEnded, sendMove } from "./client.js";
 import { getRestartPlayAgainIcon, isPlaying } from "./chess.js";
@@ -221,6 +221,7 @@ export function changeDisplayedPosition(toPositionNumber) {
     displayedPositionNumber = toPositionNumber;
     setBoard(getChessboardDecompressed(toPositionNumber - 1));
     updateBoardPieces();
+    playSoundOfPosition(toPositionNumber - 1);
 
     highlightSquaresOfPosition(toPositionNumber - 1);
 }
