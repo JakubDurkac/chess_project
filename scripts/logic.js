@@ -1,10 +1,20 @@
-import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy, displayedPositionNumber } from "./board.js";
+import { chessBoard, boardSize, getColorCode, getPieceTypeCode, isEmptySquare, isInRange, wasEnpassant, isWhitePiece, setBoard, wasCastling, boardDeepCopy, displayedPositionNumber, changeDisplayedPosition } from "./board.js";
 import { gameStats, hasGameEnded } from "./stats.js";
 import { addLogMessage, onlineYourColor } from "./online.js";
 
 export function isLegalMove(fromCoords, toCoords, isOnlineMatch) {
     if (displayedPositionNumber !== gameStats.moveCount) {
-        addLogMessage('Cannot move in analysis mode. Click on the last move notation (e.g. Nf3) to continue your game.');
+        const logLineElem = addLogMessage(`
+            Cannot make moves in the past. Click <span class="jump-to-present js-jump-to-present">
+            here</span> to jump into the present.`);
+
+        const hereElem = logLineElem.querySelector('.js-jump-to-present');
+        if (hereElem) {
+            hereElem.addEventListener('click', () => {
+                changeDisplayedPosition(gameStats.moveCount);
+            });
+        }
+
         return false;
     }
 

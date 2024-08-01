@@ -208,13 +208,13 @@ ul.welcome-message li::marker {
 }
 
 .join-button:hover, .accept-draw-button:hover, .decline-draw-button:hover,
-.chat-send-button:hover, .chess-notation-text:hover {
+.chat-send-button:hover, .chess-notation-text:hover, .jump-to-present:hover {
     cursor: pointer;
     filter: brightness(1.1);
 }
 
 .join-button:active, .accept-draw-button:active, .decline-draw-button:active,
-.chat-send-button:active, .chess-notation-text:active {
+.chat-send-button:active, .chess-notation-text:active, .jump-to-present:active {
     filter: brightness(1.2);
 }
 
@@ -496,6 +496,10 @@ ul.welcome-message li::marker {
 
 .chess-notation-text-current {
     background-image: linear-gradient(to bottom right, #4be4ff, #4fccf1, #35d7ff);
+}
+
+.jump-to-present {
+    color: #35d7ff;
 }
 
 .chess-notation-container, .game-log {

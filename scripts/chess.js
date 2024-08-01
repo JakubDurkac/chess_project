@@ -1,6 +1,6 @@
-import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation, oppositeColor } from "./board.js";
+import { initializeBoard, updateBoardPieces, notationElem, resetBoard, flipBoard, updateScoreResignation, oppositeColor, changeDisplayedPosition, displayedPositionNumber } from "./board.js";
 import { findMatch, disconnectFromServer, resignOnlineGame, sendDrawOffer, setCanOfferDraw, sendChatMessage, isConnected } from "./client.js";
-import { resetGameHistory, resetGameStats } from "./stats.js";
+import { gameStats, resetGameHistory, resetGameStats } from "./stats.js";
 import { addLogMessage, isOnlineMatch, onlineGameColorType, onlineOpponentName, onlineStartClockMillis, onlineYourColor, onlineYourName, setOnlineAttributes, updateMaterialCountDifference } from "./online.js"
 import { playSound } from "./sounds.js";
 
@@ -49,6 +49,13 @@ chatInputElem.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
         sendChatMessage();
+    }
+});
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowLeft' && displayedPositionNumber - 1 >= 1) {
+        changeDisplayedPosition(displayedPositionNumber - 1);
+    } else if (event.key === 'ArrowRight' && displayedPositionNumber + 1 <= gameStats.moveCount) {
+        changeDisplayedPosition(displayedPositionNumber + 1);
     }
 });
 
@@ -119,7 +126,7 @@ export function getWelcomeMessage() {
     <ul class="welcome-message">
         <li class="welcome-message-line">Enter your name to challenge opponents online.</li>
         <li class="welcome-message-line">Choose your favorite time control in the settings.</li>
-        <li class="welcome-message-line">Nobody around? Dive into singleplayer mode. (&#9658;)</li>
+        <li class="welcome-message-line">Nobody around? Dive into singleplayer mode. &#9658;</li>
     </ul>`;
 }
 
@@ -127,6 +134,7 @@ export function getInitialNotationMessage() {
     return `
     <ul class="welcome-message initial-notation-message">
         <li>Moves unfold here!</li>
+        <li>Navigate through past positions by clicking on a move or pressing the arrow keys. &#8701; &#8702;</li>
     </ul>`
 }
 

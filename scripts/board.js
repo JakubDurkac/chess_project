@@ -133,18 +133,17 @@ function rehighlightSquares() {
     if (lastMove.piece) {
         if (moveCount === displayedPositionNumber) {
             highlightLastMove(lastMove.fromCoords, lastMove.toCoords);
+            if (result.keyword !== null) {
+                if (result.keyword === 'win') {
+                    highlightCheckmate(result.firstKingCoords,
+                        result.secondKingCoords);
+                } else {
+                    highlightStalemate(result.firstKingCoords,
+                        result.secondKingCoords);
+                }
+            }
         } else {
             highlightSquaresOfPosition(displayedPositionNumber - 1);
-        }
-        
-        if (result.keyword !== null) {
-            if (result.keyword === 'win') {
-                highlightCheckmate(result.firstKingCoords,
-                    result.secondKingCoords);
-            } else {
-                highlightStalemate(result.firstKingCoords,
-                    result.secondKingCoords);
-            }
         }
     }
 }
@@ -460,11 +459,13 @@ function setSelectedPromotionTo(pieceName) {
 }
 
 export function announceCheckmate(winnerKingCoords, loserKingCoords) {
+    changeDisplayedPosition(gameStats.moveCount);
     highlightCheckmate(winnerKingCoords, loserKingCoords);
     setResult('win', winnerKingCoords, loserKingCoords);
 }
 
 export function announceStalemate(firstKingCoords, secondKingCoords) {
+    changeDisplayedPosition(gameStats.moveCount);
     highlightStalemate(firstKingCoords, secondKingCoords);
     setResult('draw', firstKingCoords, secondKingCoords);
 }
