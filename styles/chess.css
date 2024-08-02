@@ -420,8 +420,8 @@ ul.welcome-message li::marker {
 }
 
 .chessboard-square:hover, .dragover-square {
-    box-shadow: inset 2px 2px 5px 1px #0e276b,
-                inset -2px -2px 5px 1px #399cff;
+    box-shadow: inset 2px 2px 5px 1px #47c5ff,
+                inset -2px -2px 5px 1px #47c5ff
 }
 
 .menu-button:hover {
