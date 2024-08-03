@@ -41,7 +41,10 @@ export function findMatch() {
     yourName = inputName;
     // socket = new WebSocket('ws://localhost:3000');
     socket = new WebSocket('wss://chess-project-backend-jakubdurkac.onrender.com');
-    socket.addEventListener('open', sendInitialMessage);
+    socket.addEventListener('open', () => {
+        isConnected = true;
+        sendInitialMessage();
+    });
     socket.addEventListener('message', handleIncomingMessage);
     socket.addEventListener('error', () => {
         addLogMessage('Error: Server is not available.');
@@ -99,8 +102,6 @@ function sendInitialMessage() {
 }
 
 function handleIncomingMessage(event) {
-    isConnected = true;
-
     const strMessage = event.data.toString();
     const objMessage = JSON.parse(strMessage);
 
