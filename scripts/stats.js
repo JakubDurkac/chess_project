@@ -67,7 +67,11 @@ export function addPositionToGameHistory() {
 }
 
 export function updateHighlightedSquaresOfPosition() {
-    const {lastMove, result} = gameStats;
+    const {lastMove, result, moveCount} = gameStats;
+    if (moveCount <= 0) {
+        return; // game has not started yet
+    }
+
     const highlightedSquares = {
         lastMoveHighlight: [lastMove.fromCoords, lastMove.toCoords],
         winnerHighlight: null,
