@@ -149,7 +149,7 @@ function rehighlightSquares() {
 }
 
 function generatePieceImage(piece) {
-    return `<img src="images/pieces/space/${piece}.png" 
+    return `<img src="images/pieces/maestro/${piece}.svg" 
                 draggable="true"
                 class="chess-piece-image">`;
 }

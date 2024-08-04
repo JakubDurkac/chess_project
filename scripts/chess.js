@@ -140,25 +140,27 @@ export function getInitialNotationMessage() {
 
 function resetPromotionSettings(color) {
     const colorCode = color === 'black' ? 'b' : 'w';
+    const pieceSetName = 'maestro';
+    const imageFormat = 'svg';
     promotionSettingsElem.innerHTML = `
-        <img src="images/pieces/space/${colorCode}p.png" class="promotion-piece-icon">
+        <img src="images/pieces/${pieceSetName}/${colorCode}p.${imageFormat}" class="promotion-piece-icon">
     <img src="images/icons/promotion_arrow_icon.png" class="promotion-piece-icon">
     
     <label>
         <input type="radio" id="promotion-queen" name="promotion" value="q" class="promotion-radio" checked>
-        <img src="images/pieces/space/${colorCode}q.png" class="promotion-piece-icon promotion-choice" alt="Queen">
+        <img src="images/pieces/${pieceSetName}/${colorCode}q.${imageFormat}" class="promotion-piece-icon promotion-choice" alt="Queen">
     </label>
     <label>
         <input type="radio" id="promotion-knight" name="promotion" value="n" class="promotion-radio">
-        <img src="images/pieces/space/${colorCode}n.png" class="promotion-piece-icon promotion-choice" alt="Knight">
+        <img src="images/pieces/${pieceSetName}/${colorCode}n.${imageFormat}" class="promotion-piece-icon promotion-choice" alt="Knight">
     </label>
     <label>
         <input type="radio" id="promotion-rook" name="promotion" value="r" class="promotion-radio">
-        <img src="images/pieces/space/${colorCode}r.png" class="promotion-piece-icon promotion-choice" alt="Rook">
+        <img src="images/pieces/${pieceSetName}/${colorCode}r.${imageFormat}" class="promotion-piece-icon promotion-choice" alt="Rook">
     </label>
     <label>
         <input type="radio" id="promotion-bishop" name="promotion" value="b" class="promotion-radio">
-        <img src="images/pieces/space/${colorCode}b.png" class="promotion-piece-icon promotion-choice" alt="Bishop">
+        <img src="images/pieces/${pieceSetName}/${colorCode}b.${imageFormat}" class="promotion-piece-icon promotion-choice" alt="Bishop">
     </label>
     `;
 }
