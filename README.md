@@ -1,7 +1,7 @@
 # [moodychess](https://moodychess.vercel.app/)
 A chess web app that focuses on online gameplay and offers all the essential features for comfortable online chess.
-- **frontend** (this) written in **Javascript**, **HTML** and **CSS** with no additional frameworks used
-- for **backend**, see **link**
+- **frontend** (this) written in **Javascript**, **HTML** and **CSS**, deployed using [Vercel](https://vercel.com/)
+- for **backend**, look [here](https://github.com/JakubDurkac/chess_project_backend)
 
 ## Features
 
@@ -24,10 +24,11 @@ A chess web app that focuses on online gameplay and offers all the essential fea
 - players make moves, all the standard chess rules are enforced, **only legal moves are allowed**
 - before a move is played, app performs a check on its legality, app considers piece move patterns, their color, castling and castling rights,
 en passant, checks, pins, etc.
-- app **announces** checkmates, stalemates, draws by 50-move rule, threefold repetition, insufficient material; wins and losses by timeout
+- app **announces** checkmates, stalemates, draws by 50-move rule, threefold repetition, insufficient material; wins and losses on time, all by highlighting the kings squares
 - use buttons **Resign Game** and **Disconnect** (results in a loss), or **Offer Draw** to the opponent, who may accept or decline it in the **Game Log**, where it pops up
 -  on opponent's disconnect, the player is also disconnected automatically, as there is no reason to stay online, after that, player can search for another online match
-- inspect and analyze previous positions at any time by clicking on a particular move in the interactive **moves notation**, or by using arrow keys to move backwards and forwards 
+- inspect and analyze previous positions at any time by clicking on a particular move in the interactive **moves notation**, or by using arrow keys to move backwards and forwards;
+last played move of the displayed position is always highlighted in the notation, as well as on the board 
 - control **the piece which a pawn promotes to** when it reaches last rank by selecting the piece in the **promotion choice bar** right below the moves notation
 - locally change the perspective of the board at any time by pressing the **Flip Board** button
 - **Game Log** provides communication between matched up players, as well as communication between the app and the player, informing about all the important events
