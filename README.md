@@ -40,6 +40,15 @@ last played move of the displayed position is always highlighted in the notation
 - anytime a player is offline or yet to be matched with someone, player can freely play for both sides in a singleplayer match, utilizing most of the perks already mentioned in the section about online matches
 - if an online match starts, board resets, syncing up with opponent's board
 
+### To run the client app locally using VSCode Live Server
+- clone the repository
+```
+git clone https://github.com/JakubDurkac/chess_project.git
+```
+- open the project in **VSCode**, go to Extensions, search for **Live Server** by **Ritwick Dey** and install it
+- right-click on the **index.html** file and select **Open with Live Server**
+- check out more details on Live Server [here](https://github.com/ritwickdey/vscode-live-server)
+
 ### Credits
 - project uses piece images and sound files from [Lichess](https://github.com/lichess-org)
 - Lichess provides these resources free to use under the [GNU AFFERO GENERAL PUBLIC LICENSE](https://github.com/lichess-org/lila/blob/master/LICENSE)
