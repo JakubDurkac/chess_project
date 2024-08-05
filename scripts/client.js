@@ -7,6 +7,7 @@ let socket = null;
 let yourName = null;
 export let isConnected = false;
 let canOfferDraw = true;
+let isInConnectingState = false;
 
 const allowedNamePattern = /^[a-zA-Z0-9_-]+$/;
 
@@ -38,9 +39,19 @@ export function findMatch() {
         return;
     }
 
+    if (isInConnectingState) {
+        addLogMessage("Connection request pending, try again in a second.");
+        return;
+    }
+
+    isInConnectingState = true;
+    setTimeout(() => {
+        isInConnectingState = false;
+    }, 2000); // cooldown to prevent single client from spamming connection requests
+
     yourName = inputName;
-    // socket = new WebSocket('ws://localhost:3000');
-    socket = new WebSocket('wss://chess-project-backend-jakubdurkac.onrender.com');
+    // socket = new WebSocket('ws://localhost:3000'); // local server
+    socket = new WebSocket('wss://chess-project-backend-jakubdurkac.onrender.com'); // official server
     socket.addEventListener('open', () => {
         isConnected = true;
         sendInitialMessage();
