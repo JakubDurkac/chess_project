@@ -1,4 +1,4 @@
-# [moodychess](https://moodychess.vercel.app/)
+# [moodychess.com](https://moodychess.com/)
 A chess web app that focuses on online gameplay and offers all the essential features for comfortable online chess.
 - **frontend** (this) written in **Javascript**, **HTML** and **CSS**, deployed using [Vercel](https://vercel.com/)
 - for **backend**, look [here](https://github.com/JakubDurkac/chess_project_backend)
