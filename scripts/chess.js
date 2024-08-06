@@ -126,7 +126,7 @@ export function getWelcomeMessage() {
     <ul class="welcome-message">
         <li class="welcome-message-line">Enter your name to challenge opponents online.</li>
         <li class="welcome-message-line">Choose your favorite time control in the settings.</li>
-        <li class="welcome-message-line">Nobody around? Dive into singleplayer mode. &#9658;</li>
+        <li class="welcome-message-line">Nobody around?<br> Press Play Offline (&#9658;).</li>
     </ul>`;
 }
 
