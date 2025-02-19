@@ -258,7 +258,7 @@ function reachableByPawn(x, y, colorCode) {
     if ((isWhite && x === boardSize - 5) || (!isWhite && x === 4)) {
         const enPassantMove = getEnPassant(x, y, isWhite);
         if (enPassantMove) {
-            reachable.push(getEnPassant(x, y, isWhite));
+            reachable.push(enPassantMove);
         }
     }
     

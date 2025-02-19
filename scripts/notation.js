@@ -12,22 +12,20 @@ export function generateLastMoveNotation() {
 
     let notation = ''; 
     if (pieceTypeCode === 'p') {
-        notation += pieceTaken ? getFile(fromNotation) + 'x' + toNotation : toNotation;
+        notation += pieceTaken ? getFile(fromNotation) : '';
     } else if (pieceTypeCode === 'k') {
         if (Math.abs(fromCoords[1] - toCoords[1]) === 2) {
-            notation += toCoords[1] > fromCoords[1] ? 'O-O' : 'O-O-O';
+            return toCoords[1] > fromCoords[1] ? 'O-O' : 'O-O-O';
         } else {
-            notation += 'K' + toNotation;
+            notation += 'K';
         }
 
     } else {
         notation += (pieceTypeCode.toUpperCase()
-                 + specifyNotation(pieceTypeCode, isWhite ? 'w' : 'b', fromCoords, toCoords)
-                 + (pieceTaken ? 'x' : '')
-                 + toNotation);
+                 + specifyNotation(pieceTypeCode, isWhite ? 'w' : 'b', fromCoords, toCoords));
     }
 
-    return notation;
+    return notation + (pieceTaken ? 'x' : '') + toNotation;
 }
 
 function specifyNotation(pieceTypeCode, colorCode, fromCoords, toCoords) {
@@ -43,7 +41,7 @@ function specifyNotation(pieceTypeCode, colorCode, fromCoords, toCoords) {
     });
 
     concurrentCoords.forEach((coords) => {
-        if (canPlayCuzKingSafe(coords, toCoords, opponentColorCode === 'w')) {
+        if (canPlayCuzKingSafe(coords, toCoords, opponentColorCode !== 'w')) {
             if (fromCoords[1] === coords[1]) {
                 rankSpecification = getRank(coordsToNotation(fromCoords));
             } else {

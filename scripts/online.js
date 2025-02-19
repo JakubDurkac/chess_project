@@ -66,9 +66,7 @@ export function updateMaterialCountDifference() {
     const difference = Math.abs(materialCount.white - materialCount.black);
     if (materialCount.white > materialCount.black) {
         whiteMaterialElem.innerHTML = `+${difference}`;
-        blackMaterialElem.innerHTML = '';
     } else if (materialCount.white < materialCount.black) {
-        whiteMaterialElem.innerHTML = '';
         blackMaterialElem.innerHTML = `+${difference}`;
     }
 }
